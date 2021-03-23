@@ -1,19 +1,21 @@
 version: "3.8"
 
-volumes:
-  rabbitmq_data:
+# volumes:
+#   rabbitmq_data:
 
 services:
 
   ###################################
-  # Reporting: The Reporting microservice
+  # Report: The Report microservice
   ###################################
-  reporting:
+  report:
     build:
       context: ./
-      dockerfile: ./Microservices/Reporting/Dockerfile
-    image: bioxmech/reporting:ecp
+      dockerfile: Dockerfile
+    image: bioxmech/report:ecp
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/reporting
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/report
       PYTHONUNBUFFERED: 1
+    ports:
+      - "5000:5000"
