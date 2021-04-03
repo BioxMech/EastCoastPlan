@@ -8,17 +8,19 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import Facility from '../facility/facility.component';
+
 const FacilityCategory = ({facility}) => (
 
-  <Paper elevation={3}>
+  <Paper elevation={5}>
     <Card >
-      <CardActionArea>
+      {/* <CardActionArea> */}
         <CardMedia
           component="img"
-          alt="Contemplative Reptile"
+          alt={ facility.schedule_name }
           height="140"
           image= { facility.image_url }
-          title="Contemplative Reptile"
+          title={ facility.schedule_name }
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
@@ -29,13 +31,10 @@ const FacilityCategory = ({facility}) => (
             across all continents except Antarctica
           </Typography>
         </CardContent>
-      </CardActionArea>
+      {/* </CardActionArea> */}
       <CardActions>
-        <Button size="small" color="primary">
-          Share
-        </Button>
-        <Button size="small" color="primary">
-          Learn More
+        <Button size="small" color="primary" href={"/facilities/" + facility.schedule_id }>
+          Explore More { facility.schedule_name }
         </Button>
       </CardActions>
     </Card>

@@ -64,7 +64,7 @@ services:
     build:
       context: ./
       dockerfile: facilities.Dockerfile
-    image: petrastan/facilities:ecp
+    image: bioxmech/facilities:ecp
     restart: always
     environment:
         dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/facility
