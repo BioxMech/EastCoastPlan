@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS `booking` (
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`user_id`, `user_name`, `schedule_id`, `facility_id`, `facility_name`, `date`, `start_time`, `end_time`, `price`, `status`) VALUES
-(1, 'Jayden', 561940, 810431, 'BBQ Pit 1.1', '2021-02-18', '18:00:00', '21:00:00', 50.00, 'completed');
+INSERT INTO `booking` (`booking_id`, `user_id`, `user_name`, `schedule_id`, `facility_id`, `facility_name`, `date`, `start_time`, `end_time`, `price`, `status`) VALUES
+(1, 1, 'Jayden', 561940, 810431, 'BBQ Pit 1.1', '2021-02-18', '18:00:00', '21:00:00', 50.00, 'completed');
 -- (2, 10, 'BBQ Pit 2', 2, '2021-02-18', '18:00:00', '20:00:00', 50.00, 'completed'),
 -- (3, 4, 'BBQ Pit 7', 7, '2021-02-28', '16:00:00', '18:00:00', 50.00, 'completed'),
 -- (4, 29, 'BBQ Pit 6', 6, '2021-03-09', '17:00:00', '18:00:00', 30.00, 'completed'),

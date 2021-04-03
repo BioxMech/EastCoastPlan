@@ -81,9 +81,9 @@
 
             </select>
             <div class="mb-3">
-                <label for="bookPrice" class="form-label">Price</label>
-                <input type="number" class="form-control" id="bookPrice" aria-describedby="priceHelp">
-                <div id="priceHelp" class="form-text">e.g. '18.70'</div>
+                <label for="bookPrice" class="form-label"><h3>Price</h3></label>
+                <!-- <input type="number" class="form-control" id="bookPrice" aria-describedby="priceHelp"> -->
+                <p id='price'></p>
             </div>
             <div class="mb-3">
                 <label for="bookAvailability" class="form-label">Availability</label>
@@ -101,6 +101,11 @@
 
 
     <script>
+        function showError(message) {
+            // Display an error in the error paragraph
+            $('#errorMsg')
+                .append("<label>"+message+"</label>");
+        }
 
         //Vue instance
         var app = new Vue({
@@ -118,7 +123,7 @@
                     $(async() => {
                         // console.log(currYear);
                         // console.log(currTime);
-                        var slotsURL = "http://127.0.0.1:5002/getSlots/" + schedule_id + "/" + internal_name;
+                        var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
 
                         try {
                             const response =
@@ -126,17 +131,17 @@
                                 slotsURL, {method:'POST', headers: {"Content-Type": "application/json"}, body:JSON.stringify({from: this.selected_date})}
                             );
                             const result = await response.json();
-                            console.log(result.data);
+                            // console.log(result.data);
                             var html_str = "";
                             for (i=0; i<result.data.length; i++) {
                                 // console.log(result.data[i]);
-                                let slot = result.data[i]
-                                let name = slot.name;
-                                let start = slot.start;
-                                let finish = slot.finish;
+                                var slot = result.data[i]
+                                var name = slot.name;
+                                var start = slot.start;
+                                var finish = slot.finish;
                                 var date = slot.start.slice(0,10);
                                 var start_time = slot.start.slice(11) + ":00";
-                                console.log(start_time);
+                                // console.log(start_time);
                                 var end_time = slot.finish.slice(11) + ":00";
                                 html_str += `<option>${date}-${start_time}-${end_time}</option>`;
                             }
@@ -152,20 +157,11 @@
 
         })
         
-        $('#booksTable').hide();
-        // Error function
-        function showError(message) {
-            // Display an error in the error paragraph
-            $('#errorMsg')
-                .append("<label>"+message+"</label>");
-        }
-        // var selected_date = $('#dateTime');
-        // console.log(selected_date);
 
         $(async() => {
             // console.log(currYear);
             // console.log(currTime);
-            var slotsURL = "http://127.0.0.1:5002/getSlots/" + schedule_id + "/" + internal_name;
+            var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
 
             try {
                 const response =
@@ -173,7 +169,7 @@
                     slotsURL, {method:'POST'}
                 );
                 const result = await response.json();
-                console.log(result.data);
+                // console.log(result.data);
                 var html_str = "";
                 for (i=0; i<result.data.length; i++) {
                     // console.log(result.data[i]);
@@ -187,6 +183,26 @@
                     html_str += `<option>${date}-${start_time}-${end_time}</option>`;
                 }
                 document.getElementById("dropDownMenu").innerHTML = html_str;
+            } catch (error) {
+                showError("There is a problem retrieving the data <br>" +error)
+
+            }
+        })
+
+        $(async() => {
+
+            var scheduleURL = "http://localhost:5002/facilities/" + schedule_id;
+
+            try {
+                const response =
+                await fetch(
+                    scheduleURL, {method:'GET'}
+                );
+                const result = await response.json();
+                // console.log(result.data.resources[0]['price']);
+                var price = result.data.resources[0]['price'];
+                document.getElementById("price").innerText = price;
+                
             } catch (error) {
                 showError("There is a problem retrieving the data <br>" +error)
 

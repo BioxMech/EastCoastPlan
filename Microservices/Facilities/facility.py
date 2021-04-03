@@ -182,7 +182,7 @@ def getTimeSlots(schedule_id, internal_name, date=None):
         date = data['from']
     url = "https://www.supersaas.com/api/free/" + schedule_id + ".json?from=" + date + "%2000:00:00" + "&api_key=jZf9H2V1AtNvTKRwzWaLBw&resource=" + internal_name +"&max_results=20"
     slots_list = requests.get(url).json()
-    print(slots_list)
+    # print(slots_list)
     if len(slots_list):
         return jsonify(
             {
@@ -209,5 +209,5 @@ def getTimeSlots(schedule_id, internal_name, date=None):
         
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5002, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)
 
