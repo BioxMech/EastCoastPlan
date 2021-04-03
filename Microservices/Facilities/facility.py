@@ -1,11 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-# from invokes import invoke_http
-import requests, time
 from flask_cors import CORS
+from os import environ
+import requests, time
+from datetime import datetime, date
+today = str(date.today().strftime("%Y-%m-%d"))
+now = datetime.now()
+current_time = now.strftime("%H:%M:%S")
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/facility'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -36,28 +42,30 @@ class Facility(db.Model):
     facility_id = db.Column(db.Integer, primary_key=True)
     schedule_id = db.Column(db.Integer, nullable=False)
     facility_name = db.Column(db.String(64), nullable=False)
+    internal_name = db.Column(db.String(64), nullable=False)
     location = db.Column(db.String(64), nullable=False)
     availability = db.Column(db.String(64), nullable=True)
     image_url = db.Column(db.String(64), nullable=True)
 
-    def __init__(self, facility_id, schedule_id, facility_name, location, availability, image_url):
+    def __init__(self, facility_id, schedule_id, facility_name, internal_name, location, availability, image_url):
         self.facility_id = facility_id
         self.schedule_id = schedule_id
         self.facility_name = facility_name
+        self.internal_name = internal_name
         self.location = location
         self.availability = availability
         self.image_url = image_url
 
     def json(self):
-        return {"facility_id": self.facility_id, "schedule_id":self.schedule_id, "facility_name": self.facility_name, "location": self.location, "availability": self.availability, "image_url":self.image_url}
+        return {"facility_id": self.facility_id, "schedule_id":self.schedule_id, "facility_name": self.facility_name, "internal_name": self.internal_name, "location": self.location, "availability": self.availability, "image_url":self.image_url}
 
 
 # List all schedules
 @app.route("/facilities")
-def retrieve():
+def retrieveFacilities():
     #     url = 'https://www.supersaas.com/api/schedules.json?account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw'
     schedulelist = Schedule.query.all()
-    print([schedule.json() for schedule in schedulelist])
+    print(schedulelist)
     if len(schedulelist):
         return jsonify(
             {
@@ -161,9 +169,42 @@ def update():
         ), 201
 
 
-# Make booking in api
-# app.route("/booking")
+# Retrieve available timeslots for each resource
+@app.route("/getSlots/<string:schedule_id>/<string:internal_name>", methods=["GET","POST"])
+def getTimeSlots(schedule_id, internal_name, date=None):
+    if date == None:
+        date = today
+    data = request.get_json()
+    if data != None:
+        date = data['from']
+    url = "https://www.supersaas.com/api/free/" + schedule_id + ".json?from=" + date + "%2000:00:00" + "&api_key=jZf9H2V1AtNvTKRwzWaLBw&resource=" + internal_name +"&max_results=20"
+    slots_list = requests.get(url).json()
+    print(slots_list)
+    if len(slots_list):
+        return jsonify(
+            {
+                "code": 200,
+                "data": slots_list['slots']
+            }
+        ), 200
+    return jsonify(
+        {
+            "code": 404,
+            "message": "No slots available"
+        }
+    ), 404
+
+
+# Make booking in api using url
+# @app.route("")
+
+# Make booking in api using http
+# @app.route("/booking/<string:schedule_id>/<string:internal_name>")
+# def create_booking(schedule_id, internal_name):
+#     data = request.json()
+
+        
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5001, debug=True)
 

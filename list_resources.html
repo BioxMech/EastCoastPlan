@@ -83,7 +83,7 @@
     </div>
 
     <script>
-        
+    
         // Helper function to display error message
         function showError(message) {
             // Hide the table and button in the event of error
@@ -100,7 +100,7 @@
         // - using await requires the function that calls it to be async
         $(async() => {           
             // Change serviceURL to your own
-            var serviceURL = "http://127.0.0.1:5000/facilities/" + schedule_id;
+            var serviceURL = "http://127.0.0.1:5001/facilities/" + schedule_id;
             // var serviceURL = "http://127.0.0.1:5000/schedules";
 
             try {
@@ -126,13 +126,15 @@
                         let location = resource.location;
                         let resource_id = resource.id;
                         let resource_name = resource.facility_name;
+                        let schedule_id = resource.schedule_id;
+                        let internal_name = resource.internal_name;
 
                         if (availability == "Yes") {
                             eachRow = `<td><img src='${image_url}'></td>
                                         <td>${resource_name}</td>
                                         <td>${location}</td>
                                         <td>${availability}</td>
-                                        <td> <a id="addBookBtn" class="btn btn-primary" href="#">Add a book</a></td>`;
+                                        <td> <a id="addBookBtn" class="btn btn-primary" href="add-book.html?facility_name=${internal_name}&schedule_id=${schedule_id}">Make a booking</a></td>`;
                             // eachRow ="<td>" + schedule.schedule_name + "</td>"
                             rows += "<tbody><tr>" + eachRow + "</tr></tbody>";
                         }
