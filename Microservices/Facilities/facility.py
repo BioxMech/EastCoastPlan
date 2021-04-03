@@ -209,5 +209,5 @@ def getTimeSlots(schedule_id, internal_name, date=None):
         
 
 if __name__ == '__main__':
-    app.run(port=5002, debug=True)
+    app.run(host='0.0.0.0',port=5002, debug=True)
 

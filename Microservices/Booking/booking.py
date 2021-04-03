@@ -43,7 +43,7 @@ class Booking(db.Model):
         return {"booking_id": self.booking_id, "user_id": self.user_id, "user_name": self.user_name, "schedule_id": self.schedule_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start_time": self.start_time, "end_time": self.end_time, "price": self.price, "status": self.status}
 
 
-@app.route("/booking")
+@app.route("/bookings")
 def get_all():
     bookinglist = Booking.query.all() # select * from
     if len(bookinglist):
@@ -81,7 +81,7 @@ def find_by_booking_id(booking_id):
     ), 404
 
 
-@app.route("/booking/<string:booking_id>", methods=['POST'])
+@app.route("/createBooking/<string:booking_id>", methods=['POST'])
 def create_booking(booking_id):
     if (Booking.query.filter_by(booking_id=booking_id).first()):
         return jsonify(
