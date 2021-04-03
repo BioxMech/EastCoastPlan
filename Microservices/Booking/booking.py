@@ -3,7 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -14,6 +16,8 @@ class Booking(db.Model):
 
     booking_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
+    user_name = db.Column(db.String(64), nullable=False)
+    schedule_id = db.Column(db.Integer)
     facility_id = db.Column(db.Integer)
     facility_name = db.Column(db.String(64), nullable=False)
     date = db.Column(db.Date)
@@ -22,9 +26,11 @@ class Booking(db.Model):
     price = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(10), nullable=False, default="Pending")
 
-    def __init__(self, booking_id, user_id, facility_id, facility_name, date, start_time, end_time, price, status):
+    def __init__(self, booking_id, user_id, user_name, schedule_id, facility_id, facility_name, date, start_time, end_time, price, status):
         self.booking_id = booking_id
         self.user_id = user_id
+        self.user_name = user_name
+        self.schedule_id = schedule_id
         self.facility_id = facility_id
         self.facility_name = facility_name
         self.date = date
@@ -34,7 +40,7 @@ class Booking(db.Model):
         self.status = status
 
     def json(self):
-        return {"booking_id": self.booking_id, "user_id": self.user_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start_time": self.start_time, "end_time": self.end_time, "price": self.price, "status": self.status}
+        return {"booking_id": self.booking_id, "user_id": self.user_id, "user_name": self.user_name, "schedule_id": self.schedule_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start_time": self.start_time, "end_time": self.end_time, "price": self.price, "status": self.status}
 
 
 @app.route("/booking")
