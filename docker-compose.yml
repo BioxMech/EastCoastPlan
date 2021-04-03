@@ -74,6 +74,23 @@ services:
     ports:
       - "5003:5003"
 
+  ###################################
+  # Payment: The Payment microservice
+  ###################################
+  booking:
+    build:
+      context: ./
+      dockerfile: payment.Dockerfile
+    image: hyong2019/users:ecp
+    restart: always
+    networks:
+      - kong-net
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/payment
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5004:5004"
+
   #######################################
   # Postgres: The database used by Kong
   #######################################
