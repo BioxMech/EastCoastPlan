@@ -135,8 +135,9 @@
                                 let start = slot.start;
                                 let finish = slot.finish;
                                 var date = slot.start.slice(0,10);
-                                var start_time = slot.start.slice(11);
-                                var end_time = slot.finish.slice(11);
+                                var start_time = slot.start.slice(11) + ":00";
+                                console.log(start_time);
+                                var end_time = slot.finish.slice(11) + ":00";
                                 html_str += `<option>${date}-${start_time}-${end_time}</option>`;
                             }
                             document.getElementById("dropDownMenu").innerHTML = html_str;
@@ -181,8 +182,8 @@
                     let start = slot.start;
                     let finish = slot.finish;
                     var date = slot.start.slice(0,10);
-                    var start_time = slot.start.slice(11);
-                    var end_time = slot.finish.slice(11);
+                    var start_time = slot.start.slice(11) + ":00";
+                    var end_time = slot.finish.slice(11) + ":00";
                     html_str += `<option>${date}-${start_time}-${end_time}</option>`;
                 }
                 document.getElementById("dropDownMenu").innerHTML = html_str;
