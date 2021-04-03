@@ -13,3 +13,5 @@ import json
 
 app = Flask(__name__)
 CORS(app)
+
+facilities_URL = environ.get("facilities_URL") or "http://localhost:5002"
