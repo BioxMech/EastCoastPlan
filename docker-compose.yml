@@ -4,7 +4,6 @@ version: "3.8"
 #   rabbitmq_data:
 
 services:
-
   # ##################################
   # Report: The Report microservice
   # ##################################
@@ -37,18 +36,32 @@ services:
   #   ports:
   #     - 3000:3000
 
-  
   ###################################
-  # Report: The Users microservice
+  # Users: The Users microservice
   ###################################
-  users:
+  # users:
+  #   build:
+  #     context: ./
+  #     dockerfile: users.Dockerfile
+  #   image: jingrongho2019/users:ecp
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5001:5001"
+
+  ###################################
+  # Booking: The Booking microservice
+  ###################################
+  booking:
     build:
       context: ./
-      dockerfile: users.Dockerfile
-    image: jingrongho2019/users:ecp
+      dockerfile: booking.Dockerfile
+    image: kershawnliau/users:ecp
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/book
       PYTHONUNBUFFERED: 1
     ports:
-      - "5001:5001"
+      - "5003:5003"
