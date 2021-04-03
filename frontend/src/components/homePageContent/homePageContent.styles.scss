@@ -3,12 +3,20 @@
   text-align: center;
   align-items: center;
 
+  .item {
+    min-height: 80vh;
+  }
+
   .title {
     font-weight: 700;
+    text-align: center;
+    align-items: center;
   }
 
   .subtitle {
     font-weight: 300;
+    text-align: center;
+    align-items: center;
   }
 
   .buttonP {

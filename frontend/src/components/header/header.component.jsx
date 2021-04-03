@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +23,11 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
-  },search: {
+  },
+  titleContent: {
+    color: "white"
+  },
+  search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -74,7 +79,7 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            EastCoastPlan
+            <Link href="/" className={classes.titleContent} underline="none">EastCoastPlan</Link>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -89,8 +94,8 @@ export default function Header() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-          <Button color="inherit">About Us</Button>
-          <Button color="inherit">Booking</Button>
+          <Button color="inherit" href="/aboutus">About Us</Button>
+          <Button color="inherit" href="/facilities">Facilities</Button>
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
