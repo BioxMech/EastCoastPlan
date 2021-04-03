@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
-    <title>Bookstore</title>
+    <title>Booking</title>
 
     <meta name="viewport" 
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -50,7 +50,8 @@
             data[tmp[0]] = tmp[1];
         }
         console.log(data);
-        var facility_name = data.facility_name;
+        var internal_name = data.facility_name;
+        var facility_name = internal_name.split("_").join(" ")
         var schedule_id = data.schedule_id
         console.log(facility_name);
         var currentdate = new Date();
@@ -66,25 +67,23 @@
 <body>
     <div id="main-container" class="container">
         <h1 class="display-4">Make a booking</h1>
-        <!-- <input type='text' name="dateTimePicker" id="dateTime" v-model="selected_date"> -->
-        <div id="datePicker">
-            <vuejs-datepicker :format="customFormatter"></vuejs-datepicker>
-        </div>
+        <input id="dateTime" type="date" v-model="selected_date" v-on:change="updateSlots">
+
         <form id='bookForm'>
             <div class="mb-3">
-                <label for="bookTitle" class="form-label">Title</label>
-                <input type="text" class="form-control" id="bookTitle" aria-describedby="titleHelp">
-                <div id="titleHelp" class="form-text">e.g. 'Book from jQuery'</div>
+                <label for="bookTitle" class="form-label">Facility</label>
+                <!-- <input type="text" class="form-control" id="bookTitle" aria-describedby="titleHelp"> -->
+
+                <!-- <div id="titleHelp" class="form-text">e.g. 'Book from jQuery'</div> -->
             </div>
+            <p><strong>Choose preferred time slot</strong></p>
+            <select id="dropDownMenu">
+
+            </select>
             <div class="mb-3">
-                <label for="isbn13" class="form-label">ISBN13</label>
-                <input type="text" class="form-control" id="isbn13"  aria-describedby="isbnHelp">
-                <div id="isbnHelp" class="form-text">e.g. '9781349471231'</div>
-            </div>
-            <div class="mb-3">
-                <label for="bookPrice" class="form-label">Price</label>
-                <input type="number" class="form-control" id="bookPrice" aria-describedby="priceHelp">
-                <div id="priceHelp" class="form-text">e.g. '18.70'</div>
+                <label for="bookPrice" class="form-label"><h3>Price</h3></label>
+                <!-- <input type="number" class="form-control" id="bookPrice" aria-describedby="priceHelp"> -->
+                <p id='price'></p>
             </div>
             <div class="mb-3">
                 <label for="bookAvailability" class="form-label">Availability</label>
@@ -97,65 +96,120 @@
         <a style='color:white;' class="btn btn-success" href='index.html'>Return to home</a>
         <h4 style='color:red;' id="errorMsg"></h4>
 
-        selected date: {{ selected_date }}
+
     </div>
 
 
     <script>
-        import Datepicker from "vuejs-datepicker/dist/vuejs-datepicker.esm.js";
-        const app = new Vue({
-            el: '#datePicker',
-            components: {
-                vuejsDatepicker
-            },
-            methods: {
-                customFormatter(date) {
-                    return moment(date).format('MMMM Do YYYY, h:mm:ss a');
-                }
-            }
-            
-        })
-        //Vue instance
-        // var app = new Vue({
-        //     el: "#main-container",
-
-        //     data: {
-        //         greeting: "Hello",
-        //         // currDate: currYear,
-        //         selected_date: "Please select a date"
-        //     }
-
-
-        // })
-
-        instance = new dtsel.DTS('input[name="dateTimePicker"]');
-        
-        $('#booksTable').hide();
-        // Error function
         function showError(message) {
             // Display an error in the error paragraph
             $('#errorMsg')
                 .append("<label>"+message+"</label>");
         }
-        // var selected_date = $('#dateTime');
-        // console.log(selected_date);
+
+        //Vue instance
+        var app = new Vue({
+            el: "#main-container",
+
+            data: {
+                greeting: "Hello",
+                // currDate: currYear,
+                selected_date: "Please select a date"
+            },
+            
+            methods : {
+                updateSlots: function() {
+                    
+                    $(async() => {
+                        // console.log(currYear);
+                        // console.log(currTime);
+                        var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
+
+                        try {
+                            const response =
+                            await fetch(
+                                slotsURL, {method:'POST', headers: {"Content-Type": "application/json"}, body:JSON.stringify({from: this.selected_date})}
+                            );
+                            const result = await response.json();
+                            // console.log(result.data);
+                            var html_str = "";
+                            for (i=0; i<result.data.length; i++) {
+                                // console.log(result.data[i]);
+                                var slot = result.data[i]
+                                var name = slot.name;
+                                var start = slot.start;
+                                var finish = slot.finish;
+                                var date = slot.start.slice(0,10);
+                                var start_time = slot.start.slice(11) + ":00";
+                                // console.log(start_time);
+                                var end_time = slot.finish.slice(11) + ":00";
+                                html_str += `<option>${date}-${start_time}-${end_time}</option>`;
+                            }
+                            document.getElementById("dropDownMenu").innerHTML = html_str;
+                        } catch (error) {
+                            showError("There is a problem retrieving the data <br>" +error)
+
+                            }
+                        })
+
+                }
+            }
+
+        })
+        
+
         $(async() => {
             // console.log(currYear);
             // console.log(currTime);
-            var slotsURL = "http://127.0.0.1:5001/getSlots/" + schedule_id + "/" + facility_name;
+            var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
 
             try {
                 const response =
                 await fetch(
-                    slotsURL, {method:'GET'}
+                    slotsURL, {method:'POST'}
                 );
                 const result = await response.json();
-                console.log(result.data);
+                // console.log(result.data);
+                var html_str = "";
+                for (i=0; i<result.data.length; i++) {
+                    // console.log(result.data[i]);
+                    let slot = result.data[i]
+                    let name = slot.name;
+                    let start = slot.start;
+                    let finish = slot.finish;
+                    var date = slot.start.slice(0,10);
+                    var start_time = slot.start.slice(11) + ":00";
+                    var end_time = slot.finish.slice(11) + ":00";
+                    html_str += `<option>${date}-${start_time}-${end_time}</option>`;
+                }
+                document.getElementById("dropDownMenu").innerHTML = html_str;
             } catch (error) {
                 showError("There is a problem retrieving the data <br>" +error)
 
             }
         })
+
+        $(async() => {
+
+            var scheduleURL = "http://localhost:5002/facilities/" + schedule_id;
+
+            try {
+                const response =
+                await fetch(
+                    scheduleURL, {method:'GET'}
+                );
+                const result = await response.json();
+                // console.log(result.data.resources[0]['price']);
+                var price = result.data.resources[0]['price'];
+                document.getElementById("price").innerText = price;
+                
+            } catch (error) {
+                showError("There is a problem retrieving the data <br>" +error)
+
+            }
+        })
+
+        
 
 
     </script>

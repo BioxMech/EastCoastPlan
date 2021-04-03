@@ -1,19 +1,27 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from flask_cors import CORS
+from os import environ
+import requests, time
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+CORS(app)
 
 class Booking(db.Model):
     __tablename__ = 'booking'
 
     booking_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
+    user_name = db.Column(db.String(64), nullable=False)
+    schedule_id = db.Column(db.Integer)
     facility_id = db.Column(db.Integer)
     facility_name = db.Column(db.String(64), nullable=False)
     date = db.Column(db.Date)
@@ -22,9 +30,11 @@ class Booking(db.Model):
     price = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(10), nullable=False, default="Pending")
 
-    def __init__(self, booking_id, user_id, facility_id, facility_name, date, start_time, end_time, price, status):
+    def __init__(self, booking_id, user_id, user_name, schedule_id, facility_id, facility_name, date, start_time, end_time, price, status):
         self.booking_id = booking_id
         self.user_id = user_id
+        self.user_name = user_name
+        self.schedule_id = schedule_id
         self.facility_id = facility_id
         self.facility_name = facility_name
         self.date = date
@@ -34,10 +44,10 @@ class Booking(db.Model):
         self.status = status
 
     def json(self):
-        return {"booking_id": self.booking_id, "user_id": self.user_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start_time": self.start_time, "end_time": self.end_time, "price": self.price, "status": self.status}
+        return {"booking_id": self.booking_id, "user_id": self.user_id, "user_name": self.user_name, "schedule_id": self.schedule_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start_time": self.start_time, "end_time": self.end_time, "price": self.price, "status": self.status}
 
 
-@app.route("/booking")
+@app.route("/bookings")
 def get_all():
     bookinglist = Booking.query.all() # select * from
     if len(bookinglist):
@@ -75,35 +85,65 @@ def find_by_booking_id(booking_id):
     ), 404
 
 
-@app.route("/booking/<string:booking_id>", methods=['POST'])
-def create_booking(booking_id):
-    if (Booking.query.filter_by(booking_id=booking_id).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "booking_id": booking_id
-                },
-                "message": "Booking already exists."
-            }
-        ), 400
+# @app.route("/createBooking/<string:booking_id>", methods=['POST'])
+# def create_booking(booking_id):
+#     if (Booking.query.filter_by(booking_id=booking_id).first()):
+#         return jsonify(
+#             {
+#                 "code": 400,
+#                 "data": {
+#                     "booking_id": booking_id
+#                 },
+#                 "message": "Booking already exists."
+#             }
+#         ), 400
+
+#     data = request.get_json()
+#     booking = Booking(booking_id, **data)
+
+#     try:
+#         db.session.add(booking)
+#         db.session.commit()
+#     except:
+#         return jsonify(
+#             {
+#                 "code": 500,
+#                 "data": {
+#                     "booking_id": booking_id
+#                 },
+#                 "message": "An error occurred creating the booking."
+#             }
+#         ), 500
+
+#     return jsonify(
+#         {
+#             "code": 201,
+#             "data": booking.json()
+#         }
+#     ), 201
+
+@app.route("/createBooking/<string:schedule_id>", methods=['POST'])
+def create_booking(schedule_id):
+
+    url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
 
     data = request.get_json()
-    booking = Booking(booking_id, **data)
+    # print(data)
+    booking = Booking(**data)
 
-    try:
-        db.session.add(booking)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "booking_id": booking_id
-                },
-                "message": "An error occurred creating the booking."
-            }
-        ), 500
+    # try:
+    #     db.session.add(booking)
+    #     db.session.commit()
+    # except:
+    #     return jsonify(
+    #         {
+    #             "code": 500,
+    #             "data": {
+    #                 "booking_id": "Non"
+    #             },
+    #             "message": "An error occurred creating the booking."
+    #         }
+    #     ), 500
 
     return jsonify(
         {
