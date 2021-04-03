@@ -64,12 +64,12 @@ services:
     build:
       context: ./
       dockerfile: booking.Dockerfile
-    image: kershawnliau/users:ecp
+    image: tamtamllx/users:ecp
     restart: always
     networks:
       - kong-net
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/book
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/booking
       PYTHONUNBUFFERED: 1
     ports:
       - "5003:5003"
