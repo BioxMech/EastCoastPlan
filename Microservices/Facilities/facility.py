@@ -141,13 +141,14 @@ def update():
 
             resource_url = 'https://www.supersaas.com/api/resources.json?schedule_id='+str(schedule_id)+'&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw'
             resource_list = requests.get(resource_url).json()
-            # print(resource_list)
+            print(resource_list)
             for resource in resource_list:
                 resource_id = resource['id']
+                internal_name = resource['name']
                 resource_name = resource['name'].split("_")
                 resource_name = " ".join(resource_name)
                 # print(resource_name)
-                facility = Facility(resource_id, schedule_id, resource_name, "", "Yes", "")
+                facility = Facility(resource_id, schedule_id, resource_name, internal_name,"", "Yes", "")
                 try:
                     db.session.add(facility)
                     db.session.commit()
