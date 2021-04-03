@@ -107,6 +107,28 @@ def filter_by_schedule(schedule_id):
         }
     ), 404
 
+@app.route("/facilities/<string:schedule_id>/booking/<string:facility_id>")
+def getFacility(schedule_id,facility_id):
+    # url = "https://www.supersaas.com/api/resources.json?schedule_id=" + schedule_id + "&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw"
+    resource_list = Facility.query.filter_by(schedule_id = schedule_id, facility_id = facility_id).all()
+    # print([resource.json() for resource in resource_list])
+    if len(resource_list):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "resources": [resource.json() for resource in resource_list]
+                }
+            }
+        ), 200
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no facility available."
+        }
+    ), 404
+
+
 
 # Update local db 
 @app.route("/update")
