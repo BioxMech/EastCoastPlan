@@ -5,8 +5,8 @@ from flask_cors import CORS
 import requests, time
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -124,10 +124,12 @@ def find_by_booking_id(booking_id):
 @app.route("/createBooking/<string:booking_id>", methods=['POST'])
 def create_booking(booking_id):
     data = request.get_json()
+    schedule_id = data['schedule_id']
+    print(schedule_id)
     url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
 
-    # print(data)
-    booking = Booking(**data)
+    
+    # booking = Booking(**data)
 
     # try:
     #     db.session.add(booking)
@@ -146,7 +148,8 @@ def create_booking(booking_id):
     return jsonify(
         {
             "code": 201,
-            "data": booking.json()
+            # "data": booking.json()
+            "data": "Test"
         }
     ), 201
 
