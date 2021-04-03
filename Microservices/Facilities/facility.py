@@ -45,19 +45,21 @@ class Facility(db.Model):
     internal_name = db.Column(db.String(64), nullable=False)
     location = db.Column(db.String(64), nullable=False)
     availability = db.Column(db.String(64), nullable=True)
+    price = db.Column(db.Integer, nullable=False)
     image_url = db.Column(db.String(64), nullable=True)
 
-    def __init__(self, facility_id, schedule_id, facility_name, internal_name, location, availability, image_url):
+    def __init__(self, facility_id, schedule_id, facility_name, internal_name, location, availability, price, image_url):
         self.facility_id = facility_id
         self.schedule_id = schedule_id
         self.facility_name = facility_name
         self.internal_name = internal_name
         self.location = location
         self.availability = availability
+        self.price = price
         self.image_url = image_url
 
     def json(self):
-        return {"facility_id": self.facility_id, "schedule_id":self.schedule_id, "facility_name": self.facility_name, "internal_name": self.internal_name, "location": self.location, "availability": self.availability, "image_url":self.image_url}
+        return {"facility_id": self.facility_id, "schedule_id":self.schedule_id, "facility_name": self.facility_name, "internal_name": self.internal_name, "location": self.location, "availability": self.availability, "price": self.price, "image_url":self.image_url}
 
 
 # List all schedules

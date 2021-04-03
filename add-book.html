@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
-    <title>Bookstore</title>
+    <title>Booking</title>
 
     <meta name="viewport" 
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -67,7 +67,7 @@
 <body>
     <div id="main-container" class="container">
         <h1 class="display-4">Make a booking</h1>
-        <input type="date" v-model="selected_date" v-on:change="updateSlots">
+        <input id="dateTime" type="date" v-model="selected_date" v-on:change="updateSlots">
 
         <form id='bookForm'>
             <div class="mb-3">
