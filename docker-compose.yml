@@ -81,7 +81,7 @@ services:
     build:
       context: ./
       dockerfile: payment.Dockerfile
-    image: hyong2019/users:ecp
+    image: tamtamllx/users:ecp
     restart: always
     networks:
       - kong-net
