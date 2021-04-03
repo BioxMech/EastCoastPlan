@@ -1,0 +1,67 @@
+version: "3.8"
+
+# volumes:
+#   rabbitmq_data:
+
+services:
+  # ##################################
+  # Report: The Report microservice
+  # ##################################
+  # report:
+  #   build:
+  #     context: ./
+  #     dockerfile: report.Dockerfile
+  #   image: jingrongho2019/report:ecp
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/report
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5000:5000"
+
+  ###################################
+  # Frontend: The Frontend microservice
+  ###################################
+  # frontend:
+  #   stdin_open: true
+  #   container_name: frontend
+  #   build:
+  #     context: ./
+  #     dockerfile: frontend.Dockerfile
+  #   image: bioxmech/frontend:ecp
+  #   restart: always
+  #   volumes:
+  #     - '.:/frontend/app'
+  #     - '/frontend/app/node_modules'
+  #   ports:
+  #     - 3000:3000
+
+  ###################################
+  # Users: The Users microservice
+  ###################################
+  # users:
+  #   build:
+  #     context: ./
+  #     dockerfile: users.Dockerfile
+  #   image: jingrongho2019/users:ecp
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5001:5001"
+
+  ###################################
+  # Booking: The Booking microservice
+  ###################################
+  booking:
+    build:
+      context: ./
+      dockerfile: booking.Dockerfile
+    image: kershawnliau/users:ecp
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/book
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5003:5003"
