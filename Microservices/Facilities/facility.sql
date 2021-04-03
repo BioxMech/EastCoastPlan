@@ -65,12 +65,12 @@ CREATE TABLE IF NOT EXISTS `facility` (
 
 
 INSERT INTO `schedule` (`schedule_id`, `schedule_name`, `availability`, `image_url`) VALUES
-(560969, 'Badminton Court', 'Yes', 'images/generic_badminton.png'),
-(560421, 'BBQ Pit Area 1', 'Yes', 'images/generic_bbqpit.jpg'),
-(561940, 'BBQ Pit Area 2', 'Yes', 'images/generic_bbqpit.jpg'),
-(560581, 'Picnic Pavilion Area 1', 'Yes', 'images/pavilion.jpg'),
-(561941, 'Picnic Pavilion Area 2', 'Yes', 'images/pavilion.jpg'),
-(561942, 'Volleyball Courts', 'Yes', 'images/generic_volleyball.png')
+(560969, 'Badminton Court', 'Yes', '/images/generic_badminton.png'),
+(560421, 'BBQ Pit Area 1', 'Yes', '/images/generic_bbqpit.jpg'),
+(561940, 'BBQ Pit Area 2', 'Yes', '/images/generic_bbqpit.jpg'),
+(560581, 'Picnic Pavilion Area 1', 'Yes', '/images/pavilion.jpg'),
+(561941, 'Picnic Pavilion Area 2', 'Yes', '/images/pavilion.jpg'),
+(561942, 'Volleyball Courts', 'Yes', '/images/generic_volleyball.png')
 ;
 COMMIT;
 
