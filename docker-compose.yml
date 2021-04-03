@@ -36,3 +36,19 @@ services:
       - '/frontend/app/node_modules'
     ports:
       - 3000:3000
+
+  
+  ###################################
+  # Report: The Users microservice
+  ###################################
+  report:
+    build:
+      context: ./
+      dockerfile: users.Dockerfile
+    image: jingrong2019/users:ecp
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
