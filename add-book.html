@@ -180,7 +180,7 @@
                     var date = slot.start.slice(0,10);
                     var start_time = slot.start.slice(11) + ":00";
                     var end_time = slot.finish.slice(11) + ":00";
-                    html_str += `<option>${date}-${start_time}-${end_time}</option>`;
+                    html_str += `<option id='selected_option'>${date} ${start_time}-${end_time}</option>`;
                 }
                 document.getElementById("dropDownMenu").innerHTML = html_str;
             } catch (error) {
@@ -209,7 +209,16 @@
             }
         })
 
-        
+        $('#submit').click(function() {
+            $(async() => {
+                var dropdown = document.getElementById("selected_option").value;
+                let date = dropdown.slice(0,10);
+                let start = dropdown.slice(11,19);
+                let finish = dropdown.slice(20,28)
+
+                var booking_id = internal_name + date + start; 
+            })
+        })
 
 
     </script>
