@@ -121,12 +121,11 @@ def find_by_booking_id(booking_id):
 #         }
 #     ), 201
 
-@app.route("/createBooking/<string:schedule_id>", methods=['POST'])
-def create_booking(schedule_id):
-
+@app.route("/createBooking/<string:booking_id>", methods=['POST'])
+def create_booking(booking_id):
+    data = request.get_json()
     url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
 
-    data = request.get_json()
     # print(data)
     booking = Booking(**data)
 
