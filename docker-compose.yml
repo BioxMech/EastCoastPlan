@@ -11,7 +11,7 @@ services:
   report:
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: report.Dockerfile
     image: bioxmech/report:ecp
     restart: always
     environment:
@@ -19,3 +19,20 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5000:5000"
+
+  ###################################
+  # Frontend: The Frontend microservice
+  ###################################
+  frontend:
+    stdin_open: true
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: frontend.Dockerfile
+    image: bioxmech/frontend:ecp
+    restart: always
+    volumes:
+      - '.:/frontend/app'
+      - '/frontend/app/node_modules'
+    ports:
+      - 3000:3000
