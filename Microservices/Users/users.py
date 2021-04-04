@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+import json
+import os
+# import hashlib
+from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/EastCoastPlan'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -48,7 +52,7 @@ def get_users():
     ), 404
 
 @app.route("/users/<string:email>")
-def get_password(email):
+def get_user(email):
 	users = Users.query.filter_by(email=email).first()
 	if users:
 		return jsonify(
@@ -65,14 +69,36 @@ def get_password(email):
     ), 404
 
 
-@app.route("/users/<string:email>")
-def get_user_type(email):
-	pass
+@app.route("/users/verify/<string:email>", methods=['POST'])
+def verify_user(email):
+    users = Users.query.filter_by(email=email).first()
+    enteredPw  = request.headers.get('password', None)
+
+    return jsonify(
+        {
+            "result": sha256_crypt.verify(enteredPw, users.password)
+        }
+        
+    )
+    # if users:
+    # 	return jsonify(
+    #         {
+    #             "code": 200,
+    #             "data": users.json()
+    #         }
+    #     )
+    # return jsonify(
+    #     {
+    #         "code": 404,
+    #         "message": "User not found."
+    #     }
+    # ), 404
 
 @app.route("/users/<string:email>", methods=['POST'])
 def create_user(email):
-	if (Users.query.filter_by(email=email).first()):
-		return jsonify(
+    
+    if (Users.query.filter_by(email=email).first()):
+        return jsonify(
             {
                 "code": 400,
                 "data": {
@@ -81,17 +107,29 @@ def create_user(email):
                 "message": "User already exists."
             }
         ), 400
+    
+    data = request.get_json()
+    print(data)
+    
+    
+    print("EMAIL HERE: " + str(email))
+    print("DATA HERE: " + str(data))
+    users = Users(email, **data)
+    
+    users.password = sha256_crypt.encrypt(users.password)
+    #password2 = sha256_crypt.encrypt("password")
 
-	data = request.get_json()
-	print("EMAIL HERE: " + str(email))
-	print("DATA HERE: " + str(data))
-	users = Users(email, **data)
-	
-	try:
-		db.session.add(users)
-		db.session.commit()
-	except:
-		return jsonify(
+    #print(users.password)
+    #print(password2)
+
+    #print(sha256_crypt.verify("password", users.password))
+    try:
+        db.session.add(users)
+        db.session.commit()
+        
+    except:
+        
+        return jsonify(
             {
                 "code": 500,
                 "data": {
@@ -100,8 +138,8 @@ def create_user(email):
                 "message": "An error occurred creating the user."
             }
         ), 500
-
-	return jsonify(
+    
+    return jsonify(
         {
             "code": 201,
             "data": users.json()
