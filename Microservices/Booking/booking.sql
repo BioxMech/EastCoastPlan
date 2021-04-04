@@ -32,7 +32,7 @@ USE `booking`;
 
 DROP TABLE IF EXISTS `booking`;
 CREATE TABLE IF NOT EXISTS `booking` (
-  `booking_id` int(11) NOT NULL AUTO_INCREMENT,
+  `booking_id` varchar(64) NOT NULL,
   `schedule_id` int(11) NOT NULL,
   `facility_id` int(11) NOT NULL,
   `facility_name` varchar(64) NOT NULL,

@@ -64,7 +64,7 @@ services:
     build:
       context: ./
       dockerfile: facilities.Dockerfile
-    image: tamtamllx/facility:ecp
+    image: petrastan/facilities:ecp
     restart: always
     environment:
         dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/facility
@@ -102,10 +102,27 @@ services:
     networks:
       - kong-net
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/payment
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/booking
       PYTHONUNBUFFERED: 1
     ports:
-      - "5004:5004"
+      - "5003:5003"
+
+  ###################################
+  # Payment: The Payment microservice
+  ###################################
+  # payment:
+  #   build:
+  #     context: ./
+  #     dockerfile: payment.Dockerfile
+  #   image: tamtamllx/payment:ecp
+  #   restart: always
+  #   networks:
+  #     - kong-net
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/payment
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5004:5004"
 
   #######################################
   # Postgres: The database used by Kong
