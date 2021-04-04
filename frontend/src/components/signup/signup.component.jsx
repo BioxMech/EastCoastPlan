@@ -1,5 +1,6 @@
 import React from 'react';
-import { Paper, FormControl, InputLabel, Input, FormHelperText, Box, Button, Radio, FormControlLabel, RadioGroup } from '@material-ui/core';
+import axios from 'axios';
+import { Paper, FormControl, FormLabel, InputLabel, Input, FormHelperText, Box, Button, Radio, FormControlLabel, RadioGroup } from '@material-ui/core';
 
 class SignUp extends React.Component {
 
@@ -8,20 +9,53 @@ class SignUp extends React.Component {
     this.state = {
       email: '',
       password: '',
-      acc_type: '',
-      disabled: true
+      acc_type: 'user',
+      disabled: true,
+      show: false
     }
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleAccType = this.handleAccType.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEmail = this.handleEmail.bind(this);
+    this.handlePassword = this.handlePassword.bind(this);
   }
 
-  handleChange(event) {
-    
+  handleAccType(event) {
+    this.setState({acc_type: event.target.value})
+  }
+
+  handleEmail(event) {
+    this.setState({email: event.target.value})
+    if (this.state.password != '') {
+      this.setState({disabled: false})
+    }
+  }
+
+  handlePassword(event) {
+    this.setState({password: event.target.value})
+    if (this.state.email != '') {
+      this.setState({disabled: false})
+    }
   }
 
   handleSubmit(event) {
     event.preventDefault()
+    var email = event.target[0].value
+    var password = event.target[1].value
+    var acc_type = this.state.acc_type
+    var json = { 
+      password: password, 
+      account_type: acc_type 
+    }
+    axios.post(`http://localhost:5001/users/${email}`, json)
+      .then(response => {
+        if (response.data.code == 201) {
+           // ############# add local session ################
+        }
+        else if (response.data.code == 400) {
+          this.setState({show:true})
+        }
+      });
   }
   
   render() {
@@ -33,22 +67,25 @@ class SignUp extends React.Component {
             <Box>
               <FormControl required >
                 <InputLabel htmlFor="my-input" >Email address</InputLabel>
-                <Input id="my-input" aria-describedby="my-helper-text"  type="email" value={this.state.email}  required />
+                <Input id="my-input" aria-describedby="my-helper-text"  type="email" onChange={this.handleEmail} required />
                 <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
               </FormControl>
             </Box>
             <Box>
               <FormControl required >
                 <InputLabel htmlFor="my-input" >Password</InputLabel>
-                <Input id="my-input" aria-describedby="my-helper-text"  type="password" value={this.state.password} required />
+                <Input id="my-input" aria-describedby="my-helper-text"  type="password" onChange={this.handlePassword} required />
                 <FormHelperText id="my-helper-text">Your password will be encrypted.</FormHelperText>
               </FormControl>
             </Box>
-            <Box>
-              <RadioGroup row aria-label="user" name="position" defaultValue="top" value={this.state.acc_type}>
-                <FormControlLabel value="user" control={<Radio color="primary" />} label="User" />
-                <FormControlLabel value="admin" control={<Radio color="primary" />} label="Admin" />
-              </RadioGroup>
+            <Box mt={2}>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Account Type</FormLabel>
+                <RadioGroup row aria-label="acc_type" name="acc_type" value={this.state.acc_type} onChange={this.handleAccType}>
+                  <FormControlLabel value="user" control={<Radio />} label="User" />
+                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                </RadioGroup>
+              </FormControl>
             </Box>
             <Box mt={3}>
               <Button 
@@ -60,6 +97,14 @@ class SignUp extends React.Component {
                 SIGN UP
               </Button>
             </Box>
+            {
+              this.state.show ?
+              <Box>
+                Email Exist
+              </Box>
+              :
+              <span></span>
+            }
           </form>
         </Box>
       </Paper>
