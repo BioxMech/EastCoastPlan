@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from os import environ
-import requests, time
+import requests
+import time
 from datetime import datetime, date
 today = str(date.today().strftime("%Y-%m-%d"))
 now = datetime.now()
@@ -10,13 +11,17 @@ current_time = now.strftime("%H:%M:%S")
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/facility'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/facility'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# to fix the kong bug
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
-CORS(app)  
+CORS(app)
+
 
 class Schedule(db.Model):
     __tablename__ = 'schedule'
@@ -59,7 +64,7 @@ class Facility(db.Model):
         self.image_url = image_url
 
     def json(self):
-        return {"facility_id": self.facility_id, "schedule_id":self.schedule_id, "facility_name": self.facility_name, "internal_name": self.internal_name, "location": self.location, "availability": self.availability, "price": self.price, "image_url":self.image_url}
+        return {"facility_id": self.facility_id, "schedule_id": self.schedule_id, "facility_name": self.facility_name, "internal_name": self.internal_name, "location": self.location, "availability": self.availability, "price": self.price, "image_url": self.image_url}
 
 
 # List all schedules
@@ -89,7 +94,7 @@ def retrieveFacilities():
 @app.route("/facilities/<string:schedule_id>")
 def filter_by_schedule(schedule_id):
     # url = "https://www.supersaas.com/api/resources.json?schedule_id=" + schedule_id + "&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw"
-    resource_list = Facility.query.filter_by(schedule_id = schedule_id).all()
+    resource_list = Facility.query.filter_by(schedule_id=schedule_id).all()
     # print([resource.json() for resource in resource_list])
     if len(resource_list):
         return jsonify(
@@ -107,10 +112,12 @@ def filter_by_schedule(schedule_id):
         }
     ), 404
 
+
 @app.route("/facilities/<string:schedule_id>/booking/<string:facility_id>")
-def getFacility(schedule_id,facility_id):
+def getFacility(schedule_id, facility_id):
     # url = "https://www.supersaas.com/api/resources.json?schedule_id=" + schedule_id + "&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw"
-    resource_list = Facility.query.filter_by(schedule_id = schedule_id, facility_id = facility_id).all()
+    resource_list = Facility.query.filter_by(
+        schedule_id=schedule_id, facility_id=facility_id).all()
     # print([resource.json() for resource in resource_list])
     if len(resource_list):
         return jsonify(
@@ -155,15 +162,16 @@ def update_availability(facility_id):
         }
     ), 404
 
-# Update local db 
+# Update local db
+
+
 @app.route("/updateSchedules")
 def update():
     # update schedule table
     schedule_url = 'https://www.supersaas.com/api/schedules.json?account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw'
     schedule_list = requests.get(schedule_url).json()
-    schedule_list = sorted(schedule_list, key = lambda i: i['id'])
+    schedule_list = sorted(schedule_list, key=lambda i: i['id'])
     schedule_db = [schedule.json() for schedule in Schedule.query.all()]
-
 
     if len(schedule_db) != len(schedule_list):
         new_schedules = schedule_list[len(schedule_db):]
@@ -186,9 +194,11 @@ def update():
                         },
                         "message": "Error"
                     }
-                ),500
+                ), 500
 
-            resource_url = 'https://www.supersaas.com/api/resources.json?schedule_id='+str(schedule_id)+'&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw'
+            resource_url = 'https://www.supersaas.com/api/resources.json?schedule_id=' + \
+                str(schedule_id) + \
+                '&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw'
             resource_list = requests.get(resource_url).json()
             print(resource_list)
             for resource in resource_list:
@@ -197,7 +207,8 @@ def update():
                 resource_name = resource['name'].split("_")
                 resource_name = " ".join(resource_name)
                 # print(resource_name)
-                facility = Facility(resource_id, schedule_id, resource_name, internal_name,"", "Yes", "")
+                facility = Facility(resource_id, schedule_id,
+                                    resource_name, internal_name, "", "Yes", "")
                 try:
                     db.session.add(facility)
                     db.session.commit()
@@ -210,7 +221,7 @@ def update():
                             },
                             "message": "Error"
                         }
-                    ),500
+                    ), 500
         return jsonify(
             {
                 "code": 201,
@@ -220,14 +231,16 @@ def update():
 
 
 # Retrieve available timeslots for each resource
-@app.route("/getSlots/<string:schedule_id>/<string:internal_name>", methods=["GET","POST"])
+@app.route("/getSlots/<string:schedule_id>/<string:internal_name>", methods=["GET", "POST"])
 def getTimeSlots(schedule_id, internal_name, date=None):
     if date == None:
         date = today
     data = request.get_json()
     if data != None:
         date = data['from']
-    url = "https://www.supersaas.com/api/free/" + schedule_id + ".json?from=" + date + "%2000:00:00" + "&api_key=jZf9H2V1AtNvTKRwzWaLBw&resource=" + internal_name +"&max_results=20"
+    url = "https://www.supersaas.com/api/free/" + schedule_id + ".json?from=" + date + \
+        "%2000:00:00" + "&api_key=jZf9H2V1AtNvTKRwzWaLBw&resource=" + \
+        internal_name + "&max_results=20"
     slots_list = requests.get(url).json()
     # print(slots_list)
     if len(slots_list):
@@ -245,7 +258,5 @@ def getTimeSlots(schedule_id, internal_name, date=None):
     ), 404
 
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
-

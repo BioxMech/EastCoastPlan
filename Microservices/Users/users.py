@@ -4,11 +4,15 @@ from os import environ
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') 
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/EastCoastPlan'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# to fix the kong bug
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
+
 db = SQLAlchemy(app)
+
 
 class Users(db.Model):
     __tablename__ = 'users'
@@ -19,7 +23,7 @@ class Users(db.Model):
     account_type = db.Column(db.String(10), nullable=False)
 
     def __init__(self, email, password, account_type):
-        
+
         self.email = email
         self.password = password
         self.account_type = account_type
@@ -30,9 +34,9 @@ class Users(db.Model):
 
 @app.route("/users")
 def get_users():
-	userList = Users.query.all()
-	if len(userList):
-	     return jsonify(
+    userList = Users.query.all()
+    if len(userList):
+        return jsonify(
             {
                 "code": 200,
                 "data": {
@@ -40,24 +44,25 @@ def get_users():
                 }
             }
         )
-	return jsonify(
+    return jsonify(
         {
             "code": 404,
             "message": "There are no users."
         }
     ), 404
 
+
 @app.route("/users/<string:email>")
 def get_password(email):
-	users = Users.query.filter_by(email=email).first()
-	if users:
-		return jsonify(
+    users = Users.query.filter_by(email=email).first()
+    if users:
+        return jsonify(
             {
                 "code": 200,
                 "data": users.json()
             }
         )
-	return jsonify(
+    return jsonify(
         {
             "code": 404,
             "message": "User not found."
@@ -67,12 +72,13 @@ def get_password(email):
 
 @app.route("/users/<string:email>")
 def get_user_type(email):
-	pass
+    pass
+
 
 @app.route("/users/<string:email>", methods=['POST'])
 def create_user(email):
-	if (Users.query.filter_by(email=email).first()):
-		return jsonify(
+    if (Users.query.filter_by(email=email).first()):
+        return jsonify(
             {
                 "code": 400,
                 "data": {
@@ -82,16 +88,16 @@ def create_user(email):
             }
         ), 400
 
-	data = request.get_json()
-	print("EMAIL HERE: " + str(email))
-	print("DATA HERE: " + str(data))
-	users = Users(email, **data)
-	
-	try:
-		db.session.add(users)
-		db.session.commit()
-	except:
-		return jsonify(
+    data = request.get_json()
+    print("EMAIL HERE: " + str(email))
+    print("DATA HERE: " + str(data))
+    users = Users(email, **data)
+
+    try:
+        db.session.add(users)
+        db.session.commit()
+    except:
+        return jsonify(
             {
                 "code": 500,
                 "data": {
@@ -101,12 +107,13 @@ def create_user(email):
             }
         ), 500
 
-	return jsonify(
+    return jsonify(
         {
             "code": 201,
             "data": users.json()
         }
     ), 201
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
