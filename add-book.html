@@ -215,7 +215,9 @@
             <label for="cname">Name on Card</label>
             <input type="text" id="cname" name="cardname" placeholder="John More Doe">
             <label for="ccnum">Credit card number</label>
-            <input type="text" id="ccnum" name="cardnumber" placeholder="1111 2222 3333 4444">
+            <input type="text" id="ccnum" name="cardnumber" inputmode="numeric" placeholder="1234 1234 1234 1234" required>
+            <!-- visa starts with 4, master starts with 51-55, amex starts with 34,37 (4-6-5) -->
+            <!-- create an 'on key up' -> Set Focus on event. Then create a condition that is When.. Count (Input field, 4) -->
             <label for="expmonth">Exp Month</label>
             <input type="text" id="expmonth" name="expmonth" placeholder="September">
             <div class="row">
@@ -231,6 +233,27 @@
         </div>
 
         <script type="text/javascript">
+            // document.getElementById("ccnum").addEventListener("keyup", ccspacing);
+
+            // function myFunction() {
+            //     var x = document.getElementById("ccnum").value;
+
+            //     x= x.toUpperCase();
+            // }
+           
+
+        // enable spacing for credit card number
+            // $('#ccnum').on('keyup', function(){
+            //     var val = $(this).val();
+            //     var newval = '';
+            //     val = val.replace(/\s/g, '');
+            //     for(var i = 0; i < val.length; i++) {
+            //         if(i%4 == 0 && i > 0) newval = newval.concat(' ');
+            //         newval = newval.concat(val[i]);
+            //     }
+            //     $(this).val(newval);
+            // });
+
             // Create an instance of the Stripe object with your publishable API key
             var stripe = Stripe("pk_test_51IVv9fK8z0TITG8fz2lfUZwYxhnGbiqhKjLPfBUi8OHxiFpWabFwoiblnuAjdOC7wfBWISGNFRDEaS9IUOK7qfvW00nfRqcnNo");
             var submitButton = document.getElementById("submit");
