@@ -34,7 +34,7 @@ services:
   #   build:
   #     context: ./
   #     dockerfile: frontend.Dockerfile
-  #   image: bioxmech/frontend:ecp
+  #   image: tamtamllx/frontend:ecp
   #   restart: always
   #   volumes:
   #     - '.:/frontend/app'
@@ -45,17 +45,17 @@ services:
   ###################################
   # Users: The Users microservice
   ###################################
-  # users:
-  #   build:
-  #     context: ./
-  #     dockerfile: users.Dockerfile
-  #   image: jingrongho2019/users:ecp
-  #   restart: always
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
-  #     PYTHONUNBUFFERED: 1
-    # ports:
-    #   - "5001:5001"
+  users:
+    build:
+      context: ./
+      dockerfile: users.Dockerfile
+    image: tamtamllx/users:ecp
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
 
   #####################################
   # Facility: The Facility microservice

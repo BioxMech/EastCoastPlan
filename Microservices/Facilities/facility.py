@@ -129,9 +129,34 @@ def getFacility(schedule_id,facility_name):
     ), 404
 
 
+# Update availability
+@app.route("/updateAvailability/<string:facility_id>", methods=['PUT'])
+def update_availability(facility_id):
+    facility = Facility.query.filter_by(facility_id=facility_id).first()
+    print(facility)
+    if facility:
+        data = request.get_json()
+        # print(data)
+        facility.availability = data['availability']
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": facility.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "facility_id": facility_id
+            },
+            "message": "Facility not found."
+        }
+    ), 404
 
 # Update local db 
-@app.route("/update")
+@app.route("/updateSchedules")
 def update():
     # update schedule table
     schedule_url = 'https://www.supersaas.com/api/schedules.json?account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw'
@@ -220,15 +245,6 @@ def getTimeSlots(schedule_id, internal_name, date=None):
     ), 404
 
 
-# Make booking in api using url
-# @app.route("")
-
-# Make booking in api using http
-# @app.route("/booking/<string:schedule_id>/<string:internal_name>")
-# def create_booking(schedule_id, internal_name):
-#     data = request.json()
-
-        
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
