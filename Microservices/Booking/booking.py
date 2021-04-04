@@ -122,7 +122,7 @@ def create_booking(booking_id):
     print(post_request.status_code)
     if post_request.status_code == 201:
         booking = Booking(booking_id,schedule_id, facility_id, resource_id, user_id, full_name, date, start, finish, price, "Payment made")
-
+        print(booking)
         try:
             db.session.add(booking)
             db.session.commit()

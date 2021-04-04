@@ -9,7 +9,7 @@ const Facilities =({ match }) => (
   <div>
     <Route exact path={`${match.path}`} component={FacilitiesList} />
     <Route exact path={`${match.path}/:schedule_id`} component={Facility} />
-    <Route path={`${match.path}/:schedule_id/booking/:facility_id`} component={Booking} />
+    <Route path={`${match.path}/:schedule_id/:facility_name`} component={Booking} />
   </div>
 )
 

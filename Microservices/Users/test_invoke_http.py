@@ -1,17 +1,21 @@
 from invokes import invoke_http
 from os import environ
 
-url = environ.get('url') or input("Enter Users service URL: ")  
+book_URL = environ.get('bookURL') or input("Enter Book service URL: ")  
 
 # invoke book microservice to get all books
-results = invoke_http(url, method='GET')
+results = invoke_http(book_URL, method='GET')
+
+print( type(results) )
+print()
+print( results )
 
 # invoke book microservice to create a book
-email = 'ttttt@hotmail.com'
-user_details = { "account_type": "user", "password": "password" }
+isbn = '9213213213213'
+book_details = { "availability": 5, "price": 213.00, "title": "ESD" }
 create_results = invoke_http(
-        url + "/" + email, method='POST', 
-        json=user_details
+        book_URL + "/" + isbn, method='POST', 
+        json=book_details
     )
 
 print()
