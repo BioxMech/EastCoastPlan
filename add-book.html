@@ -30,9 +30,20 @@
     integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
     crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="global.css" />
+
+    <!-- Date Picker thingy -->
+    <link rel="stylesheet" href="dtsel.css" />
+    <script src="dtsel.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuejs-datepicker"></script>
+
 
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <!-- Stripe API -->
+    <script src="https://js.stripe.com/v3/"></script>
 
     <script>
         // var parts = window.location.search.substr(1).split("&");
@@ -47,20 +58,125 @@
         var internal_name = data.facility_name;
         var facility_name = internal_name.split("_").join(" ")
         var schedule_id = data.schedule_id
-        var facility_id = data.facility_id
-        console.log(facility_id);
+        console.log(facility_name);
         var currentdate = new Date();
         var currYear = currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + (currentdate.getDate().toString().padStart(2, "0"));
         // var currTime = (currentdate.getHours().toString().padStart(2,"0"));
 
         
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    body {
+      font-family: Arial;
+      font-size: 17px;
+      padding: 8px;
+    }
     
+    * {
+      box-sizing: border-box;
+    }
+    
+    .row {
+      display: -ms-flexbox; /* IE10 */
+      display: flex;
+      -ms-flex-wrap: wrap; /* IE10 */
+      flex-wrap: wrap;
+      margin: 0 -16px;
+    }
+    
+    .col-25 {
+      -ms-flex: 25%; /* IE10 */
+      flex: 25%;
+    }
+    
+    .col-50 {
+      -ms-flex: 50%; /* IE10 */
+      flex: 50%;
+    }
+    
+    .col-75 {
+      -ms-flex: 75%; /* IE10 */
+      flex: 75%;
+    }
+    
+    .col-25,
+    .col-50,
+    .col-75 {
+      padding: 0 16px;
+    }
+    
+    .container {
+      background-color: #e8ecfc;
+      padding: 5px 20px 15px 20px;
+      border: 1px solid lightgrey;
+      border-radius: 3px;
+    }
+    
+    input[type=text] {
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    
+    label {
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    .icon-container {
+      margin-bottom: 20px;
+      padding: 7px 0;
+      font-size: 24px;
+    }
+    
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      width: 100%;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 17px;
+    }
+    
+    .btn:hover {
+      background-color: #45a049;
+    }
+    
+    a {
+      color: #2196F3;
+    }
+    
+    hr {
+      border: 1px solid lightgrey;
+    }
+    
+    span.price {
+      float: right;
+      color: grey;
+    }
+    
+    /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
+    @media (max-width: 800px) {
+      .row {
+        flex-direction: column-reverse;
+      }
+      .col-25 {
+        margin-bottom: 20px;
+      }
+    }
+    </style>
     
 </head>
 
 <body>
     <div id="main-container" class="container">
+        
         <h1 class="display-4">Make a booking</h1>
         <input id="dateTime" type="date" v-model="selected_date" v-on:change="updateSlots">
 
@@ -81,16 +197,67 @@
                 <p id='price'></p>
             </div>
             <div class="mb-3">
-                <label for="userName" class="form-label">Name</label>
-                <input type="text" class="form-control" id="userName" aria-describedby="availabilityHelp">
-                <!-- <div id="availabilityHelp" class="form-text">e.g. '1'</div> -->
-            </div>
-            <div class="mb-3">
-                <label for="creditCard" class="form-label">Credit Card Number</label>
-                <input type="text" class="form-control" id="creditCard" aria-describedby="creditCardHelp">
-                <!-- <div id="availabilityHelp" class="form-text">e.g. '1'</div> -->
+                <label for="bookAvailability" class="form-label">Availability</label>
+                <input type="number" class="form-control" id="bookAvailability" aria-describedby="availabilityHelp">
+                <div id="availabilityHelp" class="form-text">e.g. '1'</div>
             </div>
         </form>
+
+        <div class="col-50">
+            <h3>Payment</h3>
+            <label for="fname">Accepted Cards</label>
+            <div class="icon-container">
+                <i class="fa fa-cc-visa" style="color:navy;"></i>
+                <i class="fa fa-cc-amex" style="color:blue;"></i>
+                <i class="fa fa-cc-mastercard" style="color:red;"></i>
+                <i class="fa fa-cc-discover" style="color:orange;"></i>
+            </div>
+            <label for="cname">Name on Card</label>
+            <input type="text" id="cname" name="cardname" placeholder="John More Doe">
+            <label for="ccnum">Credit card number</label>
+            <input type="text" id="ccnum" name="cardnumber" placeholder="1111 2222 3333 4444">
+            <label for="expmonth">Exp Month</label>
+            <input type="text" id="expmonth" name="expmonth" placeholder="September">
+            <div class="row">
+                <div class="col-50">
+                    <label for="expyear">Exp Year</label>
+                    <input type="text" id="expyear" name="expyear" placeholder="2018">
+                </div>
+                <div class="col-50">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="352">
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            // Create an instance of the Stripe object with your publishable API key
+            var stripe = Stripe("pk_test_51IVv9fK8z0TITG8fz2lfUZwYxhnGbiqhKjLPfBUi8OHxiFpWabFwoiblnuAjdOC7wfBWISGNFRDEaS9IUOK7qfvW00nfRqcnNo");
+            var submitButton = document.getElementById("submit");
+        
+            // submitButton.addEventListener("click", function () {
+            //     fetch("/create-checkout-session.php", {
+            //         method: "POST",
+            //     })
+            //     .then(function (response) {
+            //         return response.json();
+            //     })
+            //     .then(function (session) {
+            //         return stripe.redirectToCheckout({ sessionId: session.id });
+            //     })
+            //     .then(function (result) {
+            //         // If redirectToCheckout fails due to a browser or network
+            //         // error, you should display the localized error message to your
+            //         // customer using error.message.
+            //         if (result.error) {
+            //             alert(result.error.message);
+            //         }
+            //     })
+            //     .catch(function (error) {
+            //         console.error("Error:", error);
+            //     });
+            // });
+        </script>
         
         <a style='color:white;' id="submit" class="btn btn-primary">Submit</a>
         <a style='color:white;' class="btn btn-success" href='index.html'>Return to home</a>
@@ -143,7 +310,7 @@
                                 var start_time = slot.start.slice(11) + ":00";
                                 // console.log(start_time);
                                 var end_time = slot.finish.slice(11) + ":00";
-                                html_str += `<option id='selected_option'>${date}-${start_time}-${end_time}</option>`;
+                                html_str += `<option>${date}-${start_time}-${end_time}</option>`;
                             }
                             document.getElementById("dropDownMenu").innerHTML = html_str;
                         } catch (error) {
@@ -213,31 +380,10 @@
             $(async() => {
                 var dropdown = document.getElementById("selected_option").value;
                 let date = dropdown.slice(0,10);
-                let start = date + " " + dropdown.slice(11,19);
-                // console.log(start);
-                let finish = date + " "+ dropdown.slice(20,28);
-                let full_name = document.getElementById("userName").value;
-                // console.log(user_name);
-                var price = document.getElementById("price").innerText;
-                var creditCard = document.getElementById("creditCard").value;
-                // console.log(price);
-                var booking_id = internal_name + date + dropdown.slice(11,19); 
-                var bookingURL = "http://localhost:5003/createBooking/" + booking_id;
-                console.log(bookingURL);
-                try {
-                    const response = 
-                    await fetch(
-                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id:2, full_name: full_name,  date:date, start: start, finish: finish,  price:price, creditCard:creditCard})}
-                    );
-                    const result = await response.json();
-                    if (response.status == 201) {
-                        window.location.replace("index.html")
-                    }
-                } catch(error) {
-                    showError("There is an error: " + error);
-                }
+                let start = dropdown.slice(11,19);
+                let finish = dropdown.slice(20,28)
 
-
+                var booking_id = internal_name + date + start; 
             })
         })
 
