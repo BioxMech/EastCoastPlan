@@ -33,14 +33,14 @@ USE `booking`;
 DROP TABLE IF EXISTS `booking`;
 CREATE TABLE IF NOT EXISTS `booking` (
   `booking_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `user_name` varchar(64) NOT NULL,
   `schedule_id` int(11) NOT NULL,
   `facility_id` int(11) NOT NULL,
   `facility_name` varchar(64) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `full_name` varchar(64) NOT NULL,
   `date` DATE NOT NULL,
-  `start_time` varchar(10) NOT NULL,
-  `end_time` varchar(10) NOT NULL,
+  `start` varchar(10) NOT NULL,
+  `end` varchar(10) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (`booking_id`)
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS `booking` (
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`booking_id`, `user_id`, `user_name`, `schedule_id`, `facility_id`, `facility_name`, `date`, `start_time`, `end_time`, `price`, `status`) VALUES
-(1, 1, 'Jayden', 561940, 810431, 'BBQ Pit 1.1', '2021-02-18', '18:00:00', '21:00:00', 50.00, 'completed');
+INSERT INTO `booking` (`booking_id`, `schedule_id`,`facility_id`, `facility_name`, `user_id`, `full_name`,  `date`, `start`, `end`, `price`, `status`) VALUES
+(1, 561940, 810431, 'BBQ Pit 1.1', 1, 'Jayden', '2021-02-18', '18:00:00', '21:00:00', 50.00, 'completed');
 -- (2, 10, 'BBQ Pit 2', 2, '2021-02-18', '18:00:00', '20:00:00', 50.00, 'completed'),
 -- (3, 4, 'BBQ Pit 7', 7, '2021-02-28', '16:00:00', '18:00:00', 50.00, 'completed'),
 -- (4, 29, 'BBQ Pit 6', 6, '2021-03-09', '17:00:00', '18:00:00', 30.00, 'completed'),

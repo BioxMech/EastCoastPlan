@@ -47,7 +47,8 @@
         var internal_name = data.facility_name;
         var facility_name = internal_name.split("_").join(" ")
         var schedule_id = data.schedule_id
-        console.log(facility_name);
+        var facility_id = data.facility_id
+        console.log(facility_id);
         var currentdate = new Date();
         var currYear = currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + (currentdate.getDate().toString().padStart(2, "0"));
         // var currTime = (currentdate.getHours().toString().padStart(2,"0"));
@@ -82,6 +83,11 @@
             <div class="mb-3">
                 <label for="userName" class="form-label">Name</label>
                 <input type="text" class="form-control" id="userName" aria-describedby="availabilityHelp">
+                <!-- <div id="availabilityHelp" class="form-text">e.g. '1'</div> -->
+            </div>
+            <div class="mb-3">
+                <label for="creditCard" class="form-label">Credit Card Number</label>
+                <input type="text" class="form-control" id="creditCard" aria-describedby="creditCardHelp">
                 <!-- <div id="availabilityHelp" class="form-text">e.g. '1'</div> -->
             </div>
         </form>
@@ -208,19 +214,25 @@
                 var dropdown = document.getElementById("selected_option").value;
                 let date = dropdown.slice(0,10);
                 let start = date + " " + dropdown.slice(11,19);
-                console.log(start);
+                // console.log(start);
                 let finish = date + " "+ dropdown.slice(20,28);
-                let user_name = document.getElementById("userName").value;
+                let full_name = document.getElementById("userName").value;
                 // console.log(user_name);
-                var booking_id = internal_name + date + start; 
+                var price = document.getElementById("price").innerText;
+                var creditCard = document.getElementById("creditCard").value;
+                // console.log(price);
+                var booking_id = internal_name + date + dropdown.slice(11,19); 
                 var bookingURL = "http://localhost:5003/createBooking/" + booking_id;
-                
+                console.log(bookingURL);
                 try {
                     const response = 
                     await fetch(
-                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({schedule_id: schedule_id, full_name: user_name,start: start, finish: finish, resource_id: internal_name})}
+                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id:2, full_name: full_name,  date:date, start: start, finish: finish,  price:price, creditCard:creditCard})}
                     );
                     const result = await response.json();
+                    if (response.status == 201) {
+                        window.location.replace("index.html")
+                    }
                 } catch(error) {
                     showError("There is an error: " + error);
                 }

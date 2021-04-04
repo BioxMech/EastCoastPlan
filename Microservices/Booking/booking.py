@@ -18,32 +18,32 @@ class Booking(db.Model):
     __tablename__ = 'booking'
 
     booking_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    user_name = db.Column(db.String(64), nullable=False)
     schedule_id = db.Column(db.Integer)
     facility_id = db.Column(db.Integer)
     facility_name = db.Column(db.String(64), nullable=False)
+    user_id = db.Column(db.Integer)
+    full_name = db.Column(db.String(64), nullable=False)
     date = db.Column(db.Date)
-    start_time = db.Column(db.String(10), nullable=False)
-    end_time = db.Column(db.String(10), nullable=False)
+    start = db.Column(db.String(10), nullable=False)
+    end = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(10), nullable=False, default="Pending")
 
-    def __init__(self, booking_id, user_id, user_name, schedule_id, facility_id, facility_name, date, start_time, end_time, price, status):
+    def __init__(self, booking_id, schedule_id, facility_id, facility_name, user_id, full_name,  date, start, end, price, status):
         self.booking_id = booking_id
         self.user_id = user_id
-        self.user_name = user_name
+        self.full_name = full_name
         self.schedule_id = schedule_id
         self.facility_id = facility_id
         self.facility_name = facility_name
         self.date = date
-        self.start_time = start_time
-        self.end_time = end_time
+        self.start = start
+        self.end = end
         self.price = price
         self.status = status
 
     def json(self):
-        return {"booking_id": self.booking_id, "user_id": self.user_id, "user_name": self.user_name, "schedule_id": self.schedule_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start_time": self.start_time, "end_time": self.end_time, "price": self.price, "status": self.status}
+        return {"booking_id": self.booking_id, "user_id": self.user_id, "full_name": self.full_name, "schedule_id": self.schedule_id, "facility_id": self.facility_id, "facility_name": self.facility_name, "date": self.date, "start": self.start, "end": self.end, "price": self.price, "status": self.status}
 
 
 @app.route("/bookings")
@@ -124,26 +124,36 @@ def find_by_booking_id(booking_id):
 @app.route("/createBooking/<string:booking_id>", methods=['POST'])
 def create_booking(booking_id):
     data = request.get_json()
+    print(data)
     schedule_id = data['schedule_id']
-    print(schedule_id)
+    facility_id = data['facility_id']
+    resource_id = data['resource_id']
+    user_id = data['user_id']
+    full_name = data['full_name']
+    date = data['date']
+    start = data['start']
+    finish = data['finish']
+    price = data['price']
+    myobj = {'start': start, 'finish':finish,'full_name': full_name, 'resource_id':resource_id}
     url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
+    post_request = requests.post(url, json=myobj)
+    print(post_request.status_code)
+    if post_request.status_code == 201:
+        booking = Booking(booking_id,schedule_id, facility_id, resource_id, user_id, full_name, date, start, finish, price, "Payment made")
 
-    
-    # booking = Booking(**data)
-
-    # try:
-    #     db.session.add(booking)
-    #     db.session.commit()
-    # except:
-    #     return jsonify(
-    #         {
-    #             "code": 500,
-    #             "data": {
-    #                 "booking_id": "Non"
-    #             },
-    #             "message": "An error occurred creating the booking."
-    #         }
-    #     ), 500
+        try:
+            db.session.add(booking)
+            db.session.commit()
+        except:
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "booking_id": booking_id
+                    },
+                    "message": "An error occurred creating the booking."
+                }
+            ), 500
 
     return jsonify(
         {

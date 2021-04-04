@@ -124,7 +124,7 @@
                         let availability = resource.availability;
                         let image_url = resource.image_url;
                         let location = resource.location;
-                        let resource_id = resource.id;
+                        let resource_id = resource.facility_id;
                         let resource_name = resource.facility_name;
                         let schedule_id = resource.schedule_id;
                         let internal_name = resource.internal_name;
@@ -134,7 +134,7 @@
                                         <td>${resource_name}</td>
                                         <td>${location}</td>
                                         <td>${availability}</td>
-                                        <td> <a id="addBookBtn" class="btn btn-primary" href="add-book.html?facility_name=${internal_name}&schedule_id=${schedule_id}">Make a booking</a></td>`;
+                                        <td> <a id="addBookBtn" class="btn btn-primary" href="add-book.html?facility_name=${internal_name}&schedule_id=${schedule_id}&facility_id=${resource_id}">Make a booking</a></td>`;
                             // eachRow ="<td>" + schedule.schedule_name + "</td>"
                             rows += "<tbody><tr>" + eachRow + "</tr></tbody>";
                         }
