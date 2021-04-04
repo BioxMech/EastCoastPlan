@@ -34,7 +34,7 @@ services:
   #   build:
   #     context: ./
   #     dockerfile: frontend.Dockerfile
-  #   image: bioxmech/frontend:ecp
+  #   image: tamtamllx/frontend:ecp
   #   restart: always
   #   volumes:
   #     - '.:/frontend/app'
@@ -45,17 +45,17 @@ services:
   ###################################
   # Users: The Users microservice
   ###################################
-  # users:
-  #   build:
-  #     context: ./
-  #     dockerfile: users.Dockerfile
-  #   image: jingrongho2019/users:ecp
-  #   restart: always
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
-  #     PYTHONUNBUFFERED: 1
-    # ports:
-    #   - "5001:5001"
+  users:
+    build:
+      context: ./
+      dockerfile: users.Dockerfile
+    image: tamtamllx/users:ecp
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/EastCoastPlan
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
 
   #####################################
   # Facility: The Facility microservice
@@ -64,7 +64,7 @@ services:
     build:
       context: ./
       dockerfile: facilities.Dockerfile
-    image: bioxmech/facilities:ecp
+    image: tamtamllx/facility:ecp
     restart: always
     environment:
         dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/facility
@@ -76,28 +76,28 @@ services:
   ###################################
   # Booking: The Booking microservice
   ###################################
-  # booking:
-  #   build:
-  #     context: ./
-  #     dockerfile: booking.Dockerfile
-  #   image: tamtamllx/users:ecp
-  #   restart: always
-  #   networks:
-  #     - kong-net
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/booking
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5003:5003"
+  booking:
+    build:
+      context: ./
+      dockerfile: booking.Dockerfile
+    image: tamtamllx/booking:ecp
+    restart: always
+    networks:
+      - kong-net
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/booking
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5003:5003"
 
   ###################################
   # Payment: The Payment microservice
   ###################################
-  booking:
+  payment:
     build:
       context: ./
       dockerfile: payment.Dockerfile
-    image: tamtamllx/users:ecp
+    image: tamtamllx/payment:ecp
     restart: always
     networks:
       - kong-net
