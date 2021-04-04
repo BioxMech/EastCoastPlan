@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
     <title>Booking</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" 
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" 
+    crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-        crossorigin="anonymous"></script>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-        crossorigin="anonymous"></script>
+    <script 
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+    
+    <script 
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
 
 
     <!-- development version, includes helpful console warnings -->
@@ -34,7 +39,7 @@
         var url = document.location.href;
         var params = url.split('?')[1].split('&');
         var data = {}, tmp;
-        for (var i = 0; i < params.length; i++) {
+        for (var i = 0; i < params.length; i++ ) {
             tmp = params[i].split('=');
             data[tmp[0]] = tmp[1];
         }
@@ -45,145 +50,118 @@
         var facility_id = data.facility_id
         console.log(facility_id);
         var currentdate = new Date();
-        var currYear = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + (currentdate.getDate().toString().padStart(2, "0"));
+        var currYear = currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + (currentdate.getDate().toString().padStart(2, "0"));
         // var currTime = (currentdate.getHours().toString().padStart(2,"0"));
-
+        
     </script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        body {
-            font-family: Arial;
-            font-size: 17px;
-            padding: 8px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        .row {
-            display: -ms-flexbox;
-            /* IE10 */
-            display: flex;
-            -ms-flex-wrap: wrap;
-            /* IE10 */
-            flex-wrap: wrap;
-            margin: 0 -16px;
-        }
-
-        .col-25 {
-            -ms-flex: 25%;
-            /* IE10 */
-            flex: 25%;
-        }
-
-        .col-50 {
-            -ms-flex: 50%;
-            /* IE10 */
-            flex: 50%;
-        }
-
-        .col-75 {
-            -ms-flex: 75%;
-            /* IE10 */
-            flex: 75%;
-        }
-
-        .col-25,
-        .col-50,
-        .col-75 {
-            padding: 0 16px;
-        }
-
-        .container {
-            background-color: #e8ecfc;
-            padding: 5px 20px 15px 20px;
-            border: 1px solid lightgrey;
-            border-radius: 3px;
-        }
-
-        input[type=text] {
-            width: 100%;
-            margin-bottom: 20px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        label {
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .icon-container {
-            margin-bottom: 20px;
-            padding: 7px 0;
-            font-size: 24px;
-        }
-
-        .btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            width: 100%;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 17px;
-        }
-
-        .btn:hover {
-            background-color: #45a049;
-        }
-
-        a {
-            color: #2196F3;
-        }
-
-        hr {
-            border: 1px solid lightgrey;
-        }
-
-        span.price {
-            float: right;
-            color: grey;
-        }
-
-        /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
-        @media (max-width: 800px) {
-            .row {
-                flex-direction: column-reverse;
-            }
-
-            .col-25 {
-                margin-bottom: 20px;
-            }
-        }
-
-        .input-icons i {
-            position: absolute;
-        }
-          
-        .input-icons {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-          
-        .icon {
-            padding: 10px;
-            min-width: 40px;
-        }
-          
-        .input-field {
-  width: 100%;
-  padding: 10px;
-  outline: none;
-}
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    body {
+      font-family: Arial;
+      font-size: 17px;
+      padding: 8px;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    .row {
+      display: -ms-flexbox; /* IE10 */
+      display: flex;
+      -ms-flex-wrap: wrap; /* IE10 */
+      flex-wrap: wrap;
+      margin: 0 -16px;
+    }
+    
+    .col-25 {
+      -ms-flex: 25%; /* IE10 */
+      flex: 25%;
+    }
+    
+    .col-50 {
+      -ms-flex: 50%; /* IE10 */
+      flex: 50%;
+    }
+    
+    .col-75 {
+      -ms-flex: 75%; /* IE10 */
+      flex: 75%;
+    }
+    
+    .col-25,
+    .col-50,
+    .col-75 {
+      padding: 0 16px;
+    }
+    
+    .container {
+      background-color: #e8ecfc;
+      padding: 5px 20px 15px 20px;
+      border: 1px solid lightgrey;
+      border-radius: 3px;
+    }
+    
+    input[type=text] {
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    
+    label {
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    .icon-container {
+      margin-bottom: 20px;
+      padding: 7px 0;
+      font-size: 24px;
+    }
+    
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      width: 100%;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 17px;
+    }
+    
+    .btn:hover {
+      background-color: #45a049;
+    }
+    
+    a {
+      color: #2196F3;
+    }
+    
+    hr {
+      border: 1px solid lightgrey;
+    }
+    
+    span.price {
+      float: right;
+      color: grey;
+    }
+    
+    /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
+    @media (max-width: 800px) {
+      .row {
+        flex-direction: column-reverse;
+      }
+      .col-25 {
+        margin-bottom: 20px;
+      }
+    }
     </style>
-
+    
 </head>
 
 <body>
@@ -203,17 +181,10 @@
 
             </select>
             <div class="mb-3">
-                <label for="bookPrice" class="form-label">
-                    <h3>Price</h3>
-                </label>
+                <label for="bookPrice" class="form-label"><h3>Price</h3></label>
                 <!-- <input type="number" class="form-control" id="bookPrice" aria-describedby="priceHelp"> -->
                 <p id='price'></p>
             </div>
-            <!-- <div class="icon-container">
-                <i class="fa fa-cc-visa" style="color:navy;"></i>
-                <i class="fa fa-cc-amex" style="color:blue;"></i>
-                <i class="fa fa-cc-mastercard" style="color:red;"></i>
-            </div> -->
             <div class="mb-3">
                 <label for="userName" class="form-label">Name</label>
                 <input type="text" class="form-control" id="userName" aria-describedby="availabilityHelp">
@@ -231,9 +202,10 @@
                 <input type="text" id="ccnum" class="form-control input-field" name="cardnumber" inputmode="numeric"
                     placeholder="1234 1234 1234 1234" aria-describedby="creditCardHelp" required>
                     
+                <label for="ccnum" class="form-label">Credit Card number</label>
+                <input type="text" id="ccnum" class="form-control" name="cardnumber" inputmode="numeric" placeholder="1234 1234 1234 1234"  aria-describedby="creditCardHelp" required>
                 <!-- visa starts with 4, master starts with 51-55, amex starts with 34,37 (4-6-5) -->
                 <!-- create an 'on key up' -> Set Focus on event. Then create a condition that is When.. Count (Input field, 4) -->
-
                 <!-- <label for="expmonth">Exp Month</label>
                 <input type="text" id="expmonth" name="expmonth" placeholder="September" class="form-control"> -->
                 <div class="row">
@@ -260,38 +232,38 @@
             function ccSpacing() {
                 var ccNumStr = document.getElementById("ccnum");
                 ccNumArr = ccNumStr.split('');
-                if (ccNumStr.charAt(0) == "4") {
+                if (ccNumStr.charAt(0) == "4"){
                     // visa
-                    count = 0
-                    for (var i = 0; i < ccNumArr.length; i++) {
-                        if (i != ' ') {
+                    count=0
+                    for(var i = 0; i < ccNumArr.length; i++) {
+                        if(i != ' '){
                             count++;
-                            if (count % 4 == 0) {
-                                ccNumArr.splice(i, 0, ' ');
+                            if(count%4==0){
+                                ccNumArr.splice(i,0, ' ');
                             }
                         }
-                        ccNumStr = ccNumArr.join('');
-                        document.getElementById("ccnum") = ccnum;
+                    ccNumStr = ccNumArr.join('');
+                    document.getElementById("ccnum") = ccnum;
                     }
                 }
-                else if (ccnum.charAt(0) == "5") {
+                else if (ccnum.charAt(0) == "5"){
                     // master
-
+                    
                 }
                 else if (ccnum.charAt(0) == "3") {
                     // amex
                 }
-                x.value = x.value.toUpperCase();
+                x.value= x.value.toUpperCase();
             }
+           
 
-
-            // enable spacing for credit card number
-            $('#ccnum').on('keyup', function () {
+        // enable spacing for credit card number
+            $('#ccnum').on('keyup', function(){
                 var val = $(this).val();
                 var newval = '';
                 val = val.replace(/\s/g, '');
-                for (var i = 0; i < val.length; i++) {
-                    if (i % 4 == 0 && i > 0) newval = newval.concat(' ');
+                for(var i = 0; i < val.length; i++) {
+                    if(i%4 == 0 && i > 0) newval = newval.concat(' ');
                     newval = newval.concat(val[i]);
                 }
                 $(this).val(newval);
@@ -300,7 +272,7 @@
             // Create an instance of the Stripe object with your publishable API key
             var stripe = Stripe("pk_test_51IVv9fK8z0TITG8fz2lfUZwYxhnGbiqhKjLPfBUi8OHxiFpWabFwoiblnuAjdOC7wfBWISGNFRDEaS9IUOK7qfvW00nfRqcnNo");
             var submitButton = document.getElementById("submit");
-
+        
             // submitButton.addEventListener("click", function () {
             //     fetch("/create-checkout-session.php", {
             //         method: "POST",
@@ -324,8 +296,8 @@
             //     });
             // });
         </script>
-
-
+           
+        
         <a style='color:white;' id="submit" class="btn btn-primary">Submit</a>
         <a style='color:white;' class="btn btn-success" href='index.html'>Return to home</a>
         <h4 style='color:red;' id="errorMsg"></h4>
@@ -338,7 +310,7 @@
         function showError(message) {
             // Display an error in the error paragraph
             $('#errorMsg')
-                .append("<label>" + message + "</label>");
+                .append("<label>"+message+"</label>");
         }
 
         //Vue instance
@@ -350,30 +322,30 @@
                 // currDate: currYear,
                 selected_date: "Please select a date"
             },
-
-            methods: {
-                updateSlots: function () {
-
-                    $(async () => {
+            
+            methods : {
+                updateSlots: function() {
+                    
+                    $(async() => {
                         // console.log(currYear);
                         // console.log(currTime);
                         var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
 
                         try {
                             const response =
-                                await fetch(
-                                    slotsURL, { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify({ from: this.selected_date }) }
-                                );
+                            await fetch(
+                                slotsURL, {method:'POST', headers: {"Content-Type": "application/json"}, body:JSON.stringify({from: this.selected_date})}
+                            );
                             const result = await response.json();
                             // console.log(result.data);
                             var html_str = "";
-                            for (i = 0; i < result.data.length; i++) {
+                            for (i=0; i<result.data.length; i++) {
                                 // console.log(result.data[i]);
                                 var slot = result.data[i]
                                 var name = slot.name;
                                 var start = slot.start;
                                 var finish = slot.finish;
-                                var date = slot.start.slice(0, 10);
+                                var date = slot.start.slice(0,10);
                                 var start_time = slot.start.slice(11) + ":00";
                                 // console.log(start_time);
                                 var end_time = slot.finish.slice(11) + ":00";
@@ -381,93 +353,93 @@
                             }
                             document.getElementById("dropDownMenu").innerHTML = html_str;
                         } catch (error) {
-                            showError("There is a problem retrieving the data <br>" + error)
+                            showError("There is a problem retrieving the data <br>" +error)
 
-                        }
-                    })
+                            }
+                        })
 
                 }
             }
 
         })
+        
 
-
-        $(async () => {
+        $(async() => {
             // console.log(currYear);
             // console.log(currTime);
             var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
 
             try {
                 const response =
-                    await fetch(
-                        slotsURL, { method: 'POST' }
-                    );
+                await fetch(
+                    slotsURL, {method:'POST'}
+                );
                 const result = await response.json();
                 // console.log(result.data);
                 var html_str = "";
-                for (i = 0; i < result.data.length; i++) {
+                for (i=0; i<result.data.length; i++) {
                     // console.log(result.data[i]);
                     let slot = result.data[i]
                     let name = slot.name;
                     let start = slot.start;
                     let finish = slot.finish;
-                    var date = slot.start.slice(0, 10);
+                    var date = slot.start.slice(0,10);
                     var start_time = slot.start.slice(11) + ":00";
                     var end_time = slot.finish.slice(11) + ":00";
                     html_str += `<option id='selected_option'>${date} ${start_time}-${end_time}</option>`;
                 }
                 document.getElementById("dropDownMenu").innerHTML = html_str;
             } catch (error) {
-                showError("There is a problem retrieving the data <br>" + error)
+                showError("There is a problem retrieving the data <br>" +error)
 
             }
         })
 
-        $(async () => {
+        $(async() => {
 
             var scheduleURL = "http://localhost:5002/facilities/" + schedule_id;
 
             try {
                 const response =
-                    await fetch(
-                        scheduleURL, { method: 'GET' }
-                    );
+                await fetch(
+                    scheduleURL, {method:'GET'}
+                );
                 const result = await response.json();
                 // console.log(result.data.resources[0]['price']);
                 var price = result.data.resources[0]['price'];
                 document.getElementById("price").innerText = price;
-
+                
             } catch (error) {
-                showError("There is a problem retrieving the data <br>" + error)
+                showError("There is a problem retrieving the data <br>" +error)
 
             }
         })
 
-        $('#submit').click(function () {
-            $(async () => {
+        $('#submit').click(function() {
+            $(async() => {
                 var dropdown = document.getElementById("selected_option").value;
-                let date = dropdown.slice(0, 10);
-                let start = date + " " + dropdown.slice(11, 19);
+                let date = dropdown.slice(0,10);
+                let start = date + " " + dropdown.slice(11,19);
                 // console.log(start);
-                let finish = date + " " + dropdown.slice(20, 28);
+                let finish = date + " "+ dropdown.slice(20,28);
                 let full_name = document.getElementById("userName").value;
                 // console.log(user_name);
                 var price = document.getElementById("price").innerText;
                 var creditCard = document.getElementById("creditCard").value;
                 // console.log(price);
-                var booking_id = internal_name + date + dropdown.slice(11, 19);
+                var booking_id = internal_name + date + dropdown.slice(11,19); 
                 var bookingURL = "http://localhost:5003/createBooking/" + booking_id;
                 console.log(bookingURL);
                 try {
-                    const response =
-                        await fetch(
-                            bookingURL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id: 2, full_name: full_name, date: date, start: start, finish: finish, price: price, creditCard: creditCard }) }
-                        );
+                    const response = 
+                    await fetch(
+                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id:2, full_name: full_name,  date:date, start: start, finish: finish,  price:price, creditCard:creditCard})}
+                    );
                     const result = await response.json();
                     if (response.status == 201) {
                         window.location.replace("index.html")
                     }
-                } catch (error) {
+                } catch(error) {
                     showError("There is an error: " + error);
                 }
 
@@ -478,5 +450,4 @@
 
     </script>
 </body>
-
 </html>
