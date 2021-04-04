@@ -20,7 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `users`
 --
-
+DROP DATABASE IF EXISTS `users`
+CREATE DATABASE IF NOT EXISTS `users`DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `facility`;
 -- --------------------------------------------------------
 
 --
