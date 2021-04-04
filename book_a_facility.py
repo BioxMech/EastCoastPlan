@@ -14,8 +14,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-facilities_URL = environ.get("facilities_URL") or "http://localhost:5002"
-booking_URL = environ.get("booking_URL") or "http://localhost:5003"
+facilities_URL = environ.get("facilities_URL") or "http://localhost:5002/"
+booking_URL = environ.get("booking_URL") or "http://localhost:5003/"
 
 @app.route("/make_booking", methods=['POST'])
 def make_booking():
@@ -26,3 +26,9 @@ def make_booking():
             print("\nReceived a booking request in JSON:", booking)
 
             
+
+
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=6000, debug=True)
