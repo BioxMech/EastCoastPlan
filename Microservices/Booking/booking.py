@@ -5,8 +5,8 @@ from flask_cors import CORS
 import requests, time
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -65,7 +65,26 @@ def get_all():
         }
     ), 404
 
+# Find bookings by user_id
+@app.route("/bookings/user/<string:user_id>")
+def find_by_user_id(user_id):
+    bookings = Booking.query.filter_by(user_id=user_id).all()
+    if bookings:
+        return jsonify(
+            {
+                "code": 200,
+                "data": [booking.json() for booking in bookings]
+            }
+        ), 200
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Bookings not found."
+        }
+    ),404
 
+
+# Find bookings by booking_id
 @app.route("/bookings/<string:booking_id>")
 def find_by_booking_id(booking_id):
     booking = Booking.query.filter_by(booking_id=booking_id).first()
@@ -121,7 +140,7 @@ def create_booking(booking_id):
     else:
         return jsonify({
             "code": 404,
-            "error": 
+            "error": "Unable to make booking"
         })
 
     return jsonify(
