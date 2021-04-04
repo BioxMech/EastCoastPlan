@@ -25,8 +25,6 @@ class Facility extends React.Component {
 
   render() {
 
-    var category = window.location.pathname.split("/")[1]
-
     return (
       <Container >
         <Box my={2}>

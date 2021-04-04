@@ -1,6 +1,5 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
 import { Grid, Box } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -17,7 +16,7 @@ const FacilityItem = ({facility}) => (
     <Box mx={2}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={4}>
-          <img src={ facility.image_url } className="image" />
+          <img src={ facility.image_url } className="image" alt="...Loading" />
         </Grid>
         <Grid item xs={12} sm={8} className="description">
           <ThemeProvider theme={theme}>
@@ -25,7 +24,7 @@ const FacilityItem = ({facility}) => (
             <Typography variant="h6" className="location">{ facility.location }</Typography>
             <Typography variant="h6">SGD${ facility.price }</Typography>
           </ThemeProvider>
-          <Button size="small" variant="contained" color="primary" href={window.location.pathname + "/booking/" + facility.facility_id}>
+          <Button size="small" variant="contained" color="primary" href={window.location.pathname + "/" + facility.facility_name}>
             BOOK
           </Button>
           
