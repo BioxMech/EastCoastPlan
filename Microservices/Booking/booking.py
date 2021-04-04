@@ -5,8 +5,8 @@ from flask_cors import CORS
 import requests, time
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/booking'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/bookings'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -66,7 +66,7 @@ def get_all():
     ), 404
 
 
-@app.route("/booking/<string:booking_id>")
+@app.route("/bookings/<string:booking_id>")
 def find_by_booking_id(booking_id):
     booking = Booking.query.filter_by(booking_id=booking_id).first()
     if booking:
