@@ -122,7 +122,9 @@ INSERT INTO `facility` (`facility_id`, `schedule_id`,`facility_name`, `internal_
 (812830, 561942, 'Volleyball Court 1', 'Volleyball_Court_1', 'Area 1', 'Yes', 15, '/images/volleyball_court.jpg'),
 (812831, 561942, 'Volleyball Court 2', 'Volleyball_Court_2', 'Area 1', 'Yes', 15, '/images/volleyball_court.jpg'),
 (812832, 561942, 'Volleyball Court 3', 'Volleyball_Court_3', 'Area 1', 'Yes', 15, '/images/volleyball_court.jpg'),
-(812833, 561942, 'Volleyball Court 4', 'Volleyball_Court_4', 'Area 1', 'Yes', 15, '/images/volleyball_court.jpg')
+(812833, 561942, 'Volleyball Court 4', 'Volleyball_Court_4', 'Area 1', 'Yes', 15, '/images/volleyball_court.jpg'),
+(812834, 561942, 'Volleyball Court 5', 'Volleyball_Court_5', 'Area 1', 'No', 15, '/images/volleyball_court.jpg')
+
 ;
 COMMIT;
 
