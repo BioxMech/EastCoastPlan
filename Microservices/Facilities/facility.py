@@ -49,7 +49,7 @@ class Facility(db.Model):
     facility_name = db.Column(db.String(64), nullable=False)
     internal_name = db.Column(db.String(64), nullable=False)
     location = db.Column(db.String(64), nullable=False)
-    availability = db.Column(db.String(64), nullable=True)
+    availability = db.Column(db.Boolean(64), nullable=True)
     price = db.Column(db.Integer, nullable=False)
     image_url = db.Column(db.String(64), nullable=True)
 
