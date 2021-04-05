@@ -197,7 +197,7 @@ def makePayment(booking_id):
     )
     print(response['status'])
     if response['status'] == "succeeded":
-        payment = Payment(booking_id,schedule_id,facility_id,user_id,full_name,price,start,finish,today)
+        payment = Payment(booking_id,schedule_id,facility_id,user_id,full_name,price_orig,start,finish,today)
         print(payment)
         try:
             db.session.add(payment)
