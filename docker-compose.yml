@@ -98,19 +98,19 @@ services:
   ###################################
   # Payment: The Payment microservice
   ###################################
-  # payment:
-  #   build:
-  #     context: ./
-  #     dockerfile: payment.Dockerfile
-  #   image: petrastan/payment:ecp
-  #   restart: always
-  #   networks:
-  #     - kong-net
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/payment
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5004:5004"
+  payment:
+    build:
+      context: ./
+      dockerfile: payment.Dockerfile
+    image: petrastan/payment:ecp
+    restart: always
+    networks:
+      - kong-net
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/payment
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5004:5004"
 
   #######################################
   # Postgres: The database used by Kong
@@ -206,9 +206,11 @@ services:
     depends_on:
       - facility
       - booking
+      - payment
     environment:
       PYTHONBUFFERED: 1
       booking_URL: http://booking:5003/createBooking/
+      payment_URL: http://payment:5004/makePayment/
 
     ports:
       - "5010:5010"

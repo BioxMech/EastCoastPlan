@@ -15,6 +15,7 @@ CORS(app)
 
 facilities_URL = environ.get("facilities_URL") or "http://localhost:5002/"
 booking_URL = environ.get('booking_URL') or "http://localhost:5003/createBooking/"
+payment_URL = environ.get('payment_URL') or "http://localhost:5004/makePayment/"
 
 @app.route("/make_booking/<string:booking_id>", methods=['POST'])
 def make_booking(booking_id):
@@ -24,10 +25,9 @@ def make_booking(booking_id):
             booking = request.get_json()
             print("\nReceived a booking request in JSON:", booking)
 
-            result = processMakeBooking(booking, booking_URL, booking_id)
+            result = processMakeBooking(booking, booking_URL, booking_id, payment_URL)
             print('\n------------------------')
             print('\nresult: ', result)
-            # return jsonify(result), result["code"]
             return jsonify(
                 {
                     "code": 201,
@@ -54,42 +54,42 @@ def make_booking(booking_id):
     }), 400
 
             
-def processMakeBooking(booking, booking_URL, booking_id):
+def processMakeBooking(booking, booking_URL, booking_id, payment_URL):
 
-#     # print("\n----Invoking Payment Microservice----")
-#     # payment_result = 
+    print("\n----Invoking Payment Microservice----")
+    # print(booking)
+    payment_URL = payment_URL + booking_id
+    payment_result = invoke_http(payment_URL, method='POST', json=booking)
+    print("payment_result:", payment_result)
 
-    
-    print("\n-----Invoking Booking Microservice-----")
-    print(booking)
-    # booking_id = booking['booking_id']
-    # print(booking_id)
-    schedule_id = booking['schedule_id']
-    facility_id = booking['facility_id']
-    resource_id = booking['resource_id']
-    user_id = booking['user_id']
-    full_name = booking['full_name']
-    date = booking['date']
-    start = booking['start']
-    finish = booking['finish']
-    price = booking['price']
-    # print(booking_URL)
-    # print(booking_id)
-    booking_URL = booking_URL + booking_id
-    # print(booking_URL + booking_id)
-    print(booking_URL)
-    booking_result = invoke_http(booking_URL, method='POST', json=booking)
-    print("booking_result:", booking_result)
+    if payment_result['code'] == 201:
 
-    code = booking_result['code']
-    message = json.dumps(booking_result)
+        print("\n-----Invoking Booking Microservice-----")
+        print(booking)
+        
+        booking_URL = booking_URL + booking_id
+        # print(booking_URL)
+        booking_result = invoke_http(booking_URL, method='POST', json=booking)
+        print("booking_result:", booking_result)
 
-    return {
-        "code": 201,
-        "data": {
-            "booking_result from book_a_facility.py": booking_result
+        code = booking_result['code']
+        message = json.dumps(booking_result)
+
+        return {
+            "code": 201,
+            "data": {
+                "booking_result from book_facility.py": booking_result['code'],
+                "payment_result from payment.py": payment_result['code']
+            }
         }
-    }
+    else:
+        return {
+            "code": 400,
+            "data": {
+                "payment_result": payment_result
+            },
+            "message": "Payment failed"
+        }
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5010, debug=True)
