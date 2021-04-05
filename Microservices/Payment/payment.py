@@ -39,115 +39,116 @@ class Payment(db.Model):
     def json(self):
         return {"payment_id": self.payment_id, "user_id": self.user_id, "facility_id": self.facility_id, "status": self.status, "payment_date": self.payment_date}
 
-# @app.route("/payment")
-# def get_all():
-#     paymentlist = Payment.query.all()  # select * from
-#     if len(paymentlist):
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": {
-#                     "payments": [payment.json() for payment in paymentlist]
-#                 }
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "There are no payments."
-#         }
-#     ), 404
+@app.route("/payment")
+def get_all():
+    paymentlist = Payment.query.all()  # select * from
+    if len(paymentlist):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "payments": [payment.json() for payment in paymentlist]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no payments."
+        }
+    ), 404
 
 
-# @app.route("/payment/<int:payment_id>")
-# def find_by_payment_id(payment_id):
-#     payment = Payment.query.filter_by(payment_id=payment_id).first()
-#     if payment:
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": payment.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "Payment not found."
-#         }
-#     ), 404
+@app.route("/payment/<int:payment_id>")
+def find_by_payment_id(payment_id):
+    payment = Payment.query.filter_by(payment_id=payment_id).first()
+    if payment:
+        return jsonify(
+            {
+                "code": 200,
+                "data": payment.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Payment not found."
+        }
+    ), 404
 
-# @app.route("/payment/<int:payment_id>", methods=['POST'])
-# def create_payment_local(payment_id):
-#     if (Payment.query.filter_by(payment_id=payment_id).first()):
-#         return jsonify(
-#             {
-#                 "code": 400,
-#                 "data": {
-#                     "payment_id": payment_id
-#                 },
-#                 "message": "Payment already exists."
-#             }
-#         ), 400
+@app.route("/payment/<int:payment_id>", methods=['POST'])
+def create_payment_local(payment_id):
+    if (Payment.query.filter_by(payment_id=payment_id).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "payment_id": payment_id
+                },
+                "message": "Payment already exists."
+            }
+        ), 400
 
-#     data = request.get_json()
-#     payment = Payment(payment_id, **data)
+    data = request.get_json()
+    payment = Payment(payment_id, **data)
 
-#     try:
-#         db.session.add(payment)
-#         db.session.commit()
-#     except:
-#         return jsonify(
-#             {
-#                 "code": 500,
-#                 "data": {
-#                     "payment_id": payment_id
-#                 },
-#                 "message": "An error occurred creating the payment."
-#             }
-#         ), 500
+    try:
+        db.session.add(payment)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment_id": payment_id
+                },
+                "message": "An error occurred creating the payment."
+            }
+        ), 500
 
-#     return jsonify(
-#         {
-#             "code": 201,
-#             "data": payment.json()
-#         }
-#     ), 201
-# # @app.route("/payment/<int:payment_id>", methods=['POST'])
-# # def create_payment(payment_id):
-# #     if (Payment.query.filter_by(payment_id=payment_id).first()):
-# #         return jsonify(
-# #             {
-# #                 "code": 400,
-# #                 "data": {
-# #                     "payment_id": payment_id
-# #                 },
-# #                 "message": "Payment already exists."
-# #             }
-# #         ), 400
+    return jsonify(
+        {
+            "code": 201,
+            "data": payment.json()
+        }
+    ), 201
 
-# #     data = request.get_json()
-# #     payment = Payment(payment_id, **data)
+@app.route("/payment/<int:payment_id>", methods=['POST'])
+def create_payment(payment_id):
+    if (Payment.query.filter_by(payment_id=payment_id).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "payment_id": payment_id
+                },
+                "message": "Payment already exists."
+            }
+        ), 400
 
-# #     try:
-# #         db.session.add(payment)
-# #         db.session.commit()
-# #     except:
-# #         return jsonify(
-# #             {
-# #                 "code": 500,
-# #                 "data": {
-# #                     "payment_id": payment_id
-# #                 },
-# #                 "message": "An error occurred creating the payment."
-# #             }
-# #         ), 500
+    data = request.get_json()
+    payment = Payment(payment_id, **data)
 
-# #     return jsonify(
-# #         {
-# #             "code": 201,
-# #             "data": payment.json()
-# #         }
-# #     ), 201
+    try:
+        db.session.add(payment)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment_id": payment_id
+                },
+                "message": "An error occurred creating the payment."
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": payment.json()
+        }
+    ), 201
 
 ##############################################################
 stripe.api_key = "sk_test_51IVv9fK8z0TITG8fImYZYZ995I9zpYdFUJQi8ewEQIUqRitQfKgNBKphDg7E2r7uyiH3MtSCVdq3BxS2xAFTaBL900NbcdKis5"
