@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `facility` (
   `facility_name` varchar(64) NOT NULL,
   `internal_name` varchar(64) NOT NULL,
   `location` varchar(64) NOT NULL,
-  `availability` varchar(11) NOT NULL,
+  `availability` varchar(1641) NOT NULL,
   `price` int(11) NOT NULL,
   `image_url` varchar(100),
   PRIMARY KEY (`facility_id`),

@@ -39,10 +39,10 @@ CREATE TABLE IF NOT EXISTS `booking` (
   `user_id` int(11) NOT NULL,
   `full_name` varchar(64) NOT NULL,
   `date` DATE NOT NULL,
-  `start` varchar(10) NOT NULL,
-  `end` varchar(10) NOT NULL,
+  `start` varchar(64) NOT NULL,
+  `end` varchar(64) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `status` varchar(10) NOT NULL DEFAULT 'pending',
+  `status` varchar(64) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (`booking_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
