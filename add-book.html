@@ -243,11 +243,18 @@
                 let start = date + " " + dropdown.slice(11,19);
                 // console.log(start);
                 let finish = date + " "+ dropdown.slice(20,28);
-                let full_name = document.getElementById("userName").value;
+                let full_name = document.getElementById("cname").value;
+                console.log(full_name);
                 // console.log(user_name);
                 var price = document.getElementById("price").innerText;
-                var creditCard = document.getElementById("creditCard").value;
+                var creditCard = document.getElementById("ccnum").value;
+                console.log(creditCard);
                 // console.log(price);
+                var expMonth = document.getElementById("expMonth").value;
+                console.log(expMonth);
+                var expYear = document.getElementById("expYear").value;
+                console.log(expYear);
+                var cvv = document.getElementById("cvv").value;
                 var booking_id = internal_name + date + dropdown.slice(11,19); 
                 console.log(booking_id);
                 // var bookingURL = "http://localhost:5003/createBooking/" + booking_id;
@@ -256,11 +263,11 @@
                 try {
                     const response = 
                     await fetch(
-                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({ schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id:2, full_name: full_name,  date:date, start: start, finish: finish,  price:price, creditCard:creditCard})}
+                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({ schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id:2, full_name: full_name,  date:date, start: start, finish: finish,  price:price, creditCard:creditCard, expMonth:expMonth, expYear:expYear, cvv:cvv})}
                     );
                     const result = await response.json();
                     if (response.status == 201) {
-                        window.location.replace("index.html")
+                        // window.location.replace("index.html")
                     }
                 } catch(error) {
                     showError("There is an error: " + error);

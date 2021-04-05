@@ -156,22 +156,28 @@ stripe.api_key = "sk_test_51IVv9fK8z0TITG8fImYZYZ995I9zpYdFUJQi8ewEQIUqRitQfKgNB
 
 @app.route('/test', methods=['POST'])
 def test():
-    ccnum = request.form['ccnum']
-    expire = request.form['exp']
-    cvc = request.form['cvc']
+    data=request.get_json()
+    print(data)
+    ccnum = data['creditCard']
+    exp_month = data['expMonth']
+    exp_year = data['expYear']
+    cvc = data['cvv']
+    price = data['price']
+    price = int(price + "00")
+    # print(ccnum)
     token = stripe.Token.create(
         card={
             "number": ccnum,
-            "exp_month": 4,
-            "exp_year": 2022,
-            "cvc": "314",
+            "exp_month": exp_month,
+            "exp_year": exp_year,
+            "cvc": cvc,
         },
     )
     response = stripe.Charge.create(
-        amount=5644,
+        amount=price,
         currency="sgd",
         source=token,
-        description="My First Test Charge (created for API docs)",
+        description="Live test",
         receipt_email='hyong.2019@sis.smu.edu.sg' # Testing Email
     )
     return jsonify(
@@ -179,7 +185,7 @@ def test():
             "code": 201,
             "data": {
                 "ccnum": ccnum,
-                "expire": expire,
+                "expire": exp_month + exp_year,
                 "cvc": cvc,
                 "token": token,
                 "response": response,
