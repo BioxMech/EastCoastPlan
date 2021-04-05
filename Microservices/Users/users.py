@@ -4,13 +4,12 @@ from flask_cors import CORS
 from os import environ
 import json
 import os
-# import hashlib
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
+#app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # to fix the kong bug
@@ -80,8 +79,22 @@ def get_user(email):
 @app.route("/users/verify/<string:email>", methods=['POST'])
 def verify_user(email):
     users = Users.query.filter_by(email=email).first()
-    enteredPw = request.headers.get('password', None)
+    #enteredPw = request.headers.get('password', None)
+    data = request.get_json()
+    
+    if data != None:
+        enteredPw = data['password']
 
+    else:
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "message": "User already exists."
+                },
+                
+            }, 400
+        )
     return jsonify(
         {
             "result": sha256_crypt.verify(enteredPw, users.password)
