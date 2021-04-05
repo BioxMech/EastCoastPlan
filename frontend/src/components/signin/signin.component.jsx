@@ -64,6 +64,7 @@ class SignIn extends React.Component {
   handlePasswordVerification(event) {
     var json = {password: event.target.value}
     axios.get(`http://localhost:5001/users/verify/${this.state.email}`, json)
+    
     .then(response => {
       if (response.data.result == false) {
         this.setState({passwordError:true, emailText: "Invalid Email!!", disabled: true})
@@ -74,7 +75,12 @@ class SignIn extends React.Component {
           this.setState({disabled: false})
         }
       }
-    });
+    })
+    .catch(function(error) {
+      if (error.response) {
+        console.log(error.response)
+      }
+    })
   }
 
   handleSubmit(event) {

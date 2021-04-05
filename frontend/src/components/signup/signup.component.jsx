@@ -1,11 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import { Paper, FormControl, FormLabel, InputLabel, Input, FormHelperText, Box, Button, Radio, FormControlLabel, RadioGroup } from '@material-ui/core';
+import { withRouter } from 'react-router-dom'
+import { Paper, FormControl, InputLabel, Input, FormHelperText, Box, Button } from '@material-ui/core';
 
 class SignUp extends React.Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       email: '',
       password: '',
@@ -14,15 +15,11 @@ class SignUp extends React.Component {
       show: false
     }
 
-    this.handleAccType = this.handleAccType.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
   }
 
-  handleAccType(event) {
-    this.setState({acc_type: event.target.value})
-  }
 
   handleEmail(event) {
     this.setState({email: event.target.value})
@@ -49,13 +46,15 @@ class SignUp extends React.Component {
     }
     axios.post(`http://localhost:5001/users/${email}`, json)
       .then(response => {
-        if (response.data.code == 201) {
-           // ############# add local session ################
+        localStorage.setItem("login", {email:email, acc_type:acc_type})
+        // this.props.history.push('/facilities');
+        window.location.reload(false)
+      })
+      .catch(error => {
+        if (error.response.status == 400) {
+          this.setState({show:true, disabled:true})
         }
-        else if (response.data.code == 400) {
-          this.setState({show:true})
-        }
-      });
+      })
   }
   
   render() {
@@ -76,15 +75,6 @@ class SignUp extends React.Component {
                 <InputLabel htmlFor="my-input" >Password</InputLabel>
                 <Input id="my-input" aria-describedby="my-helper-text"  type="password" onChange={this.handlePassword} required />
                 <FormHelperText id="my-helper-text">Your password will be encrypted.</FormHelperText>
-              </FormControl>
-            </Box>
-            <Box mt={2}>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">Account Type</FormLabel>
-                <RadioGroup row aria-label="acc_type" name="acc_type" value={this.state.acc_type} onChange={this.handleAccType}>
-                  <FormControlLabel value="user" control={<Radio />} label="User" />
-                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                </RadioGroup>
               </FormControl>
             </Box>
             <Box mt={3}>
@@ -113,4 +103,4 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp
+export default withRouter(SignUp)

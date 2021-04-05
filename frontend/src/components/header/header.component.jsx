@@ -3,12 +3,13 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
+// import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
+// import IconButton from '@material-ui/core/IconButton';
+// import MenuIcon from '@material-ui/icons/Menu';
+// import SearchIcon from '@material-ui/icons/Search';
 import Link from '@material-ui/core/Link';
+import Popover from '@material-ui/core/Popover';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +78,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = (event) => {
+    localStorage.removeItem("login")
+    window.location.reload(false);
+  }
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <div className={classes.root}>
@@ -103,7 +121,30 @@ export default function Header() {
           </div> */}
           <Button color="inherit" href="/aboutus">About Us</Button>
           <Button color="inherit" href="/facilities">Facilities</Button>
-          <Button color="inherit" href="/signinsignup">Login</Button>
+          {
+            localStorage.getItem("login") != null ?
+             <Button color="inherit" aria-describedby={id} onClick={handleClick}>Logout</Button>
+            
+           
+            :
+            <Button color="inherit" href="/signinsignup">Login</Button>
+          }
+          <Popover 
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <Button color="inherit" onClick={handleLogout}>Logout</Button>
+          </Popover>
         </Toolbar>
       </AppBar>
     </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Container, Box, Paper, Grid, Button  } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { Container, Box, Paper, Grid  } from '@material-ui/core';
 
 import './booking.styles.scss';
 import FacilityDetail from './facilityDetails.component';
