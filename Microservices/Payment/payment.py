@@ -172,6 +172,7 @@ def test():
         currency="sgd",
         source=token,
         description="My First Test Charge (created for API docs)",
+        receipt_email='hyong.2019@sis.smu.edu.sg' # Testing Email
     )
     return jsonify(
         {
