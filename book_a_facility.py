@@ -28,6 +28,12 @@ def make_booking(booking_id):
             print('\n------------------------')
             print('\nresult: ', result)
             # return jsonify(result), result["code"]
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": result
+                }
+            )
         except Exception as e:
             # Unexpected error in code
             # exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -41,11 +47,11 @@ def make_booking(booking_id):
                 "message": "book_a_facility.py internal error: "
             }), 500
     # if reached here, not a JSON request.
-    else:
-        return jsonify({
-            "code": 400,
-            "message": "Invalid JSON input: " + str(request.get_data())
-        }), 400
+    
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
 
             
 def processMakeBooking(booking, booking_URL, booking_id):

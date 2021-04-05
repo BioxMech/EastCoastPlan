@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from os import environ
 import json
 import os
@@ -8,11 +9,17 @@ from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# to fix the kong bug
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
+
 db = SQLAlchemy(app)
+
+CORS(app)
+
 
 class Users(db.Model):
     __tablename__ = 'users'
@@ -23,7 +30,7 @@ class Users(db.Model):
     account_type = db.Column(db.String(10), nullable=False)
 
     def __init__(self, email, password, account_type):
-        
+
         self.email = email
         self.password = password
         self.account_type = account_type
@@ -34,9 +41,9 @@ class Users(db.Model):
 
 @app.route("/users")
 def get_users():
-	userList = Users.query.all()
-	if len(userList):
-	     return jsonify(
+    userList = Users.query.all()
+    if len(userList):
+        return jsonify(
             {
                 "code": 200,
                 "data": {
@@ -44,12 +51,13 @@ def get_users():
                 }
             }
         )
-	return jsonify(
+    return jsonify(
         {
             "code": 404,
             "message": "There are no users."
         }
     ), 404
+
 
 @app.route("/users/<string:email>")
 def get_user(email):
@@ -61,7 +69,7 @@ def get_user(email):
                 "data": users.json()
             }
         )
-	return jsonify(
+    return jsonify(
         {
             "code": 404,
             "message": "User not found."
@@ -117,12 +125,12 @@ def create_user(email):
     users = Users(email, **data)
     
     users.password = sha256_crypt.encrypt(users.password)
-    #password2 = sha256_crypt.encrypt("password")
+    # password2 = sha256_crypt.encrypt("password")
 
-    #print(users.password)
-    #print(password2)
+    # print(users.password)
+    # print(password2)
 
-    #print(sha256_crypt.verify("password", users.password))
+    # print(sha256_crypt.verify("password", users.password))
     try:
         db.session.add(users)
         db.session.commit()
@@ -146,6 +154,7 @@ def create_user(email):
         }
     ), 201
 
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
-    #app.run(port=5000, debug=True)
+    # app.run(port=5000, debug=True)

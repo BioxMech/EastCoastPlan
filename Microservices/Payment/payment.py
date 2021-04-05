@@ -7,14 +7,23 @@ stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+import json
+import os
+import stripe
+
+stripe.api_key = "sk_test_51IVv9fK8z0TITG8fImYZYZ995I9zpYdFUJQi8ewEQIUqRitQfKgNBKphDg7E2r7uyiH3MtSCVdq3BxS2xAFTaBL900NbcdKis"
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/eastcoastplan'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+#to fix the kong bug
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
+db = SQLAlchemy(app)
+CORS(app)
 
 class Payment(db.Model):
     __tablename__ = 'payment'
@@ -36,6 +45,28 @@ class Payment(db.Model):
 
     def json(self):
         return {"payment_id": self.payment_id, "user_id": self.user_id, "facility_id": self.facility_id, "status": self.status, "payment_date": self.payment_date}
+
+def calculate_order_amount(items):
+    # Replace this constant with a calculation of the order's amount
+    # Calculate the order total on the server to prevent
+    # people from directly manipulating the amount on the client
+    return 1400
+
+
+@app.route('/create-payment-intent', methods=['POST'])
+def create_payment():
+    try:
+        data = json.loads(request.data)
+        intent = stripe.PaymentIntent.create(
+            amount=calculate_order_amount(data['items']),
+            currency='usd'
+        )
+
+        return jsonify({
+            'clientSecret': intent['client_secret']
+        })
+    except Exception as e:
+        return jsonify(error=str(e)), 403
 
 def calculate_order_amount(items):
     # Replace this constant with a calculation of the order's amount
@@ -97,6 +128,42 @@ def find_by_payment_id(payment_id):
     ), 404
 
 
+@app.route("/payment/<int:payment_id>", methods=['POST'])
+def create_payment_local(payment_id):
+    if (Payment.query.filter_by(payment_id=payment_id).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "payment_id": payment_id
+                },
+                "message": "Payment already exists."
+            }
+        ), 400
+
+    data = request.get_json()
+    payment = Payment(payment_id, **data)
+
+    try:
+        db.session.add(payment)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment_id": payment_id
+                },
+                "message": "An error occurred creating the payment."
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": payment.json()
+        }
+    ), 201
 # @app.route("/payment/<int:payment_id>", methods=['POST'])
 # def create_payment(payment_id):
 #     if (Payment.query.filter_by(payment_id=payment_id).first()):

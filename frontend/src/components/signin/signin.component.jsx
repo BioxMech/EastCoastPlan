@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Paper, FormControl, FormLabel, InputLabel, Input, FormHelperText, Box, Button, Radio, FormControlLabel, RadioGroup } from '@material-ui/core';
 
-class SignUp extends React.Component {
+class SignIn extends React.Component {
 
   constructor() {
     super()
@@ -11,13 +11,21 @@ class SignUp extends React.Component {
       password: '',
       acc_type: 'user',
       disabled: true,
-      show: false
+      show: false,
+      emailCheck: false,
+      emailError: false,
+      emailText: "We'll never share your email.",
+      passwordVerified: false,
+      passwordError: false,
+      passwordText: "Your password will be encrypted.",
     }
 
     this.handleAccType = this.handleAccType.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmail = this.handleEmail.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
+    this.handleEmailCheck = this.handleEmailCheck.bind(this);
+    this.handlePasswordVerification = this.handlePasswordVerification.bind(this);
   }
 
   handleAccType(event) {
@@ -36,6 +44,37 @@ class SignUp extends React.Component {
     if (this.state.email != '') {
       this.setState({disabled: false})
     }
+  }
+
+  handleEmailCheck(event) {
+    axios.get(`http://localhost:5001/users/${event.target.value}`)
+      .then(response => {
+        if (response.data.code == 400) {
+          this.setState({emailError:true, emailText: "Invalid Email!!", disabled: true})
+        }
+        else {
+          this.setState({emailError:false, emailText: "We'll never share your email."})
+          if (this.state.password != '') {
+            this.setState({disabled: false})
+          } 
+        }
+      });
+  }
+
+  handlePasswordVerification(event) {
+    var json = {password: event.target.value}
+    axios.get(`http://localhost:5001/users/verify/${this.state.email}`, json)
+    .then(response => {
+      if (response.data.result == false) {
+        this.setState({passwordError:true, emailText: "Invalid Email!!", disabled: true})
+      }
+      else {
+        this.setState({passwordError:false, emailText: "Your password will be encrypted."})
+        if (this.state.email != '') {
+          this.setState({disabled: false})
+        }
+      }
+    });
   }
 
   handleSubmit(event) {
@@ -62,20 +101,20 @@ class SignUp extends React.Component {
     return(
       <Paper elevation={3}>
         <Box ml={3} py={3}>
-          <h1>Registration</h1>
+          <h1>Login</h1>
           <form onSubmit={this.handleSubmit}>
             <Box>
-              <FormControl required >
+              <FormControl required error={this.state.emailError}>
                 <InputLabel htmlFor="my-input" >Email address</InputLabel>
-                <Input id="my-input" aria-describedby="my-helper-text"  type="email" onChange={this.handleEmail} required />
-                <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
+                <Input id="my-input" aria-describedby="my-helper-text"  type="email" onChange={this.handleEmail} onBlur={this.handleEmailCheck} required />
+                <FormHelperText id="my-helper-text">{ this.state.emailText }</FormHelperText>
               </FormControl>
             </Box>
             <Box>
-              <FormControl required >
+              <FormControl required error={this.state.passwordError}>
                 <InputLabel htmlFor="my-input" >Password</InputLabel>
-                <Input id="my-input" aria-describedby="my-helper-text"  type="password" onChange={this.handlePassword} required />
-                <FormHelperText id="my-helper-text">Your password will be encrypted.</FormHelperText>
+                <Input id="my-input" aria-describedby="my-helper-text"  type="password" onChange={this.handlePassword} onBlur={this.handlePasswordVerification} required />
+                <FormHelperText id="my-helper-text"> { this.state.passwordText } </FormHelperText>
               </FormControl>
             </Box>
             <Box mt={2}>
@@ -94,13 +133,13 @@ class SignUp extends React.Component {
                 color="primary"
                 disabled={this.state.disabled}
               >
-                SIGN UP
+                LOGIN
               </Button>
             </Box>
             {
               this.state.show ?
               <Box>
-                Email Exist
+                Invalid Email Address / Password
               </Box>
               :
               <span></span>
@@ -113,4 +152,4 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp
+export default SignIn
