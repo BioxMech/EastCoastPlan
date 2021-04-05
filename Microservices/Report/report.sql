@@ -28,13 +28,17 @@ SET time_zone = "+00:00";
 -- Table structure for table `report`
 --
 
+CREATE DATABASE IF NOT EXISTS `Report` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `Report`;
+
 DROP TABLE IF EXISTS `report`;
 CREATE TABLE IF NOT EXISTS `report` (
-  `report_id` varchar(8) NOT NULL,
+  `report_id` int(11) NOT NULL AUTO_INCREMENT,
   `date` varchar(6) DEFAULT NULL,
   `time` varchar(4) DEFAULT NULL,
   `message` varchar(300) DEFAULT NULL,
-  `facility_id` varchar(8) DEFAULT NULL
+  `facility_id` varchar(8) DEFAULT NULL,
+  PRIMARY KEY (`report_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
