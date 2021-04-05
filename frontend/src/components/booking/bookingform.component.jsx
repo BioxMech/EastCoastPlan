@@ -74,6 +74,7 @@ class BookingForm extends React.Component {
       .then(response => {
         this.setState({ timeslots: response.data.data })
       });
+      
       this.setState({loading: true})
     }, 100);
 

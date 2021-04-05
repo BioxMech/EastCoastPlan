@@ -103,7 +103,6 @@ def find_by_booking_id(booking_id):
     ), 404
 
 
-
 @app.route("/createBooking/<string:booking_id>", methods=['POST'])
 def create_booking(booking_id):
     data = request.get_json()
@@ -124,6 +123,54 @@ def create_booking(booking_id):
     if post_request.status_code == 201:
         booking = Booking(booking_id,schedule_id, facility_id, resource_id, user_id, full_name, date, start, finish, price, "Payment made")
         print(booking)
+        try:
+            db.session.add(booking)
+            db.session.commit()
+        except:
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "booking_id": booking_id
+                    },
+                    "message": "An error occurred creating the booking."
+                }
+            ), 500
+    else:
+        return jsonify({
+            "code": 404,
+            "error": "Unable to make booking"
+        })
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": booking.json()
+            # "data": "Test"
+        }
+    ), 201
+
+
+@app.route("/updateBooking/<string:booking_id>", methods=['PUT'])
+def update_booking(booking_id):
+    data = request.get_json()
+    print(data)
+    schedule_id = data['schedule_id']
+    facility_id = data['facility_id']
+    resource_id = data['resource_id']
+    user_id = data['user_id']
+    full_name = data['full_name']
+    date = data['date']
+    start = data['start']
+    finish = data['finish']
+    price = data['price']
+    myobj = {'start': start, 'finish':finish,'full_name': full_name, 'resource_id':resource_id}
+    url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
+    post_request = requests.post(url, json=myobj)
+    print(post_request.status_code)
+    if post_request.status_code == 201:
+        booking = Booking(booking_id,schedule_id, facility_id, resource_id, user_id, full_name, date, start, finish, price, "Payment made")
+
         try:
             db.session.add(booking)
             db.session.commit()
