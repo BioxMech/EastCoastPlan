@@ -15,7 +15,7 @@ CORS(app)
 
 facilities_URL = environ.get("facilities_URL") or "http://localhost:5002/"
 booking_URL = environ.get('booking_URL') or "http://localhost:5003/createBooking/"
-payment_URL = environ.get('payment_URL') or "http://localhost:5004/test"
+payment_URL = environ.get('payment_URL') or "http://localhost:5004/test/"
 
 @app.route("/make_booking/<string:booking_id>", methods=['POST'])
 def make_booking(booking_id):
@@ -57,11 +57,10 @@ def make_booking(booking_id):
 def processMakeBooking(booking, booking_URL, booking_id, payment_URL):
 
     print("\n----Invoking Payment Microservice----")
-    print(booking)
-    ccnum = booking['creditCard']
-    print(ccnum)
+    # print(booking)
+    payment_URL = payment_URL + booking_id
     payment_result = invoke_http(payment_URL, method='POST', json=booking)
-    print("payment_result:", payment_result['code'])
+    print("payment_result:", payment_result)
 
     if payment_result['code'] == 201:
 
@@ -69,8 +68,7 @@ def processMakeBooking(booking, booking_URL, booking_id, payment_URL):
         print(booking)
         
         booking_URL = booking_URL + booking_id
-        # print(booking_URL + booking_id)
-        print(booking_URL)
+        # print(booking_URL)
         booking_result = invoke_http(booking_URL, method='POST', json=booking)
         print("booking_result:", booking_result)
 
@@ -80,7 +78,8 @@ def processMakeBooking(booking, booking_URL, booking_id, payment_URL):
         return {
             "code": 201,
             "data": {
-                "booking_result from book_a_facility.py": booking_result
+                "booking_result from book_facility.py": booking_result['code'],
+                "payment_result from payment.py": payment_result['code']
             }
         }
     else:
