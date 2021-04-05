@@ -28,7 +28,6 @@ def make_booking(booking_id):
             result = processMakeBooking(booking, booking_URL, booking_id, payment_URL)
             print('\n------------------------')
             print('\nresult: ', result)
-            # return jsonify(result), result["code"]
             return jsonify(
                 {
                     "code": 201,
@@ -69,18 +68,6 @@ def processMakeBooking(booking, booking_URL, booking_id, payment_URL):
         print("\n-----Invoking Booking Microservice-----")
         print(booking)
         
-        # print(booking_id)
-        # schedule_id = booking['schedule_id']
-        # facility_id = booking['facility_id']
-        # resource_id = booking['resource_id']
-        # user_id = booking['user_id']
-        # full_name = booking['full_name']
-        # date = booking['date']
-        # start = booking['start']
-        # finish = booking['finish']
-        # price = booking['price']
-        # print(booking_URL)
-        # print(booking_id)
         booking_URL = booking_URL + booking_id
         # print(booking_URL + booking_id)
         print(booking_URL)

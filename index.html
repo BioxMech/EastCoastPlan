@@ -108,7 +108,7 @@
                         image_url = schedule.image_url;
                         schedule_name = schedule.schedule_name;
                         schedule_id = schedule.schedule_id;
-                        if (availability == 1) {
+                        if (availability == "Yes") {
                             eachRow = `<td><img src='${image_url}'></td>
                                         <td><a href='list_resources.html?schedule_id=${schedule_id}' id='${schedule_id}'>${schedule_name}</a></td>`;
                             // eachRow ="<td>" + schedule.schedule_name + "</td>"
