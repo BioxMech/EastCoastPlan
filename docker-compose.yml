@@ -214,3 +214,25 @@ services:
 
     ports:
       - "5010:5010"
+
+  #######################################
+  # Complex Microservice: editFacilities
+  #######################################
+  editFacilities:
+    build:
+      context: ./
+      dockerfile: editFacilities.Dockerfile
+    image: petrastan/edit_facilities:ecp
+    restart: always
+    networks:
+      - kong-net
+    depends_on:
+      - users
+      - facility
+    environment:
+      PYTHONBUFFERED: 1
+      user_URL: http://booking:5001/users/
+      facility_URL: http://payment:5002/updateAvailability/
+
+    ports:
+      - "5100:5100"

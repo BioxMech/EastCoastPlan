@@ -39,10 +39,8 @@ def edit_facility():
             if (code == 200):
                 #return jsonify(result)
                 
-                #return jsonify(result)
-                print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
+                #print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="users.notifications", body=message, xproperties=pika.BasicProperties(delivery_mode = 2)) 
-                
                 return jsonify(result)
 
         except Exception as e:
