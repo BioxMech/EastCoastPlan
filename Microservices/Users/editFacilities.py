@@ -12,17 +12,17 @@ app = Flask(__name__)
 CORS(app)
 
 users_URL = "http://localhost:5001/users"
-facilities_URL = "http://localhost:5002/updateAvailability/810431"
+facilities_URL = "http://localhost:5002/updateAvailability/"
 
-@app.route("/edit_facility", methods=['POST'])
+@app.route("/edit_facility", methods=['PUT'])
 def edit_facility():
-    #check if it is json
+    facility_id = request.headers.get('facility_id')
     if request.is_json:
         try:
-            users = request.get_json()
-            print("\nReceived an order in JSON:", users)
+            facilities = request.get_json()
+            print("\nReceived an order in JSON:", facilities)
 
-            result = processEditFacility(users)
+            result = processEditFacility(facilities, facility_id)
             return jsonify(result), 200
 
         except Exception as e:
@@ -34,10 +34,10 @@ def edit_facility():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def processEditFacility(users):
+def processEditFacility(facilities, facility_id):
     print('\n-----Invoking facilities microservice-----')
-    users_result = invoke_http(users_URL, method='GET', json=users)
-    print('facilities_result:', users_result)
+    facilities_result = invoke_http(facilities_URL + facility_id, method='PUT', json=facilities)
+    return('facilities_result:', facilities_result)
 
 
 
