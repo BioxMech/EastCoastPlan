@@ -8,8 +8,8 @@ from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # to fix the kong bug
@@ -81,7 +81,7 @@ def verify_user(email):
     users = Users.query.filter_by(email=email).first()
     #enteredPw = request.headers.get('password', None)
     data = request.get_json()
-    
+
     if data != None:
         enteredPw = data['password']
 
@@ -92,7 +92,7 @@ def verify_user(email):
                 "data": {
                     "message": "User already exists."
                 },
-                
+
             }, 400
         )
     return jsonify(

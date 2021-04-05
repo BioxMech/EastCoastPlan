@@ -19,6 +19,11 @@ services:
       dockerfile: report.Dockerfile
     image: jingrongho2019/report:ecp
     restart: always
+<<<<<<< Updated upstream
+=======
+    networks:
+      - kong-net
+>>>>>>> Stashed changes
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/report
       PYTHONUNBUFFERED: 1

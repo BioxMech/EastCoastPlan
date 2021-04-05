@@ -13,6 +13,7 @@ db = SQLAlchemy(app)
 
 CORS(app)
 
+
 class Report(db.Model):
     __tablename__ = 'report'
 
@@ -71,7 +72,7 @@ def find_by_report_id(report_id):
     ), 404
 
 
-@app.route("/report", methods=['POST'])
+@app.route("/report/<string:report_id>", methods=['POST'])
 def create_report(report_id):
     if (Report.query.filter_by(report_id=report_id).first()):
         return jsonify(
@@ -119,7 +120,7 @@ def update_report(report_id):
         if data['price']:
             report.price = data['price']
         if data['availability']:
-            report.availability = data['availability'] 
+            report.availability = data['availability']
         db.session.commit()
         return jsonify(
             {
@@ -142,7 +143,7 @@ def update_report(report_id):
 def delete_report(report_id):
     report = Report.query.filter_by(report_id=report_id).first()
     if report:
-        db.session.delete(book)
+        db.session.delete(report)
         db.session.commit()
         return jsonify(
             {
