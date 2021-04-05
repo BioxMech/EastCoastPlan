@@ -72,7 +72,7 @@ def find_by_report_id(report_id):
     ), 404
 
 
-@app.route("/report/<string:report_id>", methods=['POST'])
+@app.route("/createReport/<string:report_id>", methods=['POST'])
 def create_report(report_id):
     if (Report.query.filter_by(report_id=report_id).first()):
         return jsonify(
@@ -86,7 +86,11 @@ def create_report(report_id):
         ), 400
 
     data = request.get_json()
-    report = Report(report_id, **data)
+    date = data['date']
+    time = data['time']
+    message = data['message']
+    facility_id = data['facility_id']
+    report = Report(date, time, message, facility_id)
 
     try:
         db.session.add(report)
