@@ -113,11 +113,11 @@ def filter_by_schedule(schedule_id):
     ), 404
 
 
-@app.route("/facilities/<string:schedule_id>/booking/<string:facility_id>")
-def getFacility(schedule_id, facility_id):
+@app.route("/facilities/<string:schedule_id>/<string:facility_name>")
+def getFacility(schedule_id, facility_name):
     # url = "https://www.supersaas.com/api/resources.json?schedule_id=" + schedule_id + "&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw"
     resource_list = Facility.query.filter_by(
-        schedule_id=schedule_id, facility_id=facility_id).all()
+        schedule_id=schedule_id, facility_name=facility_name).all()
     # print([resource.json() for resource in resource_list])
     if len(resource_list):
         return jsonify(

@@ -22,7 +22,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
+      
     },
+    [theme.breakpoints.down('xs')]: {
+      display: 'block',
+      width: "30%",
+      fontSize: "100%"
+    },
+    
   },
   titleContent: {
     color: "white"
@@ -75,13 +82,13 @@ export default function Header() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6" className={classes.title}>
             <Link href="/" className={classes.titleContent} underline="none">EastCoastPlan</Link>
           </Typography>
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -93,10 +100,10 @@ export default function Header() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-          </div>
+          </div> */}
           <Button color="inherit" href="/aboutus">About Us</Button>
           <Button color="inherit" href="/facilities">Facilities</Button>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" href="/signinsignup">Login</Button>
         </Toolbar>
       </AppBar>
     </div>
