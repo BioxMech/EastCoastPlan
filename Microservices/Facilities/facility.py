@@ -95,7 +95,7 @@ def retrieveFacilities():
 def filter_by_schedule(schedule_id):
     # url = "https://www.supersaas.com/api/resources.json?schedule_id=" + schedule_id + "&account=Petras_SMU&api_key=jZf9H2V1AtNvTKRwzWaLBw"
     resource_list = Facility.query.filter_by(schedule_id=schedule_id).all()
-    # print([resource.json() for resource in resource_list])
+    print([resource.json() for resource in resource_list])
     if len(resource_list):
         return jsonify(
             {

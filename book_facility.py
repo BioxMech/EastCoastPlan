@@ -13,7 +13,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# facilities_URL = environ.get("facilities_URL") or "http://localhost:5002/"
+facilities_URL = environ.get("facilities_URL") or "http://localhost:5002/"
 booking_URL = environ.get('booking_URL') or "http://localhost:5003/createBooking/"
 
 @app.route("/make_booking/<string:booking_id>", methods=['POST'])
@@ -33,7 +33,7 @@ def make_booking(booking_id):
                     "code": 201,
                     "data": result
                 }
-            )
+            ), 201
         except Exception as e:
             # Unexpected error in code
             # exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -87,7 +87,7 @@ def processMakeBooking(booking, booking_URL, booking_id):
     return {
         "code": 201,
         "data": {
-            "booking_result": booking_result
+            "booking_result from book_a_facility.py": booking_result
         }
     }
 
