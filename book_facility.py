@@ -15,7 +15,7 @@ CORS(app)
 
 facilities_URL = environ.get("facilities_URL") or "http://localhost:5002/"
 booking_URL = environ.get('booking_URL') or "http://localhost:5003/createBooking/"
-payment_URL = environ.get('payment_URL') or "http://localhost:5004/test/"
+payment_URL = environ.get('payment_URL') or "http://localhost:5004/makePayment/"
 
 @app.route("/make_booking/<string:booking_id>", methods=['POST'])
 def make_booking(booking_id):

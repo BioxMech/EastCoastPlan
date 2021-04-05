@@ -67,7 +67,7 @@
         <h1 class="display-4">Make a booking</h1>
         <input id="dateTime" type="date" v-model="selected_date" v-on:change="updateSlots">
 
-        <form id='bookForm' action="http://localhost:5004/test" method="POST">
+        <form id='bookForm'>
             <div class="mb-3">
                 <label for="bookTitle" class="form-label">Facility</label>
                 <!-- <input type="text" class="form-control" id="bookTitle" aria-describedby="titleHelp"> -->
@@ -267,7 +267,7 @@
                     );
                     const result = await response.json();
                     if (response.status == 201) {
-                        // window.location.replace("index.html")
+                        window.location.replace("index.html")
                     }
                 } catch(error) {
                     showError("There is an error: " + error);

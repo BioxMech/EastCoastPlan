@@ -2,7 +2,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, jsonify
 import json
-import os
+from os import environ
 import stripe
 from datetime import date
 today = date.today()
@@ -10,8 +10,8 @@ today = date.today()
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/payment'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/payment'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # to fix the kong bug
@@ -163,8 +163,8 @@ def create_payment(booking_id):
 stripe.api_key = "sk_test_51IVv9fK8z0TITG8fImYZYZ995I9zpYdFUJQi8ewEQIUqRitQfKgNBKphDg7E2r7uyiH3MtSCVdq3BxS2xAFTaBL900NbcdKis5"
 
 
-@app.route('/test/<string:booking_id>', methods=['POST'])
-def test(booking_id):
+@app.route('/makePayment/<string:booking_id>', methods=['POST'])
+def makePayment(booking_id):
     data=request.get_json()
     print(data)
     ccnum = data['creditCard']
