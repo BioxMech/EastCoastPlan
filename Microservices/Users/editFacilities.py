@@ -5,8 +5,11 @@ import os, sys
 
 import requests
 
-import json
 from invokes import invoke_http
+
+import amqp_setup
+import pika
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -16,14 +19,31 @@ facilities_URL = "http://localhost:5002/updateAvailability/"
 
 @app.route("/edit_facility", methods=['PUT'])
 def edit_facility():
-    facility_id = request.headers.get('facility_id')
+    #facility_id = request.headers.get('facility_id')
+    data = request.get_json()
+    facility_id = data["facility_id"]
+    availability = data["availability"]
+    print(facility_id)
+    print(availability)
     if request.is_json:
         try:
             facilities = request.get_json()
             print("\nReceived an order in JSON:", facilities)
 
             result = processEditFacility(facilities, facility_id)
-            return jsonify(result), 200
+            print(result["code"])
+
+            code = result["code"]
+            message = json.dumps(result)
+            #return jsonify(result)
+            if (code == 200):
+                #return jsonify(result)
+                
+                #return jsonify(result)
+                print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="users.notifications", body=message, xproperties=pika.BasicProperties(delivery_mode = 2)) 
+                
+                return jsonify(result)
 
         except Exception as e:
             pass  # do nothing.
@@ -37,8 +57,7 @@ def edit_facility():
 def processEditFacility(facilities, facility_id):
     print('\n-----Invoking facilities microservice-----')
     facilities_result = invoke_http(facilities_URL + facility_id, method='PUT', json=facilities)
-    return('facilities_result:', facilities_result)
-
+    return(facilities_result)
 
 
 

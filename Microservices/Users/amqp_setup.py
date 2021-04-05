@@ -60,7 +60,7 @@ def check_setup():
     # timed out, disconnected by the broker or a client;
     # - re-establish the connection/channel is they have been closed
     global connection, channel, hostname, port, exchangename, exchangetype
-
+    print("xxzczxczcx")
     if not is_connection_open(connection):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
     if channel.is_closed:
