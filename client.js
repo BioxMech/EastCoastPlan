@@ -1,6 +1,5 @@
-// A reference to Stripe.js initialized with a fake API key.
-// Sign in to see examples pre-filled with your key.
-var stripe = Stripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
+// A reference to Stripe.js initialized with your real test publishable API key.
+var stripe = Stripe("pk_test_51IVv9fK8z0TITG8fz2lfUZwYxhnGbiqhKjLPfBUi8OHxiFpWabFwoiblnuAjdOC7wfBWISGNFRDEaS9IUOK7qfvW00nfRqcnNo");
 
 // The items the customer wants to buy
 var purchase = {
@@ -9,7 +8,7 @@ var purchase = {
 
 // Disable the button until we have Stripe set up on the page
 document.querySelector("button").disabled = true;
-fetch("/create-payment-intent", {
+fetch("http://localhost:5004/create-payment-intent", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
@@ -50,11 +49,14 @@ fetch("/create-payment-intent", {
     });
 
     var form = document.getElementById("payment-form");
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-      // Complete payment when the submit button is clicked
-      payWithCard(stripe, card, data.clientSecret);
-    });
+    if (form)  {
+      form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        // Complete payment when the submit button is clicked
+        payWithCard(stripe, card, data.clientSecret);
+      });
+    }
+    
   });
 
 // Calls stripe.confirmCardPayment
