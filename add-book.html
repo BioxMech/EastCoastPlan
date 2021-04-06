@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <title>Booking</title>
+
+    <meta name="viewport" 
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" 
+    crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script 
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+    
+    <script 
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+
+    <!-- <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script> -->
+
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+    <script>
+        // var parts = window.location.search.substr(1).split("&");
+        var url = document.location.href;
+        var params = url.split('?')[1].split('&');
+        var data = {}, tmp;
+        for (var i = 0; i < params.length; i++ ) {
+            tmp = params[i].split('=');
+            data[tmp[0]] = tmp[1];
+        }
+        console.log(data);
+        var internal_name = data.facility_name;
+        var facility_name = internal_name.split("_").join(" ")
+        var schedule_id = data.schedule_id
+        var facility_id = data.facility_id
+        console.log(facility_id);
+        var currentdate = new Date();
+        var currYear = currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + (currentdate.getDate().toString().padStart(2, "0"));
+        // var currTime = (currentdate.getHours().toString().padStart(2,"0"));
+
+        
+    </script>
+    
+    
+</head>
+
+<body>
+    <div id="main-container" class="container">
+        <h1 class="display-4">Make a booking</h1>
+        <input id="dateTime" type="date" v-model="selected_date" v-on:change="updateSlots">
+
+        <form id='bookForm'>
+            <div class="mb-3">
+                <label for="bookTitle" class="form-label">Facility</label>
+                <!-- <input type="text" class="form-control" id="bookTitle" aria-describedby="titleHelp"> -->
+
+                <!-- <div id="titleHelp" class="form-text">e.g. 'Book from jQuery'</div> -->
+            </div>
+            <p><strong>Choose preferred time slot</strong></p>
+            <select id="dropDownMenu">
+
+            </select>
+            <div class="mb-3">
+                <label for="bookPrice" class="form-label"><h3>Price</h3></label>
+                <!-- <input type="number" class="form-control" id="bookPrice" aria-describedby="priceHelp"> -->
+                <p id='price'></p>
+            </div>
+            
+            <div class="mb-3">
+                <label for="cname">Name on Card</label>
+                <input type="text" id="cname" name="cardname" class="form-control" placeholder="John More Doe">
+                <!-- <label for="ccnum" class="form-label">Credit Card Number</label>
+                
+                <i class="fa fa-cc-visa" style="color:navy;"></i>
+                <i class="fa fa-cc-amex" style="color:blue;"></i>
+                <i class="fa fa-cc-mastercard" style="color:rgb(255, 72, 0);"></i>
+                
+                <input type="text" id="ccnum" class="form-control input-field" name="cardnumber" inputmode="numeric"
+                    placeholder="1234 1234 1234 1234" aria-describedby="creditCardHelp" required> -->
+                    
+                <label for="ccnum" class="form-label">Credit Card number</label>
+                <input type="text" id="ccnum" class="form-control" name="cardnumber" inputmode="numeric" placeholder="1234 1234 1234 1234"  aria-describedby="creditCardHelp" required>
+                <!-- visa starts with 4, master starts with 51-55, amex starts with 34,37 (4-6-5) -->
+                <!-- create an 'on key up' -> Set Focus on event. Then create a condition that is When.. Count (Input field, 4) -->
+                <!-- <label for="expmonth">Exp Month</label>
+                <input type="text" id="expmonth" name="expmonth" placeholder="September" class="form-control"> -->
+                <div class="row">
+                    <div class="col-50">
+                        <label for="exp">Expiry Month</label>
+                        <input type="number" id="expMonth" name="expiryMonth" placeholder="01" class="form-control">
+                    </div>
+                    <div class="col-50">
+                        <label for="exp">Expiry Year</label>
+                        <input type="number" id="expYear" name="expiryYear" placeholder="2030" class="form-control">
+                    </div>
+                    <div class="col-50">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="123" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <a style='color:white;' id="submit" class="btn btn-primary">Submit</a>
+        <a style='color:white;' class="btn btn-success" href='index.html'>Return to home</a>
+        <h4 style='color:red;' id="errorMsg"></h4>
+
+
+    </div>
+    
+
+    <script>
+        function showError(message) {
+            // Display an error in the error paragraph
+            $('#errorMsg')
+                .append("<label>"+message+"</label>");
+        }
+
+        //Vue instance
+        var app = new Vue({
+            el: "#main-container",
+
+            data: {
+                greeting: "Hello",
+                // currDate: currYear,
+                selected_date: "Please select a date"
+            },
+            
+            methods : {
+                updateSlots: function() {
+                    
+                    $(async() => {
+                        // console.log(currYear);
+                        // console.log(currTime);
+                        var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
+
+                        try {
+                            const response =
+                            await fetch(
+                                slotsURL, {method:'POST', headers: {"Content-Type": "application/json"}, body:JSON.stringify({from: this.selected_date})}
+                            );
+                            const result = await response.json();
+                            // console.log(result.data);
+                            var html_str = "";
+                            for (i=0; i<result.data.length; i++) {
+                                // console.log(result.data[i]);
+                                var slot = result.data[i]
+                                var name = slot.name;
+                                var start = slot.start;
+                                var finish = slot.finish;
+                                var date = slot.start.slice(0,10);
+                                var start_time = slot.start.slice(11) + ":00";
+                                // console.log(start_time);
+                                var end_time = slot.finish.slice(11) + ":00";
+                                html_str += `<option id='selected_option'>${date}-${start_time}-${end_time}</option>`;
+                            }
+                            document.getElementById("dropDownMenu").innerHTML = html_str;
+                        } catch (error) {
+                            showError("There is a problem retrieving the data <br>" +error)
+
+                            }
+                        })
+
+                }
+            }
+
+        })
+        
+
+        $(async() => {
+            // console.log(currYear);
+            // console.log(currTime);
+            var slotsURL = "http://localhost:5002/getSlots/" + schedule_id + "/" + internal_name;
+
+            try {
+                const response =
+                await fetch(
+                    slotsURL, {method:'POST'}
+                );
+                const result = await response.json();
+                // console.log(result.data);
+                var html_str = "";
+                for (i=0; i<result.data.length; i++) {
+                    // console.log(result.data[i]);
+                    let slot = result.data[i]
+                    let name = slot.name;
+                    let start = slot.start;
+                    let finish = slot.finish;
+                    var date = slot.start.slice(0,10);
+                    var start_time = slot.start.slice(11) + ":00";
+                    var end_time = slot.finish.slice(11) + ":00";
+                    html_str += `<option id='selected_option'>${date} ${start_time}-${end_time}</option>`;
+                }
+                document.getElementById("dropDownMenu").innerHTML = html_str;
+            } catch (error) {
+                showError("There is a problem retrieving the data <br>" +error)
+
+            }
+        })
+
+        $(async() => {
+
+            var scheduleURL = "http://localhost:5002/facilities/" + schedule_id;
+
+            try {
+                const response =
+                await fetch(
+                    scheduleURL, {method:'GET'}
+                );
+                const result = await response.json();
+                // console.log(result.data.resources[0]['price']);
+                var price = result.data.resources[0]['price'];
+                document.getElementById("price").innerText = price;
+                
+            } catch (error) {
+                showError("There is a problem retrieving the data <br>" +error)
+
+            }
+        })
+
+        $('#submit').click(function() {
+            $(async() => {
+                var dropdown = document.getElementById("selected_option").value;
+                let date = dropdown.slice(0,10);
+                let start = date + " " + dropdown.slice(11,19);
+                // console.log(start);
+                let finish = date + " "+ dropdown.slice(20,28);
+                let full_name = document.getElementById("cname").value;
+                console.log(full_name);
+                // console.log(user_name);
+                var price = document.getElementById("price").innerText;
+                var creditCard = document.getElementById("ccnum").value;
+                console.log(creditCard);
+                // console.log(price);
+                var expMonth = document.getElementById("expMonth").value;
+                console.log(expMonth);
+                var expYear = document.getElementById("expYear").value;
+                console.log(expYear);
+                var cvv = document.getElementById("cvv").value;
+                var booking_id = internal_name + date + dropdown.slice(11,19); 
+                console.log(booking_id);
+                // var bookingURL = "http://localhost:5003/createBooking/" + booking_id;
+                var bookingURL = "http://localhost:5010/make_booking/" + booking_id;
+                console.log(bookingURL);
+                try {
+                    const response = 
+                    await fetch(
+                        bookingURL, {method:"POST", headers: {"Content-Type": "application/json"}, body:JSON.stringify({ schedule_id: schedule_id, facility_id: facility_id, resource_id: internal_name, user_id:2, full_name: full_name,  date:date, start: start, finish: finish,  price:price, creditCard:creditCard, expMonth:expMonth, expYear:expYear, cvv:cvv})}
+                    );
+                    const result = await response.json();
+                    if (response.status == 201) {
+                        window.location.replace("index.html")
+                    }
+                } catch(error) {
+                    showError("There is an error: " + error);
+                }
+
+
+            })
+        })
+
+
+    </script>
+</body>
+</html>

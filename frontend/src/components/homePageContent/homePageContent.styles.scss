@@ -1,0 +1,35 @@
+.content {
+  font-family: "Nunito", sans-serif;
+  text-align: center;
+  align-items: center;
+
+  .item {
+    min-height: 80vh;
+  }
+
+  .title {
+    font-weight: 700;
+    text-align: center;
+    align-items: center;
+  }
+
+  .subtitle {
+    font-weight: 300;
+    text-align: center;
+    align-items: center;
+  }
+
+  .buttonP {
+    text-align: center;
+    align-items: center;
+    
+    .button:hover {
+      background-color: rgba(255, 255, 255, 0.4);;
+      color: black;
+    }
+  }
+
+  .gif {
+    max-width: 100%;
+  }
+}
