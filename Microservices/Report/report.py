@@ -30,7 +30,7 @@ class Report(db.Model):
         self.facility_id = facility_id
 
     def json(self):
-        return {"date": self.date, "time": self.time, "message": self.message, "facility_id": self.facility_id}
+        return {"report_id": self.report_id, "date": self.date, "time": self.time, "message": self.message, "facility_id": self.facility_id}
 
 
 @app.route("/reports")

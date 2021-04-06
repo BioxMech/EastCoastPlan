@@ -44,7 +44,7 @@ def edit_facility():
         #return (amqp_setup.exchangename)
         print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="users.notifications", body=message) 
-        return("xxx")
+        return(jsonify(result))
         # except Exception as e:
         #     pass  # do nothing.
 

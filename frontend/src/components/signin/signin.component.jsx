@@ -164,7 +164,7 @@ class SignIn extends React.Component {
             </Box> */}
             <Box mt={3}>
             {
-              this.state.loading ?
+              this.state.loading ?  
               <Fade
                 in={this.state.loading}
                 style={{
