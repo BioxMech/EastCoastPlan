@@ -17,7 +17,7 @@ services:
     build:
       context: ./
       dockerfile: report.Dockerfile
-    image: jingrongho2019/report:ecp
+    image: bioxmech/report:ecp
     restart: always
     networks:
       - kong-net
@@ -51,7 +51,7 @@ services:
     build:
       context: ./
       dockerfile: users.Dockerfile
-    image: petrastan/users:ecp
+    image: bioxmech/users:ecp
     restart: always
     networks:
       - kong-net
@@ -68,7 +68,7 @@ services:
     build:
       context: ./
       dockerfile: facilities.Dockerfile
-    image: petrastan/facilities:ecp
+    image: bioxmech/facilities:ecp
     restart: always
     networks:
       - kong-net
@@ -85,7 +85,7 @@ services:
     build:
       context: ./
       dockerfile: booking.Dockerfile
-    image: petrastan/booking:ecp
+    image: bioxmech/booking:ecp
     restart: always
     networks:
       - kong-net
@@ -102,7 +102,7 @@ services:
     build:
       context: ./
       dockerfile: payment.Dockerfile
-    image: petrastan/payment:ecp
+    image: bioxmech/payment:ecp
     restart: always
     networks:
       - kong-net
@@ -199,14 +199,13 @@ services:
     build:
       context: ./
       dockerfile: bookFacility.Dockerfile
-    image: petrastan/book_facility:ecp
+    image: bioxmech/book_facility:ecp
     restart: always
     networks:
       - kong-net
     depends_on:
       - facility
       - booking
-      - payment
     environment:
       PYTHONBUFFERED: 1
       booking_URL: http://booking:5003/createBooking/

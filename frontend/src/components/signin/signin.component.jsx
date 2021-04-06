@@ -1,6 +1,9 @@
 import React from 'react';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom'
 import { Paper, FormControl, FormLabel, InputLabel, Input, FormHelperText, Box, Button, Radio, FormControlLabel, RadioGroup } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
 
 class SignIn extends React.Component {
 
@@ -18,6 +21,7 @@ class SignIn extends React.Component {
       passwordVerified: false,
       passwordError: false,
       passwordText: "Your password will be encrypted.",
+      loading: false
     }
 
     this.handleAccType = this.handleAccType.bind(this);
@@ -49,28 +53,28 @@ class SignIn extends React.Component {
   handleEmailCheck(event) {
     axios.get(`http://localhost:5001/users/${event.target.value}`)
       .then(response => {
-        if (response.data.code == 400) {
-          this.setState({emailError:true, emailText: "Invalid Email!!", disabled: true})
-        }
-        else {
-          this.setState({emailError:false, emailText: "We'll never share your email."})
-          if (this.state.password != '') {
-            this.setState({disabled: false})
-          } 
-        }
-      });
+        var acc_type = response.data.data.account_type
+        console.log(acc_type)
+        this.setState({emailError:false, emailText: "We'll never share your email.", acc_type:acc_type})
+        if (this.state.password != '') {
+          this.setState({disabled: false})
+        } 
+      })
+      .catch(error => {
+        this.setState({emailError:true, emailText: "Invalid Email!!", disabled: true})
+      })
   }
 
+  //  Extreme efficient password checker
   handlePasswordVerification(event) {
     var json = {password: event.target.value}
-    axios.get(`http://localhost:5001/users/verify/${this.state.email}`, json)
-    
+    axios.post(`http://localhost:5001/users/verify/${this.state.email}`, json)
     .then(response => {
       if (response.data.result == false) {
-        this.setState({passwordError:true, emailText: "Invalid Email!!", disabled: true})
+        this.setState({passwordError:true, passwordText: "Incorrect Password."})
       }
       else {
-        this.setState({passwordError:false, emailText: "Your password will be encrypted."})
+        this.setState({passwordError:false, passwordText: "Your password will be encrypted."})
         if (this.state.email != '') {
           this.setState({disabled: false})
         }
@@ -78,13 +82,14 @@ class SignIn extends React.Component {
     })
     .catch(function(error) {
       if (error.response) {
-        console.log(error.response)
+        this.setState({passwordError:true, passwordText: "Invalid Email!!", disabled: true})
       }
     })
   }
 
   handleSubmit(event) {
     event.preventDefault()
+    this.setState({loading:true})
     var email = event.target[0].value
     var password = event.target[1].value
     var acc_type = this.state.acc_type
@@ -92,15 +97,40 @@ class SignIn extends React.Component {
       password: password, 
       account_type: acc_type 
     }
-    axios.post(`http://localhost:5001/users/${email}`, json)
-      .then(response => {
-        if (response.data.code == 201) {
-           // ############# add local session ################
+    axios.post(`http://localhost:5001/users/verify/${this.state.email}`, json)
+    .then(response => {
+      if (response.data.result == false) {
+        this.setState({passwordError:true, passwordText: "Incorrect Password.", loading:false})
+      }
+      else {
+        this.setState({passwordError:false, passwordText: "Your password will be encrypted."})
+        if (this.state.email !== '') {
+          localStorage.setItem("email", email)
+          localStorage.setItem("acc_type", acc_type)
+          window.location.reload(false)
         }
-        else if (response.data.code == 400) {
-          this.setState({show:true})
+        else {
+          this.setState({emailError:true, emailText: "Invalid Email!!", disabled: true, loading:false})
         }
-      });
+      }
+    })
+    .catch(function(error) {
+      if (error.response) {
+        this.setState({passwordError:true, passwordText: "Invalid Email!!", disabled: true, show:true, loading:false})
+      }
+    })
+
+    // axios.post(`http://localhost:5001/users/${email}`, json)
+    //   .then(response => {
+    //     localStorage.setItem("login", {email:email, acc_type:acc_type})
+    //     window.location.reload(false)
+    //   })
+    //   .catch(error => {
+    //     if (error.response.status == 400) {
+    //       this.setState({show:true, disabled:true})
+
+    //     }
+    //   })
   }
   
   render() {
@@ -119,11 +149,11 @@ class SignIn extends React.Component {
             <Box>
               <FormControl required error={this.state.passwordError}>
                 <InputLabel htmlFor="my-input" >Password</InputLabel>
-                <Input id="my-input" aria-describedby="my-helper-text"  type="password" onChange={this.handlePassword} onBlur={this.handlePasswordVerification} required />
+                <Input id="my-input" aria-describedby="my-helper-text"  type="password" onChange={this.handlePassword} required />
                 <FormHelperText id="my-helper-text"> { this.state.passwordText } </FormHelperText>
               </FormControl>
             </Box>
-            <Box mt={2}>
+            {/* <Box mt={2}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Account Type</FormLabel>
                 <RadioGroup row aria-label="acc_type" name="acc_type" value={this.state.acc_type} onChange={this.handleAccType}>
@@ -131,8 +161,20 @@ class SignIn extends React.Component {
                   <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                 </RadioGroup>
               </FormControl>
-            </Box>
+            </Box> */}
             <Box mt={3}>
+            {
+              this.state.loading ?
+              <Fade
+                in={this.state.loading}
+                style={{
+                  transitionDelay: this.state.loading ? '300ms' : '0ms',
+                }}
+                unmountOnExit
+              >
+                <Button variant="contained" disabled>LOGIN <CircularProgress size="25px" style={{marginLeft:"10px"}} /></Button>
+              </Fade>
+              :
               <Button 
                 type="submit"
                 variant="contained"
@@ -141,6 +183,15 @@ class SignIn extends React.Component {
               >
                 LOGIN
               </Button>
+            }
+              {/* <Button 
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={this.state.disabled}
+              >
+                LOGIN
+              </Button> */}
             </Box>
             {
               this.state.show ?
@@ -158,4 +209,4 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn
+export default withRouter(SignIn)

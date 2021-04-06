@@ -172,7 +172,7 @@ def makePayment(booking_id):
     exp_year = data['expYear']
     cvc = data['cvv']
     price_orig = data['price']
-    price = int(data['price'] + "00")
+    price = int(str(data['price']) + "00")
     user_id = data['user_id']
     schedule_id = data['schedule_id']
     facility_id = data['facility_id']
@@ -180,21 +180,29 @@ def makePayment(booking_id):
     start = data['start']
     finish = data['finish']
     # print(ccnum)
-    token = stripe.Token.create(
-        card={
-            "number": ccnum,
-            "exp_month": exp_month,
-            "exp_year": exp_year,
-            "cvc": cvc,
-        },
-    )
-    response = stripe.Charge.create(
-        amount=price,
-        currency="sgd",
-        source=token,
-        description=booking_id,
-        receipt_email='hyong.2019@sis.smu.edu.sg' # Testing Email
-    )
+    try:
+        token = stripe.Token.create(
+            card={
+                "number": ccnum,
+                "exp_month": exp_month,
+                "exp_year": exp_year,
+                "cvc": cvc,
+            },
+        )
+        response = stripe.Charge.create(
+            amount=price,
+            currency="sgd",
+            source=token,
+            description=booking_id,
+            receipt_email='hyong.2019@sis.smu.edu.sg' # Testing Email
+        )
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": "Stripe API could not be called due to invalid input."
+            }
+        ),500
     print(response['status'])
     if response['status'] == "succeeded":
         payment = Payment(booking_id,schedule_id,facility_id,user_id,full_name,price_orig,start,finish,today)

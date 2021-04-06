@@ -16,7 +16,7 @@ class FacilitiesList extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://localhost:5002/facilities`)
+    axios.get(`http://localhost:8000/api/facilities`)
     .then(res => {
       const facilityDict = res.data.data.schedules;
       this.setState({ facilityDict });

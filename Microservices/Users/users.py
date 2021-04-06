@@ -14,8 +14,8 @@ from passlib.hash import sha256_crypt
 app = Flask(__name__)
 
 print(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # to fix the kong bug
@@ -42,20 +42,20 @@ class Users(db.Model):
     def json(self):
         return {"user_id": self.user_id, "email": self.email, "password": self.password, "account_type": self.account_type}
 
-class Notifications(db.Model):
-    __tablename__ = 'notifications'
+# class Notifications(db.Model):
+#     __tablename__ = 'notifications'
 
-    notification_id = db.Column(db.Integer, primary_key=True, AUTO_INCREMENT=True)
-    message = db.Column(db.String(1000), nullable=False)
-    account_type = db.Column(db.String(10), nullable=False)
+#     notification_id = db.Column(db.Integer, primary_key=True, AUTO_INCREMENT=True)
+#     message = db.Column(db.String(1000), nullable=False)
+#     account_type = db.Column(db.String(10), nullable=False)
 
-    def __init__(self, message, account_type):
+#     def __init__(self, message, account_type):
 
-        self.message = message
-        self.account_type = account_type
+#         self.message = message
+#         self.account_type = account_type
 
-    def json(self):
-        return {"notification_id": self.notification_id, "message": self.message, "account_type": self.account_type}
+#     def json(self):
+#         return {"notification_id": self.notification_id, "message": self.message, "account_type": self.account_type}
 
 
 @app.route("/users")
@@ -141,6 +141,7 @@ def create_user(email):
     print("EMAIL HERE: " + str(email))
     print("DATA HERE: " + str(data))
     users = Users(email, **data)
+    
 
     users.password = sha256_crypt.encrypt(users.password)
     
@@ -166,6 +167,8 @@ def create_user(email):
             "data": users.json()
         }
     ), 201
+
+
 
 
 # #retrieve all user/admin notification

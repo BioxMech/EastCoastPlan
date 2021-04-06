@@ -11,7 +11,8 @@ class Facility extends React.Component {
   constructor() {
     super();
     this.state = {
-      facilityList: []
+      facilityList: [],
+      facilityName: ''
     }
   }
 
@@ -20,6 +21,11 @@ class Facility extends React.Component {
     .then(res => {
       const facilityList = res.data.data.resources;
       this.setState({ facilityList });
+      console.log(facilityList)
+      const temp = res.data.data.resources[0].facility_name.split(" ")
+      temp.pop()
+      const facilityName = temp.join(" ");
+      this.setState({ facilityName });
     })
   }
 
@@ -28,7 +34,7 @@ class Facility extends React.Component {
     return (
       <Container >
         <Box my={2}>
-          <h1>FIX ME</h1>
+          <h1>{ this.state.facilityName }</h1>
           <Grid
             container
             spacing={6}

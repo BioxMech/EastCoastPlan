@@ -8,8 +8,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        JSON The Menace
+      <Link color="inherit" href="/aboutus">
+        EastCoastPlan
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
