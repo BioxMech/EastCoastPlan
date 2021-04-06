@@ -8,16 +8,17 @@ import requests
 from invokes import invoke_http
 
 import amqp_setup
-import pika
+
 import json
+import pika
 
 app = Flask(__name__)
 CORS(app)
 
-users_URL = "http://localhost:5001/users"
+#users_URL = "http://localhost:5001/users"
 facilities_URL = "http://localhost:5002/updateAvailability/"
 
-@app.route("/edit_facility", methods=['PUT'])
+@app.route("/edit_facility", methods=['POST'])
 def edit_facility():
     #facility_id = request.headers.get('facility_id')
     data = request.get_json()
@@ -26,25 +27,26 @@ def edit_facility():
     print(facility_id)
     print(availability)
     if request.is_json:
-        try:
-            facilities = request.get_json()
-            print("\nReceived an order in JSON:", facilities)
+        #try:
+        facilities = request.get_json()
+        print("\nReceived facility in JSON:", facilities)
 
-            result = processEditFacility(facilities, facility_id)
-            print(result["code"])
+        result = processEditFacility(facilities)
+        print(result["code"])
 
-            code = result["code"]
-            message = json.dumps(result)
-            #return jsonify(result)
-            if (code == 200):
-                #return jsonify(result)
-                
-                #print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="users.notifications", body=message, xproperties=pika.BasicProperties(delivery_mode = 2)) 
-                return jsonify(result)
-
-        except Exception as e:
-            pass  # do nothing.
+        code = result["code"]
+        message = json.dumps(result)
+    #return jsonify(result)
+    #if (code == 200):
+        #return jsonify(result)
+        #return (message)
+        #return jsonify(result)
+        #return (amqp_setup.exchangename)
+        print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="users.notifications", body=message) 
+        return("xxx")
+        # except Exception as e:
+        #     pass  # do nothing.
 
     # if reached here, not a JSON request.
     return jsonify({
@@ -52,7 +54,11 @@ def edit_facility():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def processEditFacility(facilities, facility_id):
+def processEditFacility(facilities):
+    facility_id = facilities["facility_id"]
+    print(facility_id)
+    print("facility_id")
+    print(facilities_URL)
     print('\n-----Invoking facilities microservice-----')
     facilities_result = invoke_http(facilities_URL + facility_id, method='PUT', json=facilities)
     return(facilities_result)
