@@ -14,6 +14,8 @@ class Booking extends React.Component {
       facilityInfo: [],
       facilityName: '',
       scheduleID: '',
+      price: 0,
+      internal_name: ''
     }
   }
 
@@ -26,6 +28,11 @@ class Booking extends React.Component {
       this.setState({ facilityName });
       const scheduleID = facilityInfo.schedule_id;
       this.setState({ scheduleID })
+      const price = facilityInfo.price;
+      this.setState({ price })
+      const internal_name = facilityInfo.internal_name;
+      this.setState({ internal_name })
+
     })
   }
 
@@ -41,8 +48,9 @@ class Booking extends React.Component {
               </Grid>
               <Grid item xs={12} sm={8} >
                 <Paper elevation={3}>
-                  <Box mx={3}>
-                    <BookingForm facilityInfo={this.state.facilityInfo} facilityName={this.state.facilityName} scheduleID={this.state.scheduleID} />
+                  <Box mx={3} py={1}>
+                    <h1>Booking Details</h1>
+                    <BookingForm facilityInfo={this.state.facilityInfo} facilityName={this.state.facilityName} scheduleID={this.state.scheduleID} price={this.state.price} internal_name={this.state.internal_name} />
                   </Box>
                 </Paper>
               </Grid>

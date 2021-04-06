@@ -122,11 +122,15 @@ def create_booking(booking_id):
     date = data['date']
     start = data['start']
     finish = data['finish']
+    print("=======================")
+    print(start)
+    print("=======================")
+    print(finish)
+    print("=======================")
     price = data['price']
     myobj = {'start': start, 'finish': finish,
              'full_name': full_name, 'resource_id': resource_id}
-    url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + \
-        schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
+    url = "https://www.supersaas.com/api/bookings.json?schedule_id=" + schedule_id + "&api_key=jZf9H2V1AtNvTKRwzWaLBw"
     post_request = requests.post(url, json=myobj)
     print(post_request.status_code)
     if post_request.status_code == 201:

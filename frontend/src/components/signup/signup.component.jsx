@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 import { Paper, FormControl, InputLabel, Input, FormHelperText, Box, Button } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
 
 class SignUp extends React.Component {
 
@@ -12,7 +14,8 @@ class SignUp extends React.Component {
       password: '',
       acc_type: 'user',
       disabled: true,
-      show: false
+      show: false,
+      loading: false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -37,6 +40,7 @@ class SignUp extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
+    this.setState({loading:true})
     var email = event.target[0].value
     var password = event.target[1].value
     var acc_type = this.state.acc_type
@@ -46,13 +50,14 @@ class SignUp extends React.Component {
     }
     axios.post(`http://localhost:5001/users/${email}`, json)
       .then(response => {
-        localStorage.setItem("login", {email:email, acc_type:acc_type})
+        localStorage.setItem("email", email)
+        localStorage.setItem("acc_type", acc_type)
         // this.props.history.push('/facilities');
         window.location.reload(false)
       })
       .catch(error => {
         if (error.response.status == 400) {
-          this.setState({show:true, disabled:true})
+          this.setState({show:true, disabled:true, loading: false})
         }
       })
   }
@@ -78,6 +83,18 @@ class SignUp extends React.Component {
               </FormControl>
             </Box>
             <Box mt={3}>
+            {
+              this.state.loading ?
+              <Fade
+                in={this.state.loading}
+                style={{
+                  transitionDelay: this.state.loading ? '300ms' : '0ms',
+                }}
+                unmountOnExit
+              >
+                <Button variant="contained" disabled>SIGN UP <CircularProgress size="25px" style={{marginLeft:"10px"}} /></Button>
+              </Fade>
+              :
               <Button 
                 type="submit"
                 variant="contained"
@@ -86,6 +103,8 @@ class SignUp extends React.Component {
               >
                 SIGN UP
               </Button>
+            }
+              
             </Box>
             {
               this.state.show ?

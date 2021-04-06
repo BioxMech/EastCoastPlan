@@ -172,7 +172,7 @@ def makePayment(booking_id):
     exp_year = data['expYear']
     cvc = data['cvv']
     price_orig = data['price']
-    price = int(data['price'] + "00")
+    price = int(str(data['price']) + "00")
     user_id = data['user_id']
     schedule_id = data['schedule_id']
     facility_id = data['facility_id']

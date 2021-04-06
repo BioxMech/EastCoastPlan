@@ -17,21 +17,20 @@ CORS(app)
 class Report(db.Model):
     __tablename__ = 'report'
 
-    report_id = db.Column(db.String(13), primary_key=True)
-    date = db.Column(db.String(8), nullable=False)
-    time = db.Column(db.String(8), nullable=False)
+    report_id = db.Column(db.Integer, primary_key=True, AUTO_INCREMENT=True)
+    date = db.Column(db.String(10), nullable=False)
+    time = db.Column(db.String(10), nullable=False)
     message = db.Column(db.String(300), nullable=False)
-    facility_id = db.Column(db.String(8), nullable=False)
+    facility_id = db.Column(db.String(10), nullable=False)
 
-    def __init__(self, report_id, date, time, message, facility_id):
-        self.report_id = report_id
+    def __init__(self, date, time, message, facility_id):
         self.date = date
         self.time = time
         self.message = message
         self.facility_id = facility_id
 
     def json(self):
-        return {"report_id": self.report_id, "date": self.date, "time": self.time, "message": self.message, "facility_id": self.facility_id}
+        return {"date": self.date, "time": self.time, "message": self.message, "facility_id": self.facility_id}
 
 
 @app.route("/reports")
@@ -72,35 +71,26 @@ def find_by_report_id(report_id):
     ), 404
 
 
-@app.route("/createReport/<string:report_id>", methods=['POST'])
-def create_report(report_id):
-    if (Report.query.filter_by(report_id=report_id).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "report_id": report_id
-                },
-                "message": "Report already exists."
-            }
-        ), 400
+@app.route("/createReport", methods=['POST'])
+def createReport():
 
     data = request.get_json()
-    date = data['date']
-    time = data['time']
-    message = data['message']
-    facility_id = data['facility_id']
-    report = Report(date, time, message, facility_id)
+    print(data)
 
+    print("DATA HERE: " + str(data))
+    reports = Report(**data)
+    
     try:
-        db.session.add(report)
+        db.session.add(reports)
         db.session.commit()
+
     except:
+
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "report_id": report_id
+                    "email": "xxxxxx"
                 },
                 "message": "An error occurred creating the report."
             }
@@ -109,7 +99,7 @@ def create_report(report_id):
     return jsonify(
         {
             "code": 201,
-            "data": report.json()
+            "data": reports.json()
         }
     ), 201
 

@@ -10,6 +10,8 @@ import Button from '@material-ui/core/Button';
 // import SearchIcon from '@material-ui/icons/Search';
 import Link from '@material-ui/core/Link';
 import Popover from '@material-ui/core/Popover';
+import Box from '@material-ui/core/Box';
+import { Redirect } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,13 +91,13 @@ export default function Header() {
   };
 
   const handleLogout = (event) => {
-    localStorage.removeItem("login")
-    window.location.reload(false);
+    localStorage.clear()
+    window.location.replace("/")
   }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
-
+  
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -119,13 +121,25 @@ export default function Header() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div> */}
+          {
+            localStorage.getItem("email") !== null ?
+            <div className={classes.search}>Hello, {localStorage.getItem("email").split("@")[0]} ({
+                localStorage.getItem("acc_type") === 'user' ? "USER" : "ADMIN"
+              })</div>
+            :
+            null
+          }
           <Button color="inherit" href="/aboutus">About Us</Button>
+          {
+            localStorage.getItem("email") !== null ?
+              localStorage.getItem("acc_type") === 'user' ? null : <Button color="inherit" href="/report">Reports</Button>
+            :
+            null
+          }
           <Button color="inherit" href="/facilities">Facilities</Button>
           {
-            localStorage.getItem("login") != null ?
+            localStorage.getItem("email") != null ?
              <Button color="inherit" aria-describedby={id} onClick={handleClick}>Logout</Button>
-            
-           
             :
             <Button color="inherit" href="/signinsignup">Login</Button>
           }
@@ -143,7 +157,16 @@ export default function Header() {
               horizontal: 'right',
             }}
           >
-            <Button color="inherit" onClick={handleLogout}>Logout</Button>
+            <Box m={2}>
+              <Typography variant="h7" className={classes.title}>
+                Confirm Log Out?
+              </Typography>
+              <Box component="span" mx={3}>
+                <Button color="inherit" onClick={handleLogout}>Logout</Button>
+              </Box>
+            </Box>
+            
+            
           </Popover>
         </Toolbar>
       </AppBar>

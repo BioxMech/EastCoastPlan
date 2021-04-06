@@ -34,8 +34,8 @@ USE `Report`;
 DROP TABLE IF EXISTS `report`;
 CREATE TABLE IF NOT EXISTS `report` (
   `report_id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` varchar(6) DEFAULT NULL,
-  `time` varchar(4) DEFAULT NULL,
+  `date` varchar(10) DEFAULT NULL,
+  `time` varchar(6) DEFAULT NULL,
   `message` varchar(300) DEFAULT NULL,
   `facility_id` varchar(8) DEFAULT NULL,
   PRIMARY KEY (`report_id`)
