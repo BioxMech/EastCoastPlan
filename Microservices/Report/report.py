@@ -22,15 +22,17 @@ class Report(db.Model):
     time = db.Column(db.String(10), nullable=False)
     message = db.Column(db.String(300), nullable=False)
     facility_id = db.Column(db.String(10), nullable=False)
+    facility_name = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, date, time, message, facility_id):
+    def __init__(self, date, time, message, facility_id, facility_name):
         self.date = date
         self.time = time
         self.message = message
         self.facility_id = facility_id
+        self.facility_name = facility_name
 
     def json(self):
-        return {"report_id": self.report_id, "date": self.date, "time": self.time, "message": self.message, "facility_id": self.facility_id}
+        return {"report_id": self.report_id, "date": self.date, "time": self.time, "message": self.message, "facility_id": self.facility_id, "facility_name": self.facility_name}
 
 
 @app.route("/reports")

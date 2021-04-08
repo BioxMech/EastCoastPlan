@@ -60,20 +60,19 @@ class Report extends React.Component {
   render() {
     return(
       <Box my={3} mx={3}>
-      <Paper elevation={5}>
-      <Box px={2} py={2}>
-      <Typography align="center" variant="h2">Reports</Typography>
-      <br />
-        <Grid container spacing={2}>
-        {
-          this.state.reportList.map(report => 
-          <ReportItem report={report} />
-        
-          )}
-        </Grid>
-       </Box>
-      </Paper>
-       </Box>
+        <Paper elevation={5}>
+          <Box px={2} py={2}>
+          <Typography align="center" variant="h2">Reports</Typography>
+          <br />
+            <Grid container spacing={2}>
+              {
+                this.state.reportList.map(report => 
+                <ReportItem report={report} />
+              )}
+            </Grid>
+          </Box>
+        </Paper>
+      </Box>
     )
   }
 }

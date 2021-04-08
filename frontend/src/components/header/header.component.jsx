@@ -11,7 +11,9 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Popover from '@material-ui/core/Popover';
 import Box from '@material-ui/core/Box';
-import { Redirect } from 'react-router';
+
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,6 +131,9 @@ export default function Header() {
             :
             null
           }
+
+          <Button color="inherit"> <Badge color="secondary" badgeContent={0} showZero><NotificationsIcon /></Badge> </Button>
+
           <Button color="inherit" href="/aboutus">About Us</Button>
           {
             localStorage.getItem("email") !== null ?
@@ -143,6 +148,7 @@ export default function Header() {
             :
             <Button color="inherit" href="/signinsignup">Login</Button>
           }
+
           <Popover 
             id={id}
             open={open}
@@ -159,14 +165,14 @@ export default function Header() {
           >
             <Box m={2}>
               <Typography variant="h7" className={classes.title}>
-                Confirm Log Out?
+                <strong>Confirm Log Out?</strong>
               </Typography>
-              <Box component="span" mx={3}>
-                <Button color="inherit" onClick={handleLogout}>Logout</Button>
+              <Box my={1}>
+                <Box component="span" mx={3}>
+                  <Button variant="contained" color="secondary" onClick={handleLogout}>Logout</Button>
+                </Box>
               </Box>
             </Box>
-            
-            
           </Popover>
         </Toolbar>
       </AppBar>
