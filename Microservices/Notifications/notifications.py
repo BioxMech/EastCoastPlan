@@ -5,8 +5,9 @@ from os import environ
 import json
 import os
 import amqp_setup
+from invokes import invoke_http
 
-monitorBindingKey='facilities.notifications'
+monitorBindingKey='*.notifications'
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
@@ -41,9 +42,10 @@ class Notifications(db.Model):
 def receiveNotifications ():
     amqp_setup.check_setup()
     
-    queue_name = "Admin"
+    #queue_name = "User"
     # set up a consumer and start to wait for coming messages
-    amqp_setup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    amqp_setup.channel.basic_consume(queue="Admin", on_message_callback=callback, auto_ack=True)
+    amqp_setup.channel.basic_consume(queue="User", on_message_callback=callback, auto_ack=True)
     
     amqp_setup.channel.start_consuming() # an implicit loop waiting to receive messages; 
     #it doesn't exit by default. Use Ctrl+C in the command window to terminate it.  
@@ -58,6 +60,9 @@ def processNotifications(notificationMsg):
     try:
         notification = json.loads(notificationMsg)
         print("--JSON:", notification)
+        #call the invoke(create_noti + admin/user, post, json=data)
+        #invoke_http("http://localhost:5007/notifications/admin", method='POST', json=notification["data"])
+
     except Exception as e:
         print("--NOT JSON:", e)
         print("--DATA:", notificationMsg)
@@ -68,9 +73,7 @@ def processNotifications(notificationMsg):
 #limit by 5 only
 @app.route("/notifications/<string:account_type>", methods=['GET'])
 def get_notifications(account_type):
-    print(account_type)
     notificationList = Notifications.query.filter_by(account_type = account_type).order_by(Notifications.notification_id.desc()).limit(5).all()
-    #resource_list = Facility.query.filter_by(schedule_id=schedule_id).all()
     
     if len(notificationList):
         return jsonify(
@@ -97,7 +100,6 @@ def create_notification(account_type):
     
     message = data['message']
     facility_name = data['facility_name']
-    print(message)
     print("ACCOUNT_TYPE HERE: " + str(account_type))
     print("DATA HERE: " + str(message))
     notifications = Notifications(account_type = account_type, message = message, facility_name = facility_name)

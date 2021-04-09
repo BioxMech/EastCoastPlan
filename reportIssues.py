@@ -35,6 +35,7 @@ def edit_facility():
             # return(jsonify(result))
             if (code in range(200, 300)):
                 print('\n\n-----Publishing the (notifications) message with routing_key=admin.notifications-----')
+                print(message)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="admin.notifications", body=message) 
                 
                 result2 = processStoreNotification(result, data)

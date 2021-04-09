@@ -21,21 +21,20 @@ facilities_URL = "http://localhost:5002/updateAvailability/"
 @app.route("/edit_facility", methods=['POST'])
 def edit_facility():
     data = request.get_json()
-
+    print(data)
     if request.is_json:
         try:
         
             print("\nReceived facility in JSON:", data)
-
+            print (data["message"])
             #returns the whole facilty in JSON
             result = processEditFacility(data)
-            return(jsonify(result))
             code = result["code"]
             message = json.dumps(result)
-            print (code)
-            print (message)
+            
             if (code == 200):
                 print('\n\n-----Publishing the (notifications) message with routing_key=user.notifications-----')
+                
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.notifications", body=message) 
                 
                 result2 = processStoreNotification(result, data)
@@ -54,11 +53,10 @@ def edit_facility():
 #update availability based on id
 def processEditFacility(facilities):
     facility_id = facilities["facility_id"]
-    print(facility_id)
-    print("facility_id")
-    print(facilities_URL)
+    message = facilities["message"]
     print('\n-----Invoking facilities microservice-----')
     facilities_result = invoke_http(facilities_URL + facility_id, method='PUT', json=facilities)
+    facilities_result["data"]["message"] = message
     return(facilities_result)
 
 #insert into database (notification)
