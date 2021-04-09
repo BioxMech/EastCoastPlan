@@ -2,13 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Rating from '@material-ui/lab/Rating';
 
 import ReportItem from './reportItem.component';
 
@@ -22,7 +17,7 @@ class Report extends React.Component {
     }
 
     // this.findMyFacility = this.findMyFacility.bind(this);
-    // this.handleDelete = this.handleDelete.bind(this);
+    // this.handleDelete = this.handleDelete.bind(this);  
   }
 
   componentDidMount() {
@@ -56,7 +51,6 @@ class Report extends React.Component {
   //     });   
   // }
 
-
   render() {
     return(
       <Box my={3} mx={3}>
@@ -67,7 +61,7 @@ class Report extends React.Component {
             <Grid container spacing={2}>
               {
                 this.state.reportList.map(report => 
-                <ReportItem report={report} />
+                <ReportItem key={report.report_id} report={report} />
               )}
             </Grid>
           </Box>

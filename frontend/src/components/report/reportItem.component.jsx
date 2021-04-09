@@ -19,7 +19,7 @@ constructor(props) {
     report_id: this.props.report.report_id,
     anchorEl: null,
     open: false,
-    id: undefined
+    id: undefined,
   }
 
   this.handleDelete = this.handleDelete.bind(this)
@@ -37,12 +37,15 @@ constructor(props) {
     }
     axios.delete(`http://localhost:5000/report/${this.state.report_id}`, json)
       .then(response => {
-        window.location.replace("/report")
-        console.log(response.data.data.reports)
-      });   
-
-
-    this.setState({open: false});
+        // window.location.replace("/report")
+        // console.log(response.data.data.reports)
+        this.setState({open: false});
+        this.props.reRenderCallBack()
+      })   
+      .catch(error => {
+        alert("Report failed to delete. Please report to the admins.")
+      })
+    
   }
 
   handleClick(event) {
@@ -51,7 +54,7 @@ constructor(props) {
   }
 
   handleClose() {
-    this.setState({anchorEl:null})
+    this.setState({anchorEl:null, open:false})
   }
 
   render() {
@@ -61,10 +64,10 @@ constructor(props) {
             <Card >
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
-                  {this.state.report.facility_name}
+                  Report #{this.state.report.report_id}
                 </Typography>
                 <Typography variant="h5" component="h2">
-                  Report #{this.state.report.report_id}
+                  {this.state.report.facility_name}
                 </Typography>
                 <Typography color="textSecondary">
                   {this.state.report.date} {this.state.report.time}

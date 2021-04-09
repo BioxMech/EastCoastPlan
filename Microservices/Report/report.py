@@ -54,11 +54,30 @@ def get_all():
         }
     ), 404
 
+@app.route("/reports/<string:facility_id>")
+def get_all_specific_facility_reports(facility_id):
+    reportlist = Report.query.filter_by(facility_id=facility_id)
+    if reportlist:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "reports": [report.json() for report in reportlist]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no reports for ${facility_id}"
+        }
+    ), 404
+
 
 @app.route("/report/<string:report_id>")
 def find_by_report_id(report_id):
     report = Report.query.filter_by(report_id=report_id).first()
-    if report:
+    if report:  
         return jsonify(
             {
                 "code": 200,
