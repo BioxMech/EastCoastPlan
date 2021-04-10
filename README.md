@@ -12,4 +12,12 @@ With the plethora of recreational facilities available, Singaporeans may find it
 ## Admin
 * Manage availability of facilities
 
+# Instructions
+* Import database into localhost 
+  * payment.sql
+  * facility.sql
+  * booking.sql
+  * users.sql
+  * report.sql
+* <install npm stuff for frontend - Json help >
 
