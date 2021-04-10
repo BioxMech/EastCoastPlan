@@ -42,7 +42,7 @@ class Notifications(db.Model):
 def receiveNotifications ():
     amqp_setup.check_setup()
     
-    #queue_name = "User"
+    #queue_name = "User" and "Admin"
     # set up a consumer and start to wait for coming messages
     amqp_setup.channel.basic_consume(queue="Admin", on_message_callback=callback, auto_ack=True)
     amqp_setup.channel.basic_consume(queue="User", on_message_callback=callback, auto_ack=True)
@@ -60,8 +60,10 @@ def processNotifications(notificationMsg):
     try:
         notification = json.loads(notificationMsg)
         print("--JSON:", notification)
+
         #call the invoke(create_noti + admin/user, post, json=data)
-        #invoke_http("http://localhost:5007/notifications/admin", method='POST', json=notification["data"])
+        receiver = notification["data"]["receiver"]
+        invoke_http("http://localhost:5007/notifications/" + receiver, method='POST', json=notification["data"])
 
     except Exception as e:
         print("--NOT JSON:", e)

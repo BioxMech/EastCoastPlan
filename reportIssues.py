@@ -37,9 +37,11 @@ def edit_facility():
                 print('\n\n-----Publishing the (notifications) message with routing_key=admin.notifications-----')
                 print(message)
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="admin.notifications", body=message) 
-                
-                result2 = processStoreNotification(result, data)
-                return(jsonify(result2))
+                return jsonify({
+                    "code": 200,
+                    "message": "Message: Uploaded to DB"
+                }), 200
+
         
         except Exception as e:
             return e  # do nothing.
@@ -52,15 +54,8 @@ def edit_facility():
 def processCreateReport(report):
     print('\n-----Invoking report microservice-----')
     report_results = invoke_http(report_URL, method='POST', json=report)
+    report_results["data"]["receiver"] = "admin"
     return(report_results)
-
-#insert into database (notification)
-def processStoreNotification(facilities, data):
-    facility_name = facilities["data"]["facility_name"]
-    data["facility_name"] = facility_name
-    print('\n-----Invoking notifications microservice-----')
-    notifications_result = invoke_http(notifications_URL + "user", method='POST', json=data)
-    return (notifications_result)
     
 
 # Execute this program if it is run as a main script (not by 'import')

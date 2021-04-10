@@ -35,10 +35,12 @@ def edit_facility():
             if (code == 200):
                 print('\n\n-----Publishing the (notifications) message with routing_key=user.notifications-----')
                 
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.notifications", body=message) 
-                
-                result2 = processStoreNotification(result, data)
-                return(jsonify(result2))
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.notifications", body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+                return jsonify({
+                    "code": 200,
+                    "message": "Message: Uploaded to DB"
+                }), 200
+
                 
 
         except Exception as e:
@@ -57,15 +59,8 @@ def processEditFacility(facilities):
     print('\n-----Invoking facilities microservice-----')
     facilities_result = invoke_http(facilities_URL + facility_id, method='PUT', json=facilities)
     facilities_result["data"]["message"] = message
+    facilities_result["data"]["receiver"] = "user"
     return(facilities_result)
-
-#insert into database (notification)
-def processStoreNotification(facilities, data):
-    facility_name = facilities["data"]["facility_name"]
-    data["facility_name"] = facility_name
-    print('\n-----Invoking notifications microservice-----')
-    notifications_result = invoke_http(notifications_URL + "admin", method='POST', json=data)
-    return (notifications_result)
     
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
