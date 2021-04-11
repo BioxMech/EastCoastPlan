@@ -74,7 +74,7 @@ class FacilityItem extends React.Component {
 			)
 			.then((response) => {
 				const rate =
-					this.state.rating - response.data.data.reports.length * 0.4;
+					this.state.rating - response.data.data.reports.length * 0.2;
 				this.setState({ rating: rate });
 			})
 			.catch((error) => {});
@@ -97,14 +97,9 @@ class FacilityItem extends React.Component {
 			)
 			.then((response) => {
 				// console.log(response.data)
-				// console.log(this.state.facility.facility_id)
-				// console.log(availability)
 			})
 			.catch((error) => {
 				this.setState({ show: true, disabled: true, loading: false });
-				// if (error.response.status == 400) {
-				//   this.setState({show:true, disabled:true, loading: false})
-				// }
 			});
 	}
 
@@ -122,7 +117,6 @@ class FacilityItem extends React.Component {
 
 	handleDialogClose = () => {
 		this.setState({ open: false });
-		console.log("Close");
 	};
 
 	handleCloseSelect(event) {
@@ -137,28 +131,26 @@ class FacilityItem extends React.Component {
 			time: time,
 			facility_name: this.state.facility.facility_name,
 		};
-		console.log(json);
+
 		axios
 			.post(`http://localhost:8000/api/createreport`, json)
 			.then((response) => {
-				console.log(response);
 				axios
 					.get(
 						`http://localhost:8000/api/reports/${this.props.facility.facility_id}`
 					)
 					.then((response) => {
-						var rate =
-							this.state.rating - response.data.data.reports.length * 0.4;
+						const rate =
+							this.state.rating - 1 * 0.2;
 						this.setState({ rating: rate });
-					})
+					})  
 					.catch((error) => {});
 			})
 			.catch((error) => {
-				console.log(error);
+				// console.log(error);
 			});
 
 		this.setState({ open: true });
-		console.log("Open");
 	}
 
 	render() {
@@ -181,11 +173,7 @@ class FacilityItem extends React.Component {
 				<Box mx={2}>
 					<Grid container spacing={3}>
 						<Grid item xs={12} sm={4}>
-							<img
-								src={this.state.facility.image_url}
-								className="image test"
-								alt="...Loading"
-							/>
+							<img src={this.state.facility.image_url} className="image test"  alt="...Loading" />
 						</Grid>
 						<Grid item xs={12} sm={8} className="description">
 							<ThemeProvider theme={theme}>
@@ -206,11 +194,7 @@ class FacilityItem extends React.Component {
 									SGD${this.state.facility.price}
 								</Typography>
 								<Typography variant="h7">
-									Suspendisse condimentum ipsum a finibus sollicitudin.
-									Vestibulum ultricies, tortor quis ornare tempus, lacus risus
-									dapibus justo, vel semper quam nunc eget ex. Sed in ligula
-									mollis, pharetra lorem eget, fringilla elit. Sed faucibus elit
-									in urna cursus posuere.
+									Suspendisse condimentum ipsum a finibus sollicitudin. Vestibulum ultricies, tortor quis ornare tempus, lacus risus dapibus justo, vel semper quam nunc eget ex. Sed in ligula	mollis, pharetra lorem eget, fringilla elit. Sed faucibus elit in urna cursus posuere.
 								</Typography>
 							</ThemeProvider>
 							<Box spacing={3} mt={1}>
@@ -219,58 +203,66 @@ class FacilityItem extends React.Component {
 									variant="contained"
 									color="primary"
 									disabled={this.state.disabled}
-									href={
-										window.location.pathname +
-										"/" +
-										this.state.facility.facility_name
-									}
+									href={ window.location.pathname +	"/" +	this.state.facility.facility_name	}
 								>
 									BOOK
 								</Button>
-								{acc_type == "admin" ? (
-									this.state.disabled ? (
-										<Box component="span" ml={2}>
-											<ColorButton
-												size="small"
-												variant="contained"
-												color="primary"
-												onClick={this.handleUnavailability}
-											>
-												Mark Available
-											</ColorButton>
-										</Box>
-									) : (
-										<Box component="span" ml={2}>
-											<Button
-												size="small"
-												variant="contained"
-												color="secondary"
-												onClick={this.handleUnavailability}
-											>
-												Mark Unavailable
-											</Button>
-										</Box>
-									)
-								) : (
-									<Box component="span" ml={2}>
-										<Button
-											size="small"
-											variant="contained"
-											color="secondary"
-											onClick={this.handleClick}
-										>
-											REPORT FACILITY
-										</Button>
-									</Box>
-								)}
+								{
+                  acc_type ?
+                    acc_type == "admin" ? (
+                      this.state.disabled ? (
+                        <Box component="span" ml={2}>
+                          <ColorButton
+                            size="small"
+                            variant="contained"
+                            color="primary"
+                            onClick={this.handleUnavailability}
+                          >
+                            Mark Available
+                          </ColorButton>
+                        </Box>
+                      ) : 
+                      (
+                        <Box component="span" ml={2}>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="secondary"
+                            onClick={this.handleUnavailability}
+                          >
+                            Mark Unavailable
+                          </Button>
+                        </Box>
+                      )
+                    ) : (
+                    <Box component="span" ml={2}>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                        onClick={this.handleClick}
+                      >
+                        REPORT FACILITY
+                      </Button>
+                    </Box>
+                    )
+                  :
+                  null
+								}
 							</Box>
-							{this.state.disabled ? (
-								<Box mt={1}>
-									<Typography color="secondary">
-										Currently Unavailable
-									</Typography>
-								</Box>
-							) : null}
+
+							{
+                this.state.disabled ? 
+                (
+                  <Box mt={1}>
+                    <Typography color="secondary">
+                      Currently Unavailable
+                    </Typography>
+                  </Box>
+                ) 
+                : 
+                null
+              }
 
 							<Menu
 								id="simple-menu"

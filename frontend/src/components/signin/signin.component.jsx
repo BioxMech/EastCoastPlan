@@ -68,7 +68,6 @@ class SignIn extends React.Component {
 			.get(`http://localhost:8000/api/users/${event.target.value}`)
 			.then((response) => {
 				var acc_type = response.data.data.account_type;
-				console.log(acc_type);
 				this.setState({
 					emailError: false,
 					emailText: "We'll never share your email.",

@@ -14,9 +14,6 @@ class Report extends React.Component {
 			reportList: [],
 			facilityList: [],
 		};
-
-		// this.findMyFacility = this.findMyFacility.bind(this);
-		// this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	componentDidMount() {
@@ -31,22 +28,6 @@ class Report extends React.Component {
 			// console.log(facilityList)
 		});
 	}
-
-	// findMyFacility(input_facility_id) {
-	//   var result = this.state.facilityList.filter(function (facility) {
-	//       console.log(facility)
-	//     return facility.facility_id == input_facility_id;
-	//   });
-	//   return result
-	// }
-
-	// handleDelete(event) {
-	//   axios.get(`http://localhost:5000/report/${this.state.report_id}`)
-	//     .then(response => {
-	//       this.setState({ reportList: response.data.data.reports })
-	// console.log(response.data.data.reports)
-	//     });
-	// }
 
 	render() {
 		return (

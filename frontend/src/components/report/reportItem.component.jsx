@@ -39,7 +39,6 @@ class ReportItem extends React.Component {
 				// window.location.replace("/report")
 				// console.log(response.data.data.reports)
 				this.setState({ open: false });
-				this.props.reRenderCallBack();
 			})
 			.catch((error) => {
 				alert("Report failed to delete. Please report to the admins.");

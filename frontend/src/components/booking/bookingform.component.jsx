@@ -100,12 +100,15 @@ class BookingForm extends React.Component {
 	componentDidMount() {
 		axios
 			.get(`http://localhost:8000/api/getslots/${this.state.path}`)
-			.then((response) => {
-				this.setState({ timeslots: response.data.data });
-				if (this.state.timeslots[0].start.slice(0, 10) == this.state.date) {
-					this.setState({ checker: true, disabled: false });
-				}
-			});
+        .then((response) => {
+          this.setState({ timeslots: response.data.data });
+          if (this.state.timeslots[0].start.slice(0, 10) == this.state.date) {
+            this.setState({ checker: true, disabled: false });
+          }
+        })
+        .catch((error) => {
+          alert("Please enter a date!")
+        });
 	}
 
 	handleSelect(event) {
@@ -113,15 +116,12 @@ class BookingForm extends React.Component {
 			start: event.target.value.split("-")[0],
 			end: event.target.value.split("-")[1],
 		});
-		console.log("Start + ", event.target.value.split("-")[0]);
-		console.log("End + ", event.target.value.split("-")[1]);
 	}
 
 	handleChange(event) {
 		this.setState({ date: event.target.value });
 		console.log(event.target.value);
 		setTimeout(() => {
-			// console.log(this.state.date)
 			var json = {
 				from: this.state.date,
 			};
@@ -177,14 +177,10 @@ class BookingForm extends React.Component {
 		axios
 			.post(`http://localhost:8000/api/makebooking/${booking_id}`, json)
 			.then((response) => {
-				console.log(response);
-				console.log("successful");
-				setTimeout(() => {
-					window.location.replace("/success");
-				}, 5000);
+        window.location.replace("/success");
 			})
 			.catch((error) => {
-				console.log(error);
+				// console.log(error);
 				this.setState({ submitLoading: false, cardFail: true });
 			});
 	}
