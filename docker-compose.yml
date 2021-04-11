@@ -124,7 +124,6 @@ services:
     restart: always
     networks:
       - kong-net
-
     environment:
       PYTHONBUFFERED: 1
 
@@ -218,7 +217,7 @@ services:
     build:
       context: ./
       dockerfile: bookFacility.Dockerfile
-    image: bioxmech/book_facility:ecp
+    image: bioxmech/complex_book_facility:ecp
     restart: always
     networks:
       - kong-net
@@ -240,7 +239,7 @@ services:
     build:
       context: ./
       dockerfile: editFacilities.Dockerfile
-    image: petrastan/edit_facilities:ecp
+    image: petrastan/complex_edit_facilities:ecp
     restart: always
     networks:
       - kong-net
@@ -262,7 +261,7 @@ services:
     build:
       context: ./
       dockerfile: reportIssues.Dockerfile
-    image: petrastan/report_issues:ecp
+    image: petrastan/complex_report_issues:ecp
     restart: always
     networks:
       - kong-net
