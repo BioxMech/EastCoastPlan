@@ -112,6 +112,25 @@ services:
     ports:
       - "5004:5004"
 
+
+  ###############################################
+  # Notifications: The Notifications microservice
+  ###############################################
+  notifications:
+    build:
+      context: ./
+      dockerfile: notifications.Dockerfile
+    image: petrastan/notifications:ecp
+    restart: always
+    networks:
+      - kong-net
+
+    environment:
+      PYTHONBUFFERED: 1
+
+    ports:
+      - "5007:5007"
+
   #######################################
   # Postgres: The database used by Kong
   #######################################
@@ -193,9 +212,9 @@ services:
       - kongadata:/app/kongadata
 
   #######################################
-  # Complex Microservice: book_a_facility
+  # Complex Microservice: book_facility
   #######################################
-  book_facility:
+  complex_book_facility:
     build:
       context: ./
       dockerfile: bookFacility.Dockerfile
@@ -217,7 +236,7 @@ services:
   #######################################
   # Complex Microservice: editFacilities
   #######################################
-  editFacilities:
+  complex_editFacilities:
     build:
       context: ./
       dockerfile: editFacilities.Dockerfile
@@ -235,3 +254,25 @@ services:
 
     ports:
       - "5100:5100"
+
+  #######################################
+  # Complex Microservice: reportIssues
+  #######################################
+  complex_reportIssues:
+    build:
+      context: ./
+      dockerfile: reportIssues.Dockerfile
+    image: petrastan/report_issues:ecp
+    restart: always
+    networks:
+      - kong-net
+    depends_on:
+      - report
+      - notifications
+    environment:
+      PYTHONBUFFERED: 1
+      notifications_URL: http://localhost:5007/notifications/
+      report_URL: http://localhost:5000/createReport
+
+    ports:
+      - "5008:5008"

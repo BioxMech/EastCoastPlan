@@ -8,7 +8,7 @@ class AboutUs extends React.Component {
     return (
       <div style={{textAlign:"center", }}>
       <h1>Model EastCoastPlan Founder</h1>
-      <p><img src={ECP_Pic} alt="...EastCoastPlan loading" /></p>
+      <p><img style={{width: "30%"}} src={ECP_Pic} alt="...EastCoastPlan loading" /></p>
       </div>
     )
   }

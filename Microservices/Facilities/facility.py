@@ -108,7 +108,7 @@ def filter_by_schedule(schedule_id):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no resources available."
+            "message": "There are no facilities available."
         }
     ), 404
 
@@ -131,7 +131,7 @@ def getFacility(schedule_id, facility_name):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no facility available."
+            "message": "There is no such facility."
         }
     ), 404
 
