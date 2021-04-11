@@ -100,15 +100,12 @@ class BookingForm extends React.Component {
 	componentDidMount() {
 		axios
 			.get(`http://localhost:8000/api/getslots/${this.state.path}`)
-        .then((response) => {
-          this.setState({ timeslots: response.data.data });
-          if (this.state.timeslots[0].start.slice(0, 10) == this.state.date) {
-            this.setState({ checker: true, disabled: false });
-          }
-        })
-        .catch((error) => {
-          alert("Please enter a date!")
-        });
+			.then((response) => {
+				this.setState({ timeslots: response.data.data });
+				if (this.state.timeslots[0].start.slice(0, 10) == this.state.date) {
+					this.setState({ checker: true, disabled: false });
+				}
+			});
 	}
 
 	handleSelect(event) {
@@ -130,6 +127,9 @@ class BookingForm extends React.Component {
 				.post(`http://localhost:8000/api/getslots/${this.state.path}`, json)
 				.then((response) => {
 					this.setState({ timeslots: response.data.data });
+				})
+				.catch((error) => {
+					alert("Please enter a date!");
 				});
 
 			this.setState({ loading: true });
@@ -177,7 +177,7 @@ class BookingForm extends React.Component {
 		axios
 			.post(`http://localhost:8000/api/makebooking/${booking_id}`, json)
 			.then((response) => {
-        window.location.replace("/success");
+				window.location.replace("/success");
 			})
 			.catch((error) => {
 				// console.log(error);
