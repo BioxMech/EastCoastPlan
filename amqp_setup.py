@@ -6,6 +6,7 @@ from os import environ
 
 hostname = environ.get('rabbit_host') or "localhost" # default hostname
 port = environ.get('rabbit_port') or 5672 # default port
+
 # connect to the broker and set up a communication channel in the connection
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(

@@ -5,7 +5,9 @@ from os import environ
 # In each instance of python interpreter (i.e., a program run), the same module is only imported once (guaranteed by the interpreter).
 
 hostname = environ.get('rabbit_host') or "localhost" # default hostname
+
 port = environ.get('rabbit_port') or 5672 # default port
+
 # connect to the broker and set up a communication channel in the connection
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(

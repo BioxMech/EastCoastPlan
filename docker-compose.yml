@@ -135,13 +135,11 @@ services:
       dockerfile: notifications.Dockerfile
     image: petrastan/notifications:ecp
     restart: always
-    depends_on:
-      - rabbitmq
+    # depends_on:
+    #   - rabbitmq
     networks:
       - kong-net
     environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
       PYTHONBUFFERED: 1
 
     ports:
@@ -261,14 +259,15 @@ services:
     networks:
       - kong-net
     depends_on:
-      - users
+      - notifications
       - facility
       - rabbitmq
+      - receiver
     environment:
-      rabbit_host: rabbitmq
+      rabbit_host: host.docker.internal
       rabbit_port: 5672
       PYTHONBUFFERED: 1
-      user_URL: http://booking:5001/users/
+      notifications_URL: http://localhost:5007/notifications/
       facility_URL: http://payment:5002/updateAvailability/
 
     ports:
@@ -290,8 +289,9 @@ services:
       - report
       - notifications
       - rabbitmq
+      - receiver
     environment:
-      rabbit_host: rabbitmq
+      rabbit_host: host.docker.internal
       rabbit_port: 5672
       PYTHONBUFFERED: 1
       notifications_URL: http://localhost:5007/notifications/
@@ -299,3 +299,22 @@ services:
 
     ports:
       - "5008:5008"
+
+  ###############################################
+  # Receiver: AMQP Message Receiver
+  ###############################################
+  receiver:
+    build:
+      context: ./
+      dockerfile: receiver.Dockerfile
+    image: petrastan/receiver:ecp
+    restart: always
+    depends_on:
+      - rabbitmq
+      - notifications
+    networks:
+      - kong-net
+    environment:
+      rabbit_host: host.docker.internal
+      rabbit_port: 5672
+      PYTHONBUFFERED: 1

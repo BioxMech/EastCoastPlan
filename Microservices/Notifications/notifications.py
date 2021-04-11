@@ -4,14 +4,15 @@ from flask_cors import CORS
 from os import environ
 import json
 import os
-import amqp_setup
+# import amqp_setup
+
 from invokes import invoke_http
 
 monitorBindingKey='*.notifications'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/notifications'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/notifications'
 
 # to fix the kong bug
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
@@ -39,36 +40,37 @@ class Notifications(db.Model):
 
 
 
-def receiveNotifications ():
-    amqp_setup.check_setup()
+# def receiveNotifications ():
+#     amqp_setup.check_setup()
     
-    #queue_name = "User" and "Admin"
-    # set up a consumer and start to wait for coming messages
-    amqp_setup.channel.basic_consume(queue="Admin", on_message_callback=callback, auto_ack=True)
-    amqp_setup.channel.basic_consume(queue="User", on_message_callback=callback, auto_ack=True)
+#     #queue_name = "User" and "Admin"
+#     # set up a consumer and start to wait for coming messages
+#     amqp_setup.channel.basic_consume(queue="Admin", on_message_callback=callback, auto_ack=True)
+#     amqp_setup.channel.basic_consume(queue="User", on_message_callback=callback, auto_ack=True)
     
-    amqp_setup.channel.start_consuming() # an implicit loop waiting to receive messages; 
-    #it doesn't exit by default. Use Ctrl+C in the command window to terminate it.  
+#     amqp_setup.channel.start_consuming() # an implicit loop waiting to receive messages; 
+#     #it doesn't exit by default. Use Ctrl+C in the command window to terminate it.  
 
-def callback(channel, method, properties, body): # required signature for the callback; no return
-    print("\nReceived a message by " + __file__)
-    processNotifications(body)
-    print() 
+# def callback(channel, method, properties, body): # required signature for the callback; no return
+#     print("\nReceived a message by " + __file__)
+#     processNotifications(body)
+#     print() 
 
-def processNotifications(notificationMsg):
-    print("Printing the notification:")
-    try:
-        notification = json.loads(notificationMsg)
-        print("--JSON:", notification)
+# def processNotifications(notificationMsg):
+    
+#     print("Printing the notification:")
+#     try:
+#         notification = json.loads(notificationMsg)
+#         print("--JSON:", notification)
 
-        #call the invoke(create_noti + admin/user, post, json=data)
-        receiver = notification["data"]["receiver"]
-        invoke_http("http://localhost:5007/notifications/" + receiver, method='POST', json=notification["data"])
+#         #call the invoke(create_noti + admin/user, post, json=data)
+#         receiver = notification["data"]["receiver"]
+#         invoke_http("http://localhost:5007/notifications/" + receiver, method='POST', json=notification["data"])
 
-    except Exception as e:
-        print("--NOT JSON:", e)
-        print("--DATA:", notificationMsg)
-    print()
+#     except Exception as e:
+#         print("--NOT JSON:", e)
+#         print("--DATA:", notificationMsg)
+#     print()
 
 
 #retrieve all user/admin notification
@@ -131,10 +133,12 @@ def create_notification(account_type):
 
 
 if __name__ == '__main__':
-    # app.run(port=5007, debug=True)
-    print("\nThis is " + os.path.basename(__file__), end='')
-    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
-    receiveNotifications()
+    app.run(port=5007, debug=True)
+    #app.port = 5007
+    # print("\nThis is " + os.path.basename(__file__), end='')
+    # print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
+    # receiveNotifications()
+    
     
     
 

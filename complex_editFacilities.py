@@ -15,13 +15,12 @@ import pika
 app = Flask(__name__)
 CORS(app)
 
-notifications_URL = "http://localhost:5007/notifications/"
 facilities_URL = "http://localhost:5002/updateAvailability/"
 
 @app.route("/edit_facility", methods=['POST'])
 def edit_facility():
     data = request.get_json()
-    print(data)
+    
     if request.is_json:
         try:
         
@@ -35,7 +34,8 @@ def edit_facility():
             if (code == 200):
                 print('\n\n-----Publishing the (notifications) message with routing_key=user.notifications-----')
                 
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.notifications", body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.notifications", body=message)
+                #, properties=pika.BasicProperties(delivery_mode = 2)) 
                 return jsonify({
                     "code": 200,
                     "message": "Message: Uploaded to DB"
@@ -64,4 +64,4 @@ def processEditFacility(facilities):
     
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5006, debug=True)
+    app.run(host="0.0.0.0", port=5100, debug=True)

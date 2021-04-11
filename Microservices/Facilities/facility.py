@@ -11,6 +11,7 @@ current_time = now.strftime("%H:%M:%S")
 
 
 app = Flask(__name__)
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/facility'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
