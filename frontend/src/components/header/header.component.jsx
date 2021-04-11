@@ -11,7 +11,17 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Popover from '@material-ui/core/Popover';
 import Box from '@material-ui/core/Box';
-import { Redirect } from 'react-router';
+
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,9 +88,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+function generate(element) {
+  return [0, 1, 2].map((value) =>
+    React.cloneElement(element, {
+      key: value,
+    }),
+  );
+}
+
 export default function Header() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorElNotification, setAnchorElNotification] = React.useState(null);
+  const [dense, setDense] = React.useState(false);
+  const [secondary, setSecondary] = React.useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -90,6 +112,14 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const handleClickNotification = (event) => {
+    setAnchorElNotification(event.currentTarget);
+  };
+
+  const handleCloseNotification = () => {
+    setAnchorElNotification(null);
+  };
+
   const handleLogout = (event) => {
     localStorage.clear()
     window.location.replace("/")
@@ -97,6 +127,9 @@ export default function Header() {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+  
+  const openNotification = Boolean(anchorElNotification);
+  const idNotification = open ? 'simple-popover' : undefined;
   
   return (
     <div className={classes.root}>
@@ -121,6 +154,16 @@ export default function Header() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div> */}
+
+          {
+            localStorage.getItem("email") !== null ?
+              localStorage.getItem("acc_type") === 'user' 
+              ? <Button color="inherit" ><Badge color="secondary" badgeContent={3} onClick={handleClickNotification}><NotificationsIcon /></Badge></Button>
+              : <Button color="inherit" ><Badge color="secondary" badgeContent={3} onClick={handleClickNotification}><NotificationsIcon /></Badge></Button>
+            :
+            null
+          }
+          
           {
             localStorage.getItem("email") !== null ?
             <div className={classes.search}>Hello, {localStorage.getItem("email").split("@")[0]} ({
@@ -129,6 +172,7 @@ export default function Header() {
             :
             null
           }
+
           <Button color="inherit" href="/aboutus">About Us</Button>
           {
             localStorage.getItem("email") !== null ?
@@ -143,6 +187,42 @@ export default function Header() {
             :
             <Button color="inherit" href="/signinsignup">Login</Button>
           }
+
+          {/* Notification */}
+          <Popover 
+            id={idNotification}
+            open={openNotification}
+            anchorEl={anchorElNotification}
+            onClose={handleCloseNotification}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <div className={classes.demo}>
+              <List dense={dense}>
+                {generate(
+                  <div>
+                    <ListItem button>
+                    <ListItemText
+                      primary="Single-line item"
+                      secondary={secondary ? 'Secondary text' : null}
+                    />
+                  </ListItem>
+                  <Divider />
+                  </div>
+                  
+                )}
+              </List>
+            </div>
+          </Popover>
+
+
+          {/* Logout */}
           <Popover 
             id={id}
             open={open}
@@ -159,14 +239,14 @@ export default function Header() {
           >
             <Box m={2}>
               <Typography variant="h7" className={classes.title}>
-                Confirm Log Out?
+                <strong>Confirm Log Out?</strong>
               </Typography>
-              <Box component="span" mx={3}>
-                <Button color="inherit" onClick={handleLogout}>Logout</Button>
+              <Box my={1}>
+                <Box component="span" mx={3}>
+                  <Button variant="contained" color="secondary" onClick={handleLogout}>Logout</Button>
+                </Box>
               </Box>
             </Box>
-            
-            
           </Popover>
         </Toolbar>
       </AppBar>

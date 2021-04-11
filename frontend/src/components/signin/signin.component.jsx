@@ -70,7 +70,7 @@ class SignIn extends React.Component {
     var json = {password: event.target.value}
     axios.post(`http://localhost:5001/users/verify/${this.state.email}`, json)
     .then(response => {
-      if (response.data.result == false) {
+      if (response.data.result === false) {
         this.setState({passwordError:true, passwordText: "Incorrect Password."})
       }
       else {
@@ -164,7 +164,7 @@ class SignIn extends React.Component {
             </Box> */}
             <Box mt={3}>
             {
-              this.state.loading ?
+              this.state.loading ?  
               <Fade
                 in={this.state.loading}
                 style={{
