@@ -7,13 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import { green } from '@material-ui/core/colors';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Rating from '@material-ui/lab/Rating';
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { createMuiTheme, responsiveFontSizes, ThemeProvider, withStyles } from '@material-ui/core/styles';
 
@@ -45,9 +38,7 @@ class FacilityItem extends React.Component {
       anchorEl: null,
       date: date,
       time: time,
-      message: '',
-      open: false,
-      rating: 5,
+      message: ''
     }
 
     this.handleUnavailability = this.handleUnavailability.bind(this);
@@ -55,22 +46,12 @@ class FacilityItem extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleCloseSelect = this.handleCloseSelect.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
   }
 
   componentDidMount() {
     if (this.state.availability === "No") {
       this.setState({disabled:true})
     }
-
-    axios.get(`http://localhost:5000/reports/${this.props.facility.facility_id}`)
-      .then(response => {
-        const rate = this.state.rating - (response.data.data.reports.length * 0.4)
-        this.setState({rating: rate})
-      })
-      .catch(error => {
-
-      })
   }
 
   handleUnavailability(event) {
@@ -87,10 +68,9 @@ class FacilityItem extends React.Component {
         // console.log(availability)
       })
       .catch(error => {
-        this.setState({show:true, disabled:true, loading: false})
-        // if (error.response.status == 400) {
-        //   this.setState({show:true, disabled:true, loading: false})
-        // }
+        if (error.response.status == 400) {
+          this.setState({show:true, disabled:true, loading: false})
+        }
       })
   }
 
@@ -106,12 +86,6 @@ class FacilityItem extends React.Component {
     this.setState({message: event.target.value})
   }
 
-
-  handleDialogClose = () => {
-    this.setState({open: false});
-    console.log("Close")
-  };
-
   handleCloseSelect(event) {
     const message = event.target.textContent
     this.setState({anchorEl: null, message: event.target.textContent});
@@ -121,28 +95,17 @@ class FacilityItem extends React.Component {
       date: date,
       facility_id: String(this.state.facility.facility_id), 
       message: message, 
-      time: time,
-      facility_name: this.state.facility.facility_name
+      time: time
     }
     console.log(json)
     axios.post(`http://localhost:5000/createReport`, json)
     .then(response => {
       console.log(response)
-      axios.get(`http://localhost:5000/reports/${this.props.facility.facility_id}`)
-        .then(response => {
-          var rate = this.state.rating - (response.data.data.reports.length * 0.4)
-          this.setState({rating: rate})
-        })
-        .catch(error => {
-
-        })
+      console.log("Is it working yet, Hong Yang?")
     })
     .catch( error => {
       console.log(error)
     })
-
-    this.setState({open: true});
-    console.log("Open")
   }
 
   render() {
@@ -171,11 +134,10 @@ class FacilityItem extends React.Component {
             <Grid item xs={12} sm={8} className="description">
               <ThemeProvider theme={theme}>
                 <Typography variant="h4">{ this.state.facility.facility_name }</Typography>
-                <Typography variant="h6" className="location">{ this.state.facility.location } <Rating name="size-small" size="small" readOnly value={this.state.rating} precision={0.2} /></Typography>
+                <Typography variant="h6" className="location">{ this.state.facility.location }</Typography>
                 <Typography variant="h6">SGD${ this.state.facility.price }</Typography>
-                <Typography variant="h7">Suspendisse condimentum ipsum a finibus sollicitudin. Vestibulum ultricies, tortor quis ornare tempus, lacus risus dapibus justo, vel semper quam nunc eget ex. Sed in ligula mollis, pharetra lorem eget, fringilla elit. Sed faucibus elit in urna cursus posuere.</Typography>
               </ThemeProvider>
-              <Box spacing={3} mt={1}>
+              <Box spacing={3}>
                 <Button size="small" variant="contained" color="primary" disabled={this.state.disabled} href={window.location.pathname + "/" + this.state.facility.facility_name}>
                   BOOK
                 </Button>
@@ -225,25 +187,6 @@ class FacilityItem extends React.Component {
                 <MenuItem onClick={this.handleCloseSelect} value="Poor Cleanliness">Poor Cleanliness</MenuItem>
               </Menu>
               
-              <Dialog
-                open={this.state.open}
-                onClose={this.handleDialogClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">Reported Successfully!!</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                      We will get to it immediately. As for now, please enjoy our other available areas / facilities.
-                    </DialogContentText>
-                  </DialogContent>  
-                  <DialogActions>
-                    <Button onClick={this.handleDialogClose} color="primary">
-                      Close
-                    </Button>
-                  </DialogActions>
-              </Dialog>
-
             </Grid>
           </Grid>
         </Box>

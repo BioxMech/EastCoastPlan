@@ -55,8 +55,6 @@ class BookingForm extends React.Component {
       focus: '',
       name: '',
       number: '',
-      submitLoading: false,
-      cardFail: false
     }
 
     
@@ -145,7 +143,6 @@ class BookingForm extends React.Component {
   }
 
   handleSubmit(event) {
-    this.setState({submitLoading: true})
     event.preventDefault()
     const month = this.state.expiry.slice(0,2)
     const year = "20" + this.state.expiry.slice(2,4)
@@ -176,17 +173,13 @@ class BookingForm extends React.Component {
     axios.post(`http://localhost:5010/make_booking/${booking_id}`,json)
       .then(response => {
         console.log(response)
-        console.log("successful")
-        setTimeout(() => {
-          window.location.replace("/success")
-        }, 5000)
+        console.log("Is it working yet, Hong Yang?")
       })
       .catch( error => {
         console.log(error)
-        this.setState({submitLoading: false, cardFail: true})
       })
 
-      
+    // window.location.replace("/success")
   }
 
   render() {
@@ -313,45 +306,14 @@ class BookingForm extends React.Component {
           
         </Box>
         <Box my={2}>
-        {
-          this.state.submitLoading ?
-            <Fade
-                in={this.state.submitLoading}
-                style={{
-                  transitionDelay: this.state.submitLoading ? '300ms' : '0ms',
-                }}
-                unmountOnExit
-              >
-                <Button  variant="contained"
-                  disabled={this.state.disabled}>BOOK NOW <CircularProgress size="25px" style={{marginLeft:"10px"}} /></Button>
-              </Fade>
-              :
-              <Button
+          <Button
             type="submit"
             variant="contained"
             color="primary"
             disabled={this.state.disabled}
           >
-          
             BOOK NOW
           </Button>
-        }
-
-        {
-          this.state.cardFail ?
-          <h1> You failed to make payment </h1>
-          :
-          null
-        }
-          {/* <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={this.state.disabled}
-          >
-          
-            BOOK NOW
-          </Button> */}
         </Box>
       </form>
       </div>

@@ -21,7 +21,7 @@ class Facility extends React.Component {
     .then(res => {
       const facilityList = res.data.data.resources;
       this.setState({ facilityList });
-      // console.log(facilityList)
+      console.log(facilityList)
       const temp = res.data.data.resources[0].facility_name.split(" ")
       temp.pop()
       const facilityName = temp.join(" ");

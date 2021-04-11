@@ -15,36 +15,38 @@ import pika
 app = Flask(__name__)
 CORS(app)
 
-notifications_URL = "http://localhost:5007/notifications/"
+#users_URL = "http://localhost:5001/users"
 facilities_URL = "http://localhost:5002/updateAvailability/"
 
 @app.route("/edit_facility", methods=['POST'])
 def edit_facility():
+    #facility_id = request.headers.get('facility_id')
     data = request.get_json()
-    print(data)
+    facility_id = data["facility_id"]
+    availability = data["availability"]
+    print(facility_id)
+    print(availability)
     if request.is_json:
-        try:
-        
-            print("\nReceived facility in JSON:", data)
-            print (data["message"])
-            #returns the whole facilty in JSON
-            result = processEditFacility(data)
-            code = result["code"]
-            message = json.dumps(result)
-            
-            if (code == 200):
-                print('\n\n-----Publishing the (notifications) message with routing_key=user.notifications-----')
-                
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.notifications", body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-                return jsonify({
-                    "code": 200,
-                    "message": "Message: Uploaded to DB"
-                }), 200
+        #try:
+        facilities = request.get_json()
+        print("\nReceived facility in JSON:", facilities)
 
-                
+        result = processEditFacility(facilities)
+        print(result["code"])
 
-        except Exception as e:
-            pass  # do nothing.
+        code = result["code"]
+        message = json.dumps(result)
+    #return jsonify(result)
+    #if (code == 200):
+        #return jsonify(result)
+        #return (message)
+        #return jsonify(result)
+        #return (amqp_setup.exchangename)
+        print('\n\n-----Publishing the (notifications) message with routing_key=*.notifications-----')
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="users.notifications", body=message) 
+        return("xxx")
+        # except Exception as e:
+        #     pass  # do nothing.
 
     # if reached here, not a JSON request.
     return jsonify({
@@ -52,16 +54,17 @@ def edit_facility():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-#update availability based on id
 def processEditFacility(facilities):
     facility_id = facilities["facility_id"]
-    message = facilities["message"]
+    print(facility_id)
+    print("facility_id")
+    print(facilities_URL)
     print('\n-----Invoking facilities microservice-----')
     facilities_result = invoke_http(facilities_URL + facility_id, method='PUT', json=facilities)
-    facilities_result["data"]["message"] = message
-    facilities_result["data"]["receiver"] = "user"
     return(facilities_result)
-    
+
+
+
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5006, debug=True)
+    app.run(host="0.0.0.0", port=5100, debug=True)
