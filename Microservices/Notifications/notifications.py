@@ -131,7 +131,7 @@ def create_notification(account_type):
 
 
 if __name__ == '__main__':
-    app.run(port=5007, debug=True)
+    # app.run(port=5007, debug=True)
     print("\nThis is " + os.path.basename(__file__), end='')
     print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
     receiveNotifications()

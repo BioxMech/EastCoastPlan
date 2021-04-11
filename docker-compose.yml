@@ -1,7 +1,7 @@
 version: "3.8"
 
 volumes:
-  #   rabbitmq_data:
+  rabbitmq_data:
   pgdata:
   kongadata:
 
@@ -17,7 +17,7 @@ services:
     build:
       context: ./
       dockerfile: report.Dockerfile
-    image: bioxmech/report:ecp
+    image: petrastan/report:ecp
     restart: always
     networks:
       - kong-net
@@ -44,6 +44,19 @@ services:
   #   ports:
   #     - 3000:3000
 
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: ecp-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+
   ###################################
   # Users: The Users microservice
   ###################################
@@ -51,7 +64,7 @@ services:
     build:
       context: ./
       dockerfile: users.Dockerfile
-    image: bioxmech/users:ecp
+    image: petrastan/users:ecp
     restart: always
     networks:
       - kong-net
@@ -68,7 +81,7 @@ services:
     build:
       context: ./
       dockerfile: facilities.Dockerfile
-    image: bioxmech/facilities:ecp
+    image: petrastan/facilities:ecp
     restart: always
     networks:
       - kong-net
@@ -85,7 +98,7 @@ services:
     build:
       context: ./
       dockerfile: booking.Dockerfile
-    image: bioxmech/booking:ecp
+    image: petrastan/booking:ecp
     restart: always
     networks:
       - kong-net
@@ -102,7 +115,7 @@ services:
     build:
       context: ./
       dockerfile: payment.Dockerfile
-    image: bioxmech/payment:ecp
+    image: petrastan/payment:ecp
     restart: always
     networks:
       - kong-net
@@ -122,9 +135,13 @@ services:
       dockerfile: notifications.Dockerfile
     image: petrastan/notifications:ecp
     restart: always
+    depends_on:
+      - rabbitmq
     networks:
       - kong-net
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       PYTHONBUFFERED: 1
 
     ports:
@@ -217,7 +234,7 @@ services:
     build:
       context: ./
       dockerfile: bookFacility.Dockerfile
-    image: bioxmech/complex_book_facility:ecp
+    image: petrastan/complex_book_facility:ecp
     restart: always
     networks:
       - kong-net
@@ -246,13 +263,17 @@ services:
     depends_on:
       - users
       - facility
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       PYTHONBUFFERED: 1
       user_URL: http://booking:5001/users/
       facility_URL: http://payment:5002/updateAvailability/
 
     ports:
       - "5100:5100"
+
 
   #######################################
   # Complex Microservice: reportIssues
@@ -268,7 +289,10 @@ services:
     depends_on:
       - report
       - notifications
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       PYTHONBUFFERED: 1
       notifications_URL: http://localhost:5007/notifications/
       report_URL: http://localhost:5000/createReport
