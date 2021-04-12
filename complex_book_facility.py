@@ -52,7 +52,7 @@ def make_booking(booking_id):
 
             return jsonify({
                 "code": 500,
-                "message": "book_a_facility.py internal error: "
+                "message": "complex_book_facility.py internal error: "
             }), 500
     # if reached here, not a JSON request.
     return jsonify({
