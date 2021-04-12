@@ -36,7 +36,7 @@ class ReportItem extends React.Component {
 		axios
 			.delete(`http://localhost:8000/api/report/${this.state.report_id}`, json)
 			.then((response) => {
-				// window.location.replace("/report")
+				window.location.replace("/report")
 				// console.log(response.data.data.reports)
 				this.setState({ open: false });
 			})

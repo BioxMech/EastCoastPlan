@@ -52,6 +52,7 @@ class FacilityItem extends React.Component {
 			time: time,
 			message: "",
 			open: false,
+      openAvailability: false,
 			rating: 5,
 		};
 
@@ -61,6 +62,8 @@ class FacilityItem extends React.Component {
 		this.handleCloseSelect = this.handleCloseSelect.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
 		this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleDialogCloseAvailability = this.handleDialogCloseAvailability.bind(this);
+    this.handleDialogClickAvailbility = this.handleDialogClickAvailbility.bind(this);
 	}
 
 	componentDidMount() {
@@ -83,8 +86,9 @@ class FacilityItem extends React.Component {
 	handleUnavailability(event) {
 		const availability = this.state.availability == "Yes" ? "No" : "Yes";
 		this.setState({
-			disabled: !this.state.disabled,
-			availability: availability,
+			openAvailability: false,
+      disabled: !this.state.disabled,
+			availability: availability
 		});
 
 		var json = {
@@ -99,7 +103,7 @@ class FacilityItem extends React.Component {
 				// console.log(response.data)
 			})
 			.catch((error) => {
-				this.setState({ show: true, disabled: true, loading: false });
+				this.setState({ disabled: true });
 			});
 	}
 
@@ -118,6 +122,14 @@ class FacilityItem extends React.Component {
 	handleDialogClose = () => {
 		this.setState({ open: false });
 	};
+
+	handleDialogCloseAvailability = () => {
+		this.setState({ openAvailability: false });
+	};
+
+  handleDialogClickAvailbility(event) {
+    this.setState({ openAvailability: true });
+  };
 
 	handleCloseSelect(event) {
 		const message = event.target.textContent;
@@ -142,15 +154,16 @@ class FacilityItem extends React.Component {
 					.then((response) => {
 						const rate =
 							this.state.rating - 1 * 0.2;
-						this.setState({ rating: rate });
+						this.setState({ rating: rate, open: true });
 					})  
 					.catch((error) => {});
 			})
 			.catch((error) => {
 				// console.log(error);
+        alert("Unable to send your report. Please send an email to the admin. Thank you.")
 			});
 
-		this.setState({ open: true });
+		
 	}
 
 	render() {
@@ -216,7 +229,8 @@ class FacilityItem extends React.Component {
                             size="small"
                             variant="contained"
                             color="primary"
-                            onClick={this.handleUnavailability}
+                            // onClick={this.handleUnavailability}
+                            onClick={this.handleDialogClickAvailbility}
                           >
                             Mark Available
                           </ColorButton>
@@ -228,7 +242,8 @@ class FacilityItem extends React.Component {
                             size="small"
                             variant="contained"
                             color="secondary"
-                            onClick={this.handleUnavailability}
+                            // onClick={this.handleUnavailability}
+                            onClick={this.handleDialogClickAvailbility}
                           >
                             Mark Unavailable
                           </Button>
@@ -285,7 +300,7 @@ class FacilityItem extends React.Component {
 									Poor Cleanliness
 								</MenuItem>
 							</Menu>
-
+  
 							<Dialog
 								open={this.state.open}
 								onClose={this.handleDialogClose}
@@ -307,6 +322,36 @@ class FacilityItem extends React.Component {
 									</Button>
 								</DialogActions>
 							</Dialog>
+
+              <Dialog
+                open={this.state.openAvailability}
+                onClose={this.handleDialogClickAvailbility}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <DialogTitle id="alert-dialog-slide-title">Confirmation of {this.state.facility.facility_name}'s Availability</DialogTitle>
+                <DialogContent>
+                  {
+                    this.state.availability == "Yes" ?
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Are you sure you want to mark this facility, <strong>{this.state.facility.facility_name}, <span style={{color:'red'}}>unavailable</span> ?</strong>
+                    </DialogContentText>
+                    :
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Are you sure you want to mark this facility, <strong>{this.state.facility.facility_name}, <span style={{color:'green'}}>available</span> ?</strong>
+                    </DialogContentText>
+                  }
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleDialogCloseAvailability} color="secondary">
+                    NO
+                  </Button>
+                  <Button onClick={this.handleUnavailability} color="primary">
+                    YES
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
 						</Grid>
 					</Grid>
 				</Box>
