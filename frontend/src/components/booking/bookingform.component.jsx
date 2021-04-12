@@ -94,7 +94,7 @@ class BookingForm extends React.Component {
 		} else if (!isNaN(value)) {
 			this.setState({ [name]: value });
 		}
-		console.log({ [name]: value });
+		// console.log({ [name]: value });
 	};
 
 	componentDidMount() {
@@ -117,11 +117,11 @@ class BookingForm extends React.Component {
 
 	handleChange(event) {
 		this.setState({ date: event.target.value });
-		console.log(event.target.value);
 		setTimeout(() => {
 			var json = {
 				from: this.state.date,
 			};
+
 			axios
 				.post(`http://localhost:8000/api/getslots/${this.state.path}`, json)
 				.then((response) => {

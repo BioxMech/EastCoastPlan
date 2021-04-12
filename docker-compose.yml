@@ -30,19 +30,19 @@ services:
   ###################################
   # Frontend: The Frontend microservice
   ###################################
-  # frontend:
-  #   stdin_open: true
-  #   container_name: frontend
-  #   build:
-  #     context: ./
-  #     dockerfile: frontend.Dockerfile
-  #   image: petrastan/frontend:ecp
-  #   restart: always
-  #   volumes:
-  #     - '.:/frontend/app'
-  #     - '/frontend/app/node_modules'
-  #   ports:
-  #     - 3000:3000
+  frontend:
+    stdin_open: true
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: frontend.Dockerfile
+    image: petrastan/frontend:ecp
+    restart: always
+    volumes:
+      - '.:/frontend/app'
+      - '/frontend/app/node_modules'
+    ports:
+      - 3000:3000
 
   ####################################
   # RabbitMQ: The messaging broker

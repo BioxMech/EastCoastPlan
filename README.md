@@ -44,8 +44,12 @@ With the plethora of recreational facilities available, Singaporeans may find it
 ## Possible Errors
 <img src="readme-images/error.png" alt="...Loading" />
 
+##### TL;DR: The error that you may encounter when downloading the dependencies is this: 
+"<i>read-shrinkwrap This version of npm is compatible with lockfileVersion@1, but package-lock.json was generated for lockfileVersion@0. I'll try to do my best with it!</i>"
 * In the event of an error similar to the picture above
-  * Delete your package-json.lock file and type in "npm install" again
+  * Delete your package-json.lock file and type "npm install" again on the commmand prompt
+
+
 
 # How to Run it
 * Command prompt to our folder root directory and enter "docker-compose up -d --build"
