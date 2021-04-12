@@ -141,6 +141,7 @@ def getFacility(schedule_id, facility_name):
 @app.route("/updateAvailability/<string:facility_id>", methods=['PUT'])
 def update_availability(facility_id):
     facility = Facility.query.filter_by(facility_id=facility_id).first()
+    print("updateAvailability called")
     print(facility)
     if facility:
         data = request.get_json()

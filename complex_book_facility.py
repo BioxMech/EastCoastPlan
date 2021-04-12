@@ -19,6 +19,7 @@ payment_URL = environ.get('payment_URL') or "http://localhost:5004/makePayment/"
 
 @app.route("/make_booking/<string:booking_id>", methods=['POST'])
 def make_booking(booking_id):
+    print("facility complex called")
     # simple check of input format and data of request is in JSON format
     if request.is_json:
         try:
