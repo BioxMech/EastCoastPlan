@@ -121,7 +121,7 @@ export default function Header() {
   }
 
   React.useEffect(async () => {
-    const result = await axios.get(`http://localhost:5007/notifications/${localStorage.getItem("acc_type")}`)
+    const result = await axios.get(`http://localhost:8000/api/notifications/${localStorage.getItem("acc_type")}`)
     setNotification(result.data.data.notifications)
   }, [])
 
