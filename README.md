@@ -48,4 +48,5 @@ With the plethora of recreational facilities available, Singaporeans may find it
   * Delete your package-json.lock file and type in "npm install" again
 
 # How to Run it
-* Command prompt
+* Command prompt to our folder root directory and enter "docker-compose up -d --build"
+  * <i>The command means that it will build all the necessary containers and images, and launch it once done building. You can also exit the command prompt at anytime after building completed.</i>
