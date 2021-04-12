@@ -9,6 +9,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Rating from "@material-ui/lab/Rating";
 
+import TextField from '@material-ui/core/TextField';
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -54,6 +55,7 @@ class FacilityItem extends React.Component {
 			open: false,
       openAvailability: false,
 			rating: 5,
+      reason: ''
 		};
 
 		this.handleUnavailability = this.handleUnavailability.bind(this);
@@ -64,6 +66,7 @@ class FacilityItem extends React.Component {
 		this.handleDialogClose = this.handleDialogClose.bind(this);
     this.handleDialogCloseAvailability = this.handleDialogCloseAvailability.bind(this);
     this.handleDialogClickAvailbility = this.handleDialogClickAvailbility.bind(this);
+    this.handleChangeReason = this.handleChangeReason.bind(this);
 	}
 
 	componentDidMount() {
@@ -84,27 +87,45 @@ class FacilityItem extends React.Component {
 	}
 
 	handleUnavailability(event) {
-		const availability = this.state.availability == "Yes" ? "No" : "Yes";
-		this.setState({
-			openAvailability: false,
-      disabled: !this.state.disabled,
-			availability: availability
-		});
+    event.preventDefault();
 
-		var json = {
-			availability: availability,
+    // Creating a notification
+    var json = {
+			message: this.state.reason,
+      account_type: localStorage.getItem("acc_type"),
+      facility_name: this.state.facility.facility_name
 		};
-		axios
-			.put(
-				`http://localhost:8000/api/updateavailability/${this.state.facility.facility_id}`,
-				json
+    axios
+			.post(
+				`http://localhost:8000/api/notifications/${localStorage.getItem("acc_type") == "admin" ? "admin" : "user"}`, json
 			)
 			.then((response) => {
-				// console.log(response.data)
+        // Update Availability
+        var availabilityJson = {
+          availability: this.state.availability == "Yes" ? "No" : "Yes"
+        };
+        axios
+          .put(
+            `http://localhost:8000/api/updateavailability/${this.state.facility.facility_id}`, availabilityJson
+          )
+          .then((response) => {
+            // console.log(response.data)
+            const availability = this.state.availability == "Yes" ? "No" : "Yes";
+            this.setState({
+              openAvailability: false,
+              disabled: !this.state.disabled,
+              availability: availability
+            });
+          })
+          .catch((error) => {
+            this.setState({ disabled: true });
+          });
 			})
 			.catch((error) => {
-				this.setState({ disabled: true });
+        this.setState({ disabled: true });
 			});
+
+    
 	}
 
 	handleClick(event) {
@@ -124,12 +145,16 @@ class FacilityItem extends React.Component {
 	};
 
 	handleDialogCloseAvailability = () => {
-		this.setState({ openAvailability: false });
+		this.setState({ openAvailability: false, reason: '' });
 	};
 
   handleDialogClickAvailbility(event) {
-    this.setState({ openAvailability: true });
+    this.setState({ openAvailability: true, reason: '' });
   };
+
+  handleChangeReason(event) {
+    this.setState({ reason:event.target.value })
+  }
 
 	handleCloseSelect(event) {
 		const message = event.target.textContent;
@@ -162,10 +187,9 @@ class FacilityItem extends React.Component {
 				// console.log(error);
         alert("Unable to send your report. Please send an email to the admin. Thank you.")
 			});
-
-		
 	}
 
+  
 	render() {
 		let theme = createMuiTheme();
 		theme = responsiveFontSizes(theme);
@@ -229,7 +253,6 @@ class FacilityItem extends React.Component {
                             size="small"
                             variant="contained"
                             color="primary"
-                            // onClick={this.handleUnavailability}
                             onClick={this.handleDialogClickAvailbility}
                           >
                             Mark Available
@@ -242,7 +265,6 @@ class FacilityItem extends React.Component {
                             size="small"
                             variant="contained"
                             color="secondary"
-                            // onClick={this.handleUnavailability}
                             onClick={this.handleDialogClickAvailbility}
                           >
                             Mark Unavailable
@@ -330,28 +352,57 @@ class FacilityItem extends React.Component {
                 aria-describedby="alert-dialog-slide-description"
               >
                 <DialogTitle id="alert-dialog-slide-title">Confirmation of {this.state.facility.facility_name}'s Availability</DialogTitle>
-                <DialogContent>
-                  {
-                    this.state.availability == "Yes" ?
-                    <DialogContentText id="alert-dialog-slide-description">
-                      Are you sure you want to mark this facility, <strong>{this.state.facility.facility_name}, <span style={{color:'red'}}>unavailable</span> ?</strong>
-                    </DialogContentText>
-                    :
-                    <DialogContentText id="alert-dialog-slide-description">
-                      Are you sure you want to mark this facility, <strong>{this.state.facility.facility_name}, <span style={{color:'green'}}>available</span> ?</strong>
-                    </DialogContentText>
-                  }
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.handleDialogCloseAvailability} color="secondary">
-                    NO
-                  </Button>
-                  <Button onClick={this.handleUnavailability} color="primary">
-                    YES
-                  </Button>
-                </DialogActions>
+                <form onSubmit={this.handleUnavailability}>
+                  <DialogContent>
+                    {
+                      this.state.availability == "Yes" ?
+                      <DialogContentText id="alert-dialog-slide-description">
+                        Are you sure you want to mark this facility, <strong>{this.state.facility.facility_name}, <span style={{color:'red'}}>unavailable</span> ?</strong>
+                          <TextField
+                            autoFocus
+                            margin="dense"
+                            id="message"
+                            label={
+                              this.state.openAvailability ?
+                              "Message (Reason for marking unavailable)"
+                              :
+                              "Message (Reason for marking available)"
+                            }
+                            type="message"
+                            fullWidth
+                            onChange={this.handleChangeReason}
+                          />
+                      </DialogContentText>
+                      :
+                      <DialogContentText id="alert-dialog-slide-description">
+                        Are you sure you want to mark this facility, <strong>{this.state.facility.facility_name}, <span style={{color:'green'}}>available</span> ?</strong>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="message"
+                            label={
+                              this.state.openAvailability ?
+                              "Message (Reason for marking unavailable)"
+                              :
+                              "Message (Reason for marking available)"
+                            }
+                            type="message"
+                            fullWidth
+                            onChange={this.handleChangeReason}
+                          />
+                      </DialogContentText>
+                    }
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={this.handleDialogCloseAvailability} variant="contained" color="secondary">
+                      NO
+                    </Button>
+                    <Button type="submit" variant="contained" color="primary" disabled={this.state.reason === "" ? true : false}>
+                      YES
+                    </Button>
+                  </DialogActions>
+                </form>
               </Dialog>
-
 						</Grid>
 					</Grid>
 				</Box>

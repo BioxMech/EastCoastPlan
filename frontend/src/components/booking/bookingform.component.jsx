@@ -122,7 +122,6 @@ class BookingForm extends React.Component {
 			var json = {
 				from: this.state.date,
 			};
-
 			axios
 				.post(`http://localhost:8000/api/getslots/${this.state.path}`, json)
 				.then((response) => {
@@ -343,15 +342,6 @@ class BookingForm extends React.Component {
 						)}
 
 						{this.state.cardFail ? <h1> You failed to make payment </h1> : null}
-						{/* <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={this.state.disabled}
-          >
-          
-            BOOK NOW
-          </Button> */}
 					</Box>
 				</form>
 			</div>
