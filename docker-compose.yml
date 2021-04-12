@@ -140,6 +140,7 @@ services:
     # networks:
     #   - kong-net
     environment:
+      dbURL: mysql+mysqlconnector://is213@localhost:3306/notifications
       PYTHONBUFFERED: 1
     ports:
       - "5007:5007"
