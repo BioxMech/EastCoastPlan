@@ -4,15 +4,11 @@ import { withRouter } from "react-router-dom";
 import {
 	Paper,
 	FormControl,
-	FormLabel,
 	InputLabel,
 	Input,
 	FormHelperText,
 	Box,
 	Button,
-	Radio,
-	FormControlLabel,
-	RadioGroup,
 } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Fade from "@material-ui/core/Fade";
@@ -168,18 +164,6 @@ class SignIn extends React.Component {
 					});
 				}
 			});
-
-		// axios.post(`http://localhost:5001/users/${email}`, json)
-		//   .then(response => {
-		//     localStorage.setItem("login", {email:email, acc_type:acc_type})
-		//     window.location.reload(false)
-		//   })
-		//   .catch(error => {
-		//     if (error.response.status == 400) {
-		//       this.setState({show:true, disabled:true})
-
-		//     }
-		//   })
 	}
 
 	render() {
@@ -220,15 +204,6 @@ class SignIn extends React.Component {
 								</FormHelperText>
 							</FormControl>
 						</Box>
-						{/* <Box mt={2}>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">Account Type</FormLabel>
-                <RadioGroup row aria-label="acc_type" name="acc_type" value={this.state.acc_type} onChange={this.handleAccType}>
-                  <FormControlLabel value="user" control={<Radio />} label="User" />
-                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                </RadioGroup>
-              </FormControl>
-            </Box> */}
 						<Box mt={3}>
 							{this.state.loading ? (
 								<Fade
@@ -256,14 +231,6 @@ class SignIn extends React.Component {
 									LOGIN
 								</Button>
 							)}
-							{/* <Button 
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={this.state.disabled}
-              >
-                LOGIN
-              </Button> */}
 						</Box>
 						{this.state.show ? (
 							<Box>Invalid Email Address / Password</Box>

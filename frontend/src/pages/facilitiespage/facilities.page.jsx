@@ -4,7 +4,6 @@ import { Route, Redirect } from 'react-router-dom';
 import FacilitiesList from '../../components/facilityCategoryOverview/facilityCategoryOverview.component';
 import Facility from '../../components/facility/facility.component';
 import Booking from '../../components/booking/booking.component';
-import SignInSignUp from '../signinsignup/signinsignup.page';
 
 const Facilities =({ match }) => (
   <div>

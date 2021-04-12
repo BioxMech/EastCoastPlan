@@ -173,7 +173,7 @@ class BookingForm extends React.Component {
 			cvv: this.state.cvc,
 		};
 
-		console.log(json);
+		// console.log(json);
 		axios
 			.post(`http://localhost:8000/api/makebooking/${booking_id}`, json)
 			.then((response) => {

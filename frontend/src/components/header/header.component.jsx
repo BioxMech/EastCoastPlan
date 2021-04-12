@@ -82,21 +82,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-function generate(element) {
-  return [0, 1, 2].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    }),
-  );
-}
-
 export default function Header() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElNotification, setAnchorElNotification] = React.useState(null);
   const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
   const [notification, setNotification] = React.useState([]);
 
   const handleClick = (event) => {
@@ -124,15 +114,6 @@ export default function Header() {
     const result = await axios.get(`http://localhost:8000/api/notifications/${localStorage.getItem("acc_type")}`)
     setNotification(result.data.data.notifications)
   }, [])
-
-  const getNotification = () => {
-    // axios.get(`http://localhost:5007/notifications/${localStorage.getItem("acc_type")}`)
-    //   .then((response) => {
-    //     setNotification(response.data.data.notifications)
-    //     console.log("GET MY NOTIFICATIOn")
-    //   })
-    //   .catch((error) => {});
-  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;

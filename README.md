@@ -19,23 +19,33 @@ With the plethora of recreational facilities available, Singaporeans may find it
 - Manage availability of facilities
 
 # Instructions
+* Import database into localhost 
+  * payment.sql
+  * facility.sql
+  * booking.sql
+  * users.sql
+  * report.sql
 
-- Import database into localhost
-  - payment.sql
-  - facility.sql
-  - booking.sql
-  - users.sql
-  - report.sql
-- <install npm stuff for frontend - Json help >
-
-- Import kong configuration using KONGA
+* Import kong configuration using KONGA
   1. After kong and KONGA is running, go to http://localhost:1337
   2. Create an account and log in
   3. Create a connection with
-  - Name: default
-  - Kong Admin URL: http://kong:8001
-  4. Go to snapshot and select IMPORT FROM FILE
-  5. Select the file provided "kongconfig.json"
+     - Name: default
+     - Kong Admin URL: http://kong:8001
+  4. Go to snapshot and select <b>IMPORT FROM FILE</b>
+  5. Select the file provided <b>"kongconfig.json"</b>
   6. Open the snapshot and restore
-  - Restore services and plugins first
-  - Then restore the routes
+     - Restore services and plugins first
+     - Then restore the routes
+
+# Frontend Installation
+ 1. Open up command prompt and change the directory to the frontend folder ("/frontend)
+ 2. Enter "npm install" into the command prompt and give it about 2 minutes to install all the dependencies
+## Possible Errors
+<img src="readme-images/error.png" alt="...Loading" />
+
+* In the event of an error similar to the picture above
+  * Delete your package-json.lock file and type in "npm install" again
+
+# How to Run it
+* Command prompt

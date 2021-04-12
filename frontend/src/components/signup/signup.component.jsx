@@ -32,14 +32,14 @@ class SignUp extends React.Component {
 
 	handleEmail(event) {
 		this.setState({ email: event.target.value });
-		if (this.state.password != "") {
+		if (this.state.password !== "") {
 			this.setState({ disabled: false });
 		}
 	}
 
 	handlePassword(event) {
 		this.setState({ password: event.target.value });
-		if (this.state.email != "") {
+		if (this.state.email !== "") {
 			this.setState({ disabled: false });
 		}
 	}
@@ -63,7 +63,7 @@ class SignUp extends React.Component {
 				window.location.reload(false);
 			})
 			.catch((error) => {
-				if (error.response.status == 400) {
+				if (error.response.status === 400) {
 					this.setState({ show: true, disabled: true, loading: false });
 				}
 			});
