@@ -45,7 +45,7 @@ services:
   #     - 3000:3000
 
   ####################################
-  # RabbitMQ: The messaging broker   
+  # RabbitMQ: The messaging broker
   ####################################
   rabbitmq:
     image: rabbitmq:3-management
@@ -54,7 +54,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    volumes: 
+    volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
   ###################################
@@ -125,7 +125,6 @@ services:
     ports:
       - "5004:5004"
 
-
   ###############################################
   # Notifications: The Notifications microservice
   ###############################################
@@ -137,8 +136,8 @@ services:
     restart: always
     # depends_on:
     #   - rabbitmq
-    # networks:
-    #   - kong-net
+    networks:
+      - kong-net
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/notifications
       PYTHONBUFFERED: 1
@@ -272,7 +271,6 @@ services:
 
     ports:
       - "5100:5100"
-
 
   #######################################
   # Complex Microservice: reportIssues
