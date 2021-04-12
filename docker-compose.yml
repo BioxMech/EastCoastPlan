@@ -49,7 +49,7 @@ services:
   ####################################
   rabbitmq:
     image: rabbitmq:3-management
-    hostname: ecp-rabbit
+    hostname: esd-rabbit
     restart: always
     ports:
       - "5672:5672"
@@ -137,8 +137,8 @@ services:
     restart: always
     # depends_on:
     #   - rabbitmq
-    networks:
-      - kong-net
+    # networks:
+    #   - kong-net
     environment:
       PYTHONBUFFERED: 1
     ports:
@@ -239,8 +239,8 @@ services:
       - facility
       - booking
     environment:
-      booking_URL: http://booking:5003/createBooking/
-      payment_URL: http://payment:5004/makePayment/
+      booking_URL: "http://booking:5003/createBooking/"
+      payment_URL: "http://payment:5004/makePayment/"
       PYTHONBUFFERED: 1
 
     ports:
@@ -249,11 +249,11 @@ services:
   #######################################
   # Complex Microservice: editFacilities
   #######################################
-  complex_edit_facilities:
+  complex_edit_facility:
     build:
       context: ./
       dockerfile: editFacilities.Dockerfile
-    image: petrastan/complex_edit_facilities:ecp
+    image: petrastan/complex_edit_facility:ecp
     restart: always
     networks:
       - kong-net
@@ -265,9 +265,8 @@ services:
     environment:
       rabbit_host: host.docker.internal
       rabbit_port: 5672
-      PYTHONBUFFERED: 1
-      notifications_URL: http://localhost:5007/notifications/
-      facility_URL: http://payment:5002/updateAvailability/
+      notifications_URL: "http://notifications:5007/notifications/"
+      facilities_URL: "http://facility:5002/updateAvailability/"
       PYTHONBUFFERED: 1
 
     ports:
@@ -293,8 +292,8 @@ services:
     environment:
       rabbit_host: host.docker.internal
       rabbit_port: 5672
-      notifications_URL: http://notifications:5007/notifications/
-      report_URL: http://report:5000/createReport
+      notifications_URL: "http://notifications:5007/notifications/"
+      report_URL: "http://report:5000/createReport"
       PYTHONBUFFERED: 1
 
     ports:
@@ -317,4 +316,5 @@ services:
     environment:
       rabbit_host: host.docker.internal
       rabbit_port: 5672
+      notifications_URL: "http://notifications:5007/notifications/"
       PYTHONBUFFERED: 1
