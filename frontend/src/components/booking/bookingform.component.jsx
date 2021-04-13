@@ -341,7 +341,7 @@ class BookingForm extends React.Component {
 							</Button>
 						)}
 
-						{this.state.cardFail ? <h1> You failed to make payment </h1> : null}
+						{this.state.cardFail ? <h3 style={{color: "red"}}> You failed to make payment, Please try again or contact our admins. </h3> : null}
 					</Box>
 				</form>
 			</div>
