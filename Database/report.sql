@@ -35,20 +35,21 @@ DROP TABLE IF EXISTS `report`;
 CREATE TABLE IF NOT EXISTS `report` (
   `report_id` int(11) NOT NULL AUTO_INCREMENT,
   `date` varchar(10) DEFAULT NULL,
-  `time` varchar(6) DEFAULT NULL,
+  `time` varchar(8) DEFAULT NULL,
   `message` varchar(300) DEFAULT NULL,
   `facility_id` varchar(8) DEFAULT NULL,
+  `facility_name` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `report`
 --
 
-INSERT INTO `report` (`report_id`, `date`, `time`, `message`, `facility_id`) VALUES
-('01', '220197', '1000', 'I am the 1st report of the table. Please do me well.', '0'),
-('02', '270521', '1322', 'Why so many report?', '02'),
-('03', '230321', '0152', 'POSTMAN added report 03', '03');
+INSERT INTO `report` (`report_id`, `date`, `time`, `message`, `facility_id`, `facility_name`) VALUES
+('01', '20210409', '110059', 'Poor Cleanliness', '810702', 'Picnic Pavilion 1.1'),
+('02', '20210409', '113052', 'Broken Chair', '810703', 'Picnic Pavilion 1.2'),
+('03', '20210409', '113052', 'Broken Roof', '810431', 'BBQ Pit 1.1');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

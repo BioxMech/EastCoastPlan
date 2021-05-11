@@ -1,7 +1,7 @@
 version: "3.8"
 
 volumes:
-  #   rabbitmq_data:
+  rabbitmq_data:
   pgdata:
   kongadata:
 
@@ -17,7 +17,7 @@ services:
     build:
       context: ./
       dockerfile: report.Dockerfile
-    image: bioxmech/report:ecp
+    image: petrastan/report:ecp
     restart: always
     networks:
       - kong-net
@@ -30,19 +30,32 @@ services:
   ###################################
   # Frontend: The Frontend microservice
   ###################################
-  # frontend:
-  #   stdin_open: true
-  #   container_name: frontend
-  #   build:
-  #     context: ./
-  #     dockerfile: frontend.Dockerfile
-  #   image: petrastan/frontend:ecp
-  #   restart: always
-  #   volumes:
-  #     - '.:/frontend/app'
-  #     - '/frontend/app/node_modules'
-  #   ports:
-  #     - 3000:3000
+  frontend:
+    stdin_open: true
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: frontend.Dockerfile
+    image: petrastan/frontend:ecp
+    restart: always
+    volumes:
+      - '.:/frontend/app'
+      - '/frontend/app/node_modules'
+    ports:
+      - 3000:3000
+
+  ####################################
+  # RabbitMQ: The messaging broker
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
   ###################################
   # Users: The Users microservice
@@ -51,7 +64,7 @@ services:
     build:
       context: ./
       dockerfile: users.Dockerfile
-    image: bioxmech/users:ecp
+    image: petrastan/users:ecp
     restart: always
     networks:
       - kong-net
@@ -68,7 +81,7 @@ services:
     build:
       context: ./
       dockerfile: facilities.Dockerfile
-    image: bioxmech/facilities:ecp
+    image: petrastan/facilities:ecp
     restart: always
     networks:
       - kong-net
@@ -85,7 +98,7 @@ services:
     build:
       context: ./
       dockerfile: booking.Dockerfile
-    image: bioxmech/booking:ecp
+    image: petrastan/booking:ecp
     restart: always
     networks:
       - kong-net
@@ -102,7 +115,7 @@ services:
     build:
       context: ./
       dockerfile: payment.Dockerfile
-    image: bioxmech/payment:ecp
+    image: petrastan/payment:ecp
     restart: always
     networks:
       - kong-net
@@ -111,6 +124,25 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5004:5004"
+
+  ###############################################
+  # Notifications: The Notifications microservice
+  ###############################################
+  notifications:
+    build:
+      context: ./
+      dockerfile: notifications.Dockerfile
+    image: petrastan/notifications:ecp
+    restart: always
+    # depends_on:
+    #   - rabbitmq
+    networks:
+      - kong-net
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/notifications
+      PYTHONBUFFERED: 1
+    ports:
+      - "5007:5007"
 
   #######################################
   # Postgres: The database used by Kong
@@ -193,13 +225,13 @@ services:
       - kongadata:/app/kongadata
 
   #######################################
-  # Complex Microservice: book_a_facility
+  # Complex Microservice: book_facility
   #######################################
-  book_facility:
+  complex_book_facility:
     build:
       context: ./
       dockerfile: bookFacility.Dockerfile
-    image: bioxmech/book_facility:ecp
+    image: petrastan/complex_book_facility:ecp
     restart: always
     networks:
       - kong-net
@@ -207,9 +239,9 @@ services:
       - facility
       - booking
     environment:
+      booking_URL: "http://booking:5003/createBooking/"
+      payment_URL: "http://payment:5004/makePayment/"
       PYTHONBUFFERED: 1
-      booking_URL: http://booking:5003/createBooking/
-      payment_URL: http://payment:5004/makePayment/
 
     ports:
       - "5010:5010"
@@ -217,21 +249,71 @@ services:
   #######################################
   # Complex Microservice: editFacilities
   #######################################
-  editFacilities:
+  complex_edit_facility:
     build:
       context: ./
       dockerfile: editFacilities.Dockerfile
-    image: petrastan/edit_facilities:ecp
+    image: petrastan/complex_edit_facility:ecp
     restart: always
     networks:
       - kong-net
     depends_on:
-      - users
+      - notifications
       - facility
+      - rabbitmq
+      - receiver
     environment:
+      rabbit_host: host.docker.internal
+      rabbit_port: 5672
+      notifications_URL: "http://notifications:5007/notifications/"
+      facilities_URL: "http://facility:5002/updateAvailability/"
       PYTHONBUFFERED: 1
-      user_URL: http://booking:5001/users/
-      facility_URL: http://payment:5002/updateAvailability/
 
     ports:
       - "5100:5100"
+
+  #######################################
+  # Complex Microservice: reportIssues
+  #######################################
+  complex_reportIssues:
+    build:
+      context: ./
+      dockerfile: reportIssues.Dockerfile
+    image: petrastan/complex_report_issues:ecp
+    restart: always
+    networks:
+      - kong-net
+    depends_on:
+      - report
+      - notifications
+      - rabbitmq
+      - receiver
+    environment:
+      rabbit_host: host.docker.internal
+      rabbit_port: 5672
+      notifications_URL: "http://notifications:5007/notifications/"
+      report_URL: "http://report:5000/createReport"
+      PYTHONBUFFERED: 1
+
+    ports:
+      - "5008:5008"
+
+  ###############################################
+  # Receiver: AMQP Message Receiver
+  ###############################################
+  receiver:
+    build:
+      context: ./
+      dockerfile: receiver.Dockerfile
+    image: petrastan/receiver:ecp
+    restart: always
+    depends_on:
+      - rabbitmq
+      - notifications
+    networks:
+      - kong-net
+    environment:
+      rabbit_host: host.docker.internal
+      rabbit_port: 5672
+      notifications_URL: "http://notifications:5007/notifications/"
+      PYTHONBUFFERED: 1

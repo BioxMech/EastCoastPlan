@@ -11,6 +11,7 @@ current_time = now.strftime("%H:%M:%S")
 
 
 app = Flask(__name__)
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://is213@localhost:3306/facility'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -108,7 +109,7 @@ def filter_by_schedule(schedule_id):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no resources available."
+            "message": "There are no facilities available."
         }
     ), 404
 
@@ -131,7 +132,7 @@ def getFacility(schedule_id, facility_name):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no facility available."
+            "message": "There is no such facility."
         }
     ), 404
 
@@ -140,6 +141,7 @@ def getFacility(schedule_id, facility_name):
 @app.route("/updateAvailability/<string:facility_id>", methods=['PUT'])
 def update_availability(facility_id):
     facility = Facility.query.filter_by(facility_id=facility_id).first()
+    print("updateAvailability called")
     print(facility)
     if facility:
         data = request.get_json()

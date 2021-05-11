@@ -19,7 +19,7 @@ const FacilityDetail = ({facilityInfo}) => (
             { facilityInfo.facility_name }
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Facility Description
+            Vivamus hendrerit ipsum sit amet lectus porttitor, at auctor nibh ultrices. Maecenas mattis vehicula augue. Vestibulum accumsan lacus ac sodales vestibulum. Quisque tristique egestas metus, in consectetur ante accumsan nec. Duis vitae sapien id nunc vehicula auctor ut vel diam. In ut quam sapien. Vestibulum rutrum ornare tellus sit amet condimentum. Duis at nibh arcu. Suspendisse pharetra dictum elit, et iaculis diam mattis in. Phasellus posuere, augue quis sodales mattis, nisi felis bibendum mi, eu iaculis neque felis a odio. Donec cursus enim sem, sit amet vulputate risus euismod quis. Sed justo urna, rhoncus non consequat vitae, ultricies quis ex. Vivamus quis eros eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
           </Typography>
         </CardContent>
       {/* </CardActionArea> */}

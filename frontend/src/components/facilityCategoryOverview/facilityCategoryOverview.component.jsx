@@ -11,7 +11,8 @@ class FacilitiesList extends React.Component {
   constructor() {
     super();
     this.state = {
-      facilityDict: []
+      facilityDict: [],
+      loading: true
     }
   }
 
@@ -19,13 +20,21 @@ class FacilitiesList extends React.Component {
     axios.get(`http://localhost:8000/api/facilities`)
     .then(res => {
       const facilityDict = res.data.data.schedules;
-      this.setState({ facilityDict });
+      this.setState({ facilityDict, loading: false });
+    })
+    .catch(error => {
+      alert("Please check if your microservices are working.")
     })
   }
   
   render() {
     return (
-        <Container >
+      <Container >
+      {
+        this.state.loading ? 
+        <img src='./component-loader.gif' style={{width:"100%", height:"100%"}} />
+        :
+        
           <Box my={2}>
             <h1>Facilities</h1>
             <Grid
@@ -40,7 +49,9 @@ class FacilitiesList extends React.Component {
               }
             </Grid>
           </Box>
-        </Container> 
+        
+      }
+      </Container>  
       
     )
   }

@@ -1,17 +1,21 @@
 import React from 'react';
+import axios from 'axios';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-// import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
-// import SearchIcon from '@material-ui/icons/Search';
 import Link from '@material-ui/core/Link';
 import Popover from '@material-ui/core/Popover';
 import Box from '@material-ui/core/Box';
-import { Redirect } from 'react-router';
+
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorElNotification, setAnchorElNotification] = React.useState(null);
+  const [dense, setDense] = React.useState(false);
+  const [notification, setNotification] = React.useState([]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -90,37 +97,47 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const handleClickNotification = (event) => {
+    setAnchorElNotification(event.currentTarget);
+  };
+
+  const handleCloseNotification = () => {
+    setAnchorElNotification(null);
+  };
+
   const handleLogout = (event) => {
     localStorage.clear()
     window.location.replace("/")
   }
 
+  React.useEffect(async () => {
+    const result = await axios.get(`http://localhost:8000/api/notifications/${localStorage.getItem("acc_type")}`)
+    setNotification(result.data.data.notifications)
+  }, [])
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   
+  const openNotification = Boolean(anchorElNotification);
+  const idNotification = open ? 'simple-popover' : undefined;
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton> */}
           <Typography variant="h6" className={classes.title}>
             <Link href="/" className={classes.titleContent} underline="none">EastCoastPlan</Link>
           </Typography>
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div> */}
+
+          {
+            localStorage.getItem("email") !== null ?
+              localStorage.getItem("acc_type") === 'user' 
+              ? <Button color="inherit" onClick={handleClickNotification}><Badge color="secondary" badgeContent={notification.length} ><NotificationsIcon /></Badge></Button>
+              : <Button color="inherit" onClick={handleClickNotification}><Badge color="secondary" badgeContent={notification.length} ><NotificationsIcon /></Badge></Button>
+            :
+            null
+          }
+          
           {
             localStorage.getItem("email") !== null ?
             <div className={classes.search}>Hello, {localStorage.getItem("email").split("@")[0]} ({
@@ -129,6 +146,7 @@ export default function Header() {
             :
             null
           }
+
           <Button color="inherit" href="/aboutus">About Us</Button>
           {
             localStorage.getItem("email") !== null ?
@@ -143,6 +161,54 @@ export default function Header() {
             :
             <Button color="inherit" href="/signinsignup">Login</Button>
           }
+
+          {/* Notification */}
+          <Popover 
+            id={idNotification}
+            open={openNotification}
+            anchorEl={anchorElNotification}
+            onClose={handleCloseNotification}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <div className={classes.demo}>
+              <List dense={dense}>
+              {
+                notification.map(notify => 
+                  <div>
+                    <ListItem button>
+                      <ListItemText
+                        primary={notify.facility_name}
+                        secondary={notify.message}
+                      />
+                    </ListItem>
+                    <Divider />
+                  </div>
+                )
+              }
+                {/* {generate(
+                  <div>
+                    <ListItem button>
+                    <ListItemText
+                      primary="Single-line item"
+                      secondary={secondary ? 'Secondary text' : null}
+                    />
+                  </ListItem>
+                  <Divider />
+                  </div>
+                )} */}
+              </List>
+            </div>
+          </Popover>
+
+
+          {/* Logout */}
           <Popover 
             id={id}
             open={open}
@@ -159,14 +225,14 @@ export default function Header() {
           >
             <Box m={2}>
               <Typography variant="h7" className={classes.title}>
-                Confirm Log Out?
+                <strong>Confirm Log Out?</strong>
               </Typography>
-              <Box component="span" mx={3}>
-                <Button color="inherit" onClick={handleLogout}>Logout</Button>
+              <Box my={1}>
+                <Box component="span" mx={3}>
+                  <Button variant="contained" color="secondary" onClick={handleLogout}>Logout</Button>
+                </Box>
               </Box>
             </Box>
-            
-            
           </Popover>
         </Toolbar>
       </AppBar>
