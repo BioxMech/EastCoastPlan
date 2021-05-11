@@ -40,7 +40,8 @@ With the plethora of recreational facilities available, Singaporeans may find it
 
 # Frontend Installation
  1. Open up command prompt and change the directory to the frontend folder ("/frontend). 
-An Example:
+  
+An Example of the route:
 > C:\wamp64\www\EastCoastPlan\frontend
 
  2. Enter "npm install" into the command prompt and give it about 2 minutes to install all the dependencies
